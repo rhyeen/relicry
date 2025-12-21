@@ -29,8 +29,32 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Firebase Emulator Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is configured to use the Firebase Emulators for Auth, Firestore, Functions, and Storage.
+
+### Start the Emulators
+
+```bash
+npm run emulators:start
+```
+
+This will start the following emulators:
+- Auth (port 9099)
+- Firestore (port 8080)
+- Functions (port 5001)
+- Storage (port 9199)
+- App Hosting (port 5002)
+
+You can access the Emulator UI at [http://localhost:4000](http://localhost:4000) if enabled.
+
+### Stop the Emulators
+
+```bash
+npm run emulators:stop
+```
+
+If the stop script does not work, you may need to stop the emulators manually (e.g., with Ctrl+C in the terminal).
+
+---
