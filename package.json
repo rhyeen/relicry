@@ -3,26 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run emulators:start",
+    "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest",
     "emulators:start": "firebase emulators:start",
+    "force:kill": "kill -9 $(lsof -ti:5007,8087,9097,4000,9200,9300) || echo 'No processes to kill on specified ports'",
     "emulators:stop": "firebase emulators:stop || echo 'Stop the emulators manually if needed'"
   },
   "dependencies": {
     "firebase": "^12.7.0",
+    "firebase-admin": "^13.6.0",
     "next": "^16.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9",
     "eslint-config-next": "^16.1.0",
     "firebase-tools": "^15.1.0",
-    "typescript": "^5"
+    "jsdom": "^27.3.0",
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.0.3",
+    "vitest": "^4.0.16"
   }
 }

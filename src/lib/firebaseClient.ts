@@ -14,21 +14,28 @@ const firebaseConfig = {
   measurementId: "G-8G7QQBZL3W"
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const appClient = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 // Initialize services
-const auth = getAuth(app);
-const firestore = getFirestore(app);
-const functions = getFunctions(app);
-const storage = getStorage(app);
+const authClient = getAuth(appClient);
+const firestoreClient = getFirestore(appClient);
+const functionsClient = getFunctions(appClient);
+const storageClient = getStorage(appClient);
 const googleProvider = new GoogleAuthProvider();
 
 // Use emulators if the environment variable is set
 if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === 'true') {
-  connectAuthEmulator(auth, 'http://localhost:9099');
-  connectFirestoreEmulator(firestore, 'localhost', 8080);
-  connectFunctionsEmulator(functions, 'localhost', 5001);
-  connectStorageEmulator(storage, 'localhost', 9199);
+  connectAuthEmulator(authClient, 'http://localhost:9097');
+  connectFirestoreEmulator(firestoreClient, 'localhost', 8087);
+  connectFunctionsEmulator(functionsClient, 'localhost', 5007);
+  connectStorageEmulator(storageClient, 'localhost', 9197);
 }
 
-export { app, auth, firestore, functions, storage, googleProvider };
+export {
+  appClient,
+  authClient,
+  firestoreClient,
+  functionsClient,
+  storageClient,
+  googleProvider,
+};

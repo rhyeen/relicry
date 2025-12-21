@@ -1,7 +1,14 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { getLinks, getLogo } from '@/server/services/example.service';
 
-export default function Home() {
+export default async function Home() {
+  const links = await getLinks();
+  const logo = await getLogo();
+
+  console.log("Links:", links);
+  console.log("Logo URL:", logo);
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
