@@ -1,13 +1,9 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import { getLinks, getLogo } from '@/server/services/example.service';
+import { populateLocal } from '@/server/db/local.db';
 
 export default async function Home() {
-  const links = await getLinks();
-  const logo = await getLogo();
-
-  console.log("Links:", links);
-  console.log("Logo URL:", logo);
+  await populateLocal();
 
   return (
     <div className={styles.page}>

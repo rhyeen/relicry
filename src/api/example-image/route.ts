@@ -1,5 +1,5 @@
 import { initAdmin } from '@/lib/firebaseAdmin';
-import { getLogoFromStorage } from '@/server/services/example.service';
+import { getLogoFromStorage } from '@/server/db/local.db';
 
 export async function GET(request: Request) {
   await initAdmin();

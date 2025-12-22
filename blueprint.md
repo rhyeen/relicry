@@ -1,40 +1,42 @@
-# Relicry - A Mystical Card Game
+# Relicry - A TCG Adventure Game
 
 ## Overview
 
-Relicry is a web-based card game application with a beautiful and intuitive user interface. The application is designed to be playful, engaging, and mobile-friendly, with a modern, dark theme and vibrant accents.
+Relicry is a web-based trading-card game (TCG) application with a dark and modern mobile first user interface. The application is designed to have pages accessed by scanning QR codes on real physical TCG cards to reveal more information about the card.
+
+High performant caching and reduced page size is high priority as most pages are static, will be accessed by many people in the same physical location on their mobile devices with limited internet/cell service.
 
 ## Design and Features
 
 ### Visual Design
 
-*   **Theme:** A dark, mystical theme that creates an immersive and engaging experience.
+*   **Theme:** A dark theme with white/gold highlights that creates an immersive and engaging experience.
 *   **Color Palette:**
     *   Background: A very dark desaturated blue (`#0D1117`).
-    *   Primary Accent: A vibrant purple/magenta for buttons and highlights (`#F92672`).
+    *   Primary Accent: A vibrant gold for buttons and highlights (`#D3AF37`).
     *   Card Background: A slightly lighter dark color (`#161B22`).
-    *   Text: A light gray (`#C9D1D9`).
+    *   Text: white (`#FFFFFF`).
     *   Card Border: A subtle border in a slightly lighter shade than the card background.
 *   **Typography:**
-    *   **Primary Font:** "Inter" for body text, ensuring readability.
-    *   **Title Font:** "Cinzel" for headings, adding a touch of fantasy and elegance.
+    *   **Primary Font:** "Barlow Condensed" for body text, ensuring readability. This is found at https://fonts.google.com/specimen/Barlow+Condensed
+    *   **Title Font:** "Bree Serif" for most headings. This is found at https://fonts.google.com/specimen/Bree+Serif. For h1 headings or exceptional cases, use "Pirata One". This is found at https://fonts.google.com/specimen/Pirata+One.
 *   **Animations & Effects:**
     *   **Card Hover:** Cards will have a subtle "lift" and glow effect on hover to provide tactile feedback.
-    *   **Staggered Load:** The card grid will use a staggered animation for the cards to appear one by one, creating a dynamic entry effect.
-    *   **Button Glow:** The "Populate Database" button will have a soft glow to draw attention to the primary action.
+    *   **Staggered Load:** The card will load once the image is loaded down. Each element of the page loading into place with a fade in and slight bounce.
+    *   **Button Glow:** Buttons will have a soft glow to draw attention to the primary action.
 
 ### Features
 
-*   **Card Display:** The application fetches and displays a list of cards from a Firestore database.
-*   **Database Population:** A button allows the user to populate the database with card data via a Cloud Function.
-*   **Responsive Design:** The UI is fully responsive and works seamlessly on both desktop and mobile devices.
+*   **Local Develoment Data:** By hitting the root page while local (https://localhost:5007), this will automatically populate the Firestore database with example cards and other data.
+*   **Card Display:** By navigating to the QR code of a card (e.g. https://localhost:5007/1/abcdef), it will display information about this card.
+*   **Responsive Design:** The UI is fully responsive and works seamlessly on both desktop and mobile devices, but focuses mostly on mobile or tablet display.
 
 ## Current Plan
 
-The current plan is to implement the initial version of the user interface based on the design and features outlined above. This involves:
+The current plan is to get the scaffolding in place so that the developer can focus on the finer details.
 
-1.  **Setting up the layout:** Creating the root layout with the specified fonts and global styles.
-2.  **Styling the main page:** Applying the dark theme, background, and typography to the main page.
-3.  **Creating the card component:** Designing and styling the individual cards with the specified colors, borders, and hover effects.
-4.  **Implementing the card grid:** Arranging the cards in a responsive grid layout with staggered animations.
-5.  **Styling the button:** Designing the "Populate Database" button with the vibrant accent color and glow effect.
+* Get Firebase authentication working so that if a user navigates to https://localhost:5007/login, there is a Google Auth Login page for them.
+* Set up a base layout for all pages that contains a navigation bar that detects if the user is logged in and displays their profile in the right corner or displays a button to login. There is also a button icon for navigating to the home screen and one for seeing ongoing events (navigating to https://localhost:5007/e). There should also be a basic footer with the email relicry@googlegroups.com for contact, a copyright for Relicry, and a link to leave feedback (https://localhost:5007/feedback), and a link to the Discord server (https://discord.gg/YF5RyAaj).
+* Differentiates the statically loaded content from the server and the authenticated client instances (especially in the layout) so that as much as possible can render on the server. Lazy loading the other stuff on the page as needed.
+* Setting up error boundaries, 404s, and other useful accessibilty features to ensure QoL upfront.
+* Get all pages unit/component tested with vitest and local `__test__` folders.

@@ -25,6 +25,12 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
       privateKey,
     });
 
+    // if already initialized, use that one
+    if (admin.apps.length > 0) {
+      firebaseAdminApp = admin.app();
+      return firebaseAdminApp;
+    }
+
     firebaseAdminApp = admin.initializeApp({
       credential: cert,
       projectId: params.projectId,

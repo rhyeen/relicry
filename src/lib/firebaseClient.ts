@@ -3,6 +3,7 @@ import { getAuth, connectAuthEmulator, GoogleAuthProvider } from 'firebase/auth'
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { isEmulated } from './environment';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaRuilDPila7nQkRtZs5cihjsH4oT6mr4",
@@ -23,8 +24,7 @@ const functionsClient = getFunctions(appClient);
 const storageClient = getStorage(appClient);
 const googleProvider = new GoogleAuthProvider();
 
-// Use emulators if the environment variable is set
-if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === 'true') {
+if (isEmulated) {
   connectAuthEmulator(authClient, 'http://localhost:9097');
   connectFirestoreEmulator(firestoreClient, 'localhost', 8087);
   connectFunctionsEmulator(functionsClient, 'localhost', 5007);

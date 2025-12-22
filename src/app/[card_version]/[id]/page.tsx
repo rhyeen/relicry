@@ -14,8 +14,10 @@ async function getCard(card_version: string, id: string): Promise<Card | null> {
   return card;
 }
 
-export default async function CardPage({ params }: { params: { version: string, id: string } }) {
-  const card = await getCard(params.version, params.id);
+export default async function CardPage({ params }: { params: Promise<{ card_version: string; id: string }> }) {
+  const { card_version, id } = await params;
+
+  const card = await getCard(card_version, id);
 
   if (!card) {
     notFound();
