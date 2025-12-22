@@ -41,11 +41,11 @@ npm run emulators:start
 ```
 
 This will start the following emulators:
-- Auth (port 9099)
-- Firestore (port 8080)
-- Functions (port 5001)
-- Storage (port 9199)
-- App Hosting (port 5002)
+- Auth (port 9097)
+- Firestore (port 8087)
+- Functions (port 5007)
+- Storage (port 9197)
+- App Hosting (port 5007)
 
 You can access the Emulator UI at [http://localhost:4000](http://localhost:4000) if enabled.
 

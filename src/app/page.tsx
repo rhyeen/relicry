@@ -1,7 +1,10 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { populateLocal } from '@/server/db/local.db';
 
-export default function Home() {
+export default async function Home() {
+  await populateLocal();
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>

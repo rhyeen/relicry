@@ -7,7 +7,7 @@ These guidelines define the operational principles and capabilities of an AI age
 The AI operates within the Firebase Studio development environment, which provides a Code OSS-based IDE and a pre-configured environment for Next.js development.
 
 * **Project Structure (App Router):** The AI assumes a standard Next.js project structure using the App Router.
-  * `/app`: The core directory for file-based routing.
+  * `/src/app`: The core directory for file-based routing.
   * `layout.tsx`: The root layout.
   * `page.tsx`: The page UI for a route.
   * `/components`: For reusable UI components.
@@ -37,17 +37,18 @@ When requested for Firebase add the following the server configurations to .idx/
 
 The AI is empowered to modify the codebase autonomously based on user requests. The AI is creative and anticipates features that the user might need even if not explicitly requested.
 
-* **Core Code Assumption:** The AI will primarily work with React components (`.tsx` or `.jsx`) within the `/app` directory. It will create new routes, layouts, and components as needed.
-* **Package Management:** The AI will use `npm` or `yarn` for package management.
+* **Core Code Assumption:** The AI will primarily work with React components (`.tsx` or `.jsx`) within the `/src/app` directory. It will create new routes, layouts, and components as needed.
+* **Package Management:** The AI will use `npm` for package management.
 * **Next.js CLI:** The AI will use the Next.js CLI for common development tasks:
   * `npm run build`: To build the project for production.
+  * `npm run test`: To test code changes.
   * `npm run lint`: To run ESLint and check for code quality issues.
 
 ## **Next.js Core Concepts (App Router)**
 
 ### **Server Components by Default**
 
-The AI understands that components in the `/app` directory are React Server Components (RSCs) by default.
+The AI understands that components in the `/src/app` directory are React Server Components (RSCs) by default.
 
 * **Data Fetching:** The AI will perform data fetching directly in Server Components using `async/await`, colocating data access with the component that uses it.
 * **"use client" Directive:** For components that require interactivity, state, or browser-only APIs, the AI will use the `"use client"` directive to mark them as Client Components.
@@ -55,7 +56,7 @@ The AI understands that components in the `/app` directory are React Server Comp
 
 ### **File-based Routing**
 
-The AI will manage routing by creating folders and `page.tsx` files within the `/app` directory.
+The AI will manage routing by creating folders and `page.tsx` files within the `/src/app` directory.
 
 * **Layouts (`layout.tsx`):** Define shared UI for a segment and its children.
 * **Pages (`page.tsx`):** Define the unique UI of a route.
@@ -112,10 +113,10 @@ A critical function of the AI is to continuously monitor for and automatically r
 
 **Aesthetics:** The AI always makes a great first impression by creating a unique user experience that incorporates modern components, a visually balanced layout with clean spacing, and polished styles that are easy to understand.
 
-1. Build beautiful and intuitive user interfaces that follow modern design guidelines.
-2. Ensure your app is mobile responsive and adapts to different screen sizes, working perfectly on mobile and web.
+1. Build beautiful and intuitive user interfaces that follow modern design guidelines. When choosing, it will go with CSS Flex instead of CSS Grid. It will also use existing paradigms, if they exist, when considering any design decisions.
+2. Ensure your app is mobile first and responsive and adapts to different screen sizes, working perfectly on mobile and web.
 3. Propose colors, fonts, typography, iconography, animation, effects, layouts, texture, drop shadows, gradients, etc.
-4. If images are needed, make them relevant and meaningful, with appropriate size, layout, and licensing (e.g., freely available). If real images are not available, provide placeholder images.
+4. If images are needed, it will provide placeholder images.
 5. If there are multiple pages for the user to interact with, provide an intuitive and easy navigation bar or controls.
 
 **Bold Definition:** The AI uses modern, interactive iconography, images, and UI components like buttons, text fields, animation, effects, gestures, sliders, carousels, navigation, etc.
@@ -126,6 +127,8 @@ A critical function of the AI is to continuously monitor for and automatically r
 4. Visual effects \- Multi-layered drop shadows create a strong sense of depth. Cards have a soft, deep shadow to look "lifted."
 5. Iconography \- Incorporate icons to enhance the user’s understanding and the logical navigation of the app.
 6. Interactivity \- Buttons, checkboxes, sliders, lists, charts, graphs, and other interactive elements have a shadow with elegant use of color to create a "glow" effect.
+
+The AI will always choose existing design paradigms before determining new ones.
 
 **Accessibility or A11Y Standards:** The AI implements accessibility features to empower all users, assuming a wide variety of users with different physical abilities, mental abilities, age groups, education levels, and learning styles.
 
@@ -148,3 +151,5 @@ The AI's workflow is iterative, transparent, and responsive to user input.
   4. **Compile & Analyze:** AI runs `npm run lint` and monitors the dev server.
   5. **Preview Check:** AI observes the browser preview for visual and runtime errors.
   6. **Remediation/Report:** If errors are found, AI attempts automatic fixes. If unsuccessful, it reports details to the user.
+  7. **Write and Update Tests:** Once there are no errors, AI will consider adding or updating unit tests using Vitest within local `__test__` folders that validate the changes.
+  8. **Run Tests:** AI runs `npm run test` and monitors the dev server for test failure. When failures arise, AI addresses issues and reruns tests, iterating until they pass. If they still fail after 3 consecutative failures, AI will report what it believes the issue to be to the user then stop future attempts at addressing them.
