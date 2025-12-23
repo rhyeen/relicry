@@ -1,0 +1,23 @@
+.footer {
+  background-color: #0D1117;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* space-x-4 */
+}
+
+.link:hover {
+  color: #f59e0b; /* yellow-400 */
+  transition: color 0.3s;
+}
+
+.copyright {
+  font-size: 0.875rem;
+  margin-top: 1rem;
+}

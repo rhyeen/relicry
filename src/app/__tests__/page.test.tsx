@@ -1,8 +1,10 @@
-import { expect, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import Page from '../page';
- 
-test('Page', () => {
-  render(<Page />);
-  expect(screen.getByRole('heading', { level: 1, name: 'To get started, edit the page.tsx file.' })).toBeDefined();
+import Home from '../page';
+
+describe('Home page', () => {
+  test('renders welcome message', () => {
+    render(<Home />);
+    expect(screen.getByText('Welcome to Relicry')).toBeInTheDocument();
+  });
 });

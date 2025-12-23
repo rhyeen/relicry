@@ -40,3 +40,8 @@ a {
     color-scheme: dark;
   }
 }
+
+.goldButton {
+  background-color: #D3AF37;
+  box-shadow: 0 0 10px #D3AF37;
+}
