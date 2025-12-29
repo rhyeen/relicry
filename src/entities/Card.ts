@@ -29,7 +29,7 @@ export interface Version {
   flavorText?: FlavorText;
   subTitle?: LocaleMap;
   revealedAt: Date;
-  revealedContext: LocaleMap;
+  revealedContext?: LocaleMap;
   publishedAt: Date | null;
   publishedContext?: LocaleMap;
   archivedAt: Date | null;
