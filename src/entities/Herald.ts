@@ -4,6 +4,7 @@
 import { LocaleMap } from './LocaleMap';
 
 export interface Herald {
+  // hrd/a1b2c3d4e5
   id: string;
   userId: string;
   artistId: string | null;

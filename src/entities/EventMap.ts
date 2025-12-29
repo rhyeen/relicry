@@ -1,5 +1,6 @@
 export interface EventMap {
   eventId: string;
+  // map/a1b2c3d4e5
   id: string;
   imageUrl: string;
   imageWidthPx: number;

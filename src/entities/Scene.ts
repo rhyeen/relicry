@@ -2,6 +2,7 @@ import { Aspect } from './Aspect';
 import { LocaleMap } from './LocaleMap';
 
 export interface Scene {
+  // sc/a1b2c3d4e5
   id: string;
   title: LocaleMap;
   description: LocaleMap;

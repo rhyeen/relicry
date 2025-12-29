@@ -1,6 +1,8 @@
 export interface Deck {
-  // each card is `${version}/${cardId}`
-  cards: string[];
+  // dk/a1b2c3d4e5
+  id: string;
+  // each cardPathId is `${card.version}/${card.id}`
+  cardPathIds: string[];
   userId: string;
   name: string;
   createdAt: Date;

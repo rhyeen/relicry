@@ -1,5 +1,6 @@
 export enum AdminRole {
   SuperAdmin = 'super',
   ContentAdmin = 'content',
-  CommunityAdmin = 'community',
+  EventAdmin = 'event',
+  SceneAdmin = 'scene',
 }
