@@ -20,7 +20,17 @@ export interface Version {
 }
 
 export interface Quest {
+  // q/a1b
   id: string;
   faction: Faction;
   level: number;
+}
+
+export interface QuestToken {
+  // t[1-9]/${questId, excluding the 'q/' prefix}
+  id: string;
+  questId: string;
+  version: number;
+  // e.g. "Broken Sword"
+  token: LocaleMap;
 }

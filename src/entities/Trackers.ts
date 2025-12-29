@@ -1,4 +1,6 @@
 export interface TrackEventQuest {
+  // teq/${userId}/${eventId}/${questId}
+  id: string;
   eventId: string;
   questId: string;
   // of the player

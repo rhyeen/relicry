@@ -1,6 +1,7 @@
 import { LocaleMap } from './LocaleMap';
 
 export interface PromotedItem {
+  // pi/a1b2c3d4e5
   id: string;
   artId: string | null;
   override: {

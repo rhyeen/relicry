@@ -29,7 +29,7 @@ export interface Version {
   flavorText?: FlavorText;
   subTitle?: LocaleMap;
   revealedAt: Date;
-  revealedContext: LocaleMap;
+  revealedContext?: LocaleMap;
   publishedAt: Date | null;
   publishedContext?: LocaleMap;
   archivedAt: Date | null;
@@ -56,6 +56,7 @@ export interface GambitCard extends Card {
 }
 
 export interface Card extends RootCard {
+  // a1b2c3
   id: string;
   type: 'deck' | 'focus' | 'gambit';
   title: LocaleMap;

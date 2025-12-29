@@ -1,6 +1,7 @@
 import { LocaleMap } from './LocaleMap';
 
 export interface Event {
+  // e/custom123; min-max after `e/` = 5-10 characters; case-insensitive alphanumeric
   id: string;
   title: LocaleMap;
   description: LocaleMap;

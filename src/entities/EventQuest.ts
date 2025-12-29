@@ -23,7 +23,6 @@ export interface EventQuest {
 }
 
 export interface QuestThread {
-  id: string;
   title: LocaleMap;
   objective: LocaleMap;
   imageId?: string;

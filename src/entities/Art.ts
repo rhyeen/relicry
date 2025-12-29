@@ -7,10 +7,11 @@ export interface IllustrationArt extends Art {
 
 export interface WritingArt extends Art {
   type: 'writing';
-  markdown: string;
+  markdown: LocaleMap;
 }
 
 export interface Art {
+  // art/a1b2c3d4e5
   id: string;
   type: 'illustration' | 'writing';
   artistId: string;
