@@ -1,15 +1,17 @@
 import { Aspect } from './Aspect';
 import { CardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
-import { LocaleMap } from './LocaleMap';
 import { Rarity } from './Rarity';
+import { StoredRoot } from './Root';
 import { Tag } from './Tag';
 
-export interface VersionedGambitCard extends GambitCard, Version {}
+export type VersionedCard = VersionedDeckCard | VersionedFocusCard | VersionedGambitCard;
 
-export interface VersionedDeckCard extends DeckCard, Version {}
+export interface VersionedGambitCard extends GambitCard, Version, StoredRoot {}
 
-export interface VersionedFocusCard extends FocusCard, Version {
+export interface VersionedDeckCard extends DeckCard, Version, StoredRoot {}
+
+export interface VersionedFocusCard extends FocusCard, Version, StoredRoot {
   awakenedVersion: {
     illustration?: {
       artId: string;
@@ -27,13 +29,13 @@ export interface Version {
     artistId: string;
   };
   flavorText?: FlavorText;
-  subTitle?: LocaleMap;
+  subTitle?: string;
   revealedAt: Date;
-  revealedContext?: LocaleMap;
+  revealedContext?: string;
   publishedAt: Date | null;
-  publishedContext?: LocaleMap;
+  publishedContext?: string;
   archivedAt: Date | null;
-  archivedContext?: LocaleMap;
+  archivedContext?: string;
   // @NOTE: A sample card is never intended to be released to the public and may use AI-generated assets
   isSample: boolean;
 }
@@ -59,12 +61,16 @@ export interface Card extends RootCard {
   // a1b2c3
   id: string;
   type: 'deck' | 'focus' | 'gambit';
-  title: LocaleMap;
+  title: string;
   rarity: Rarity;
 }
 
 export interface RootCard {
-  title?: LocaleMap;
+  title?: string;
   tags: Tag[];
   effects: CardEffect[];
+}
+
+export function getCardDocId(id: string, version: number): string {
+  return `${id}/${version}`;
 }

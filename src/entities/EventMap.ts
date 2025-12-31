@@ -1,4 +1,6 @@
-export interface EventMap {
+import { StoredRoot } from './Root';
+
+export interface EventMap extends StoredRoot {
   eventId: string;
   // map/a1b2c3d4e5
   id: string;

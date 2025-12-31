@@ -1,11 +1,11 @@
 import { Aspect } from './Aspect';
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface Scene {
+export interface Scene extends StoredRoot {
   // sc/a1b2c3d4e5
   id: string;
-  title: LocaleMap;
-  description: LocaleMap;
+  title: string;
+  description: string;
   paths: ScenePath[];
   createdAt: Date;
   updatedAt: Date;
@@ -13,8 +13,8 @@ export interface Scene {
 }
 
 export interface ScenePath {
-  title: LocaleMap;
-  description: LocaleMap;
+  title: string;
+  description: string;
   paths: ScenePath[] | null;
   trial: SceneTrial | null;
 }

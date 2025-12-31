@@ -1,11 +1,11 @@
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface EventQuest {
+export interface EventQuest extends StoredRoot {
   eventId: string;
   questId: string;
   apexId: string;
   rewardId: string;
-  title: LocaleMap;
+  title: string;
   threads: QuestThread[];
   questClaimed: {
     from: Date;
@@ -13,9 +13,9 @@ export interface EventQuest {
   };
   description: {
     // This text starts off the quest with context for the threads
-    start: LocaleMap;
+    start: string;
     // If all threads are completed for the player, show this text
-    end: LocaleMap;
+    end: string;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -23,8 +23,8 @@ export interface EventQuest {
 }
 
 export interface QuestThread {
-  title: LocaleMap;
-  objective: LocaleMap;
+  title: string;
+  objective: string;
   imageId?: string;
   // If this quest is a scene, what scene does it relate to
   sceneId?: string;
@@ -34,8 +34,12 @@ export interface QuestThread {
   tokenId: string;
   description: {
     // This text starts off the thread with context for the objective
-    start: LocaleMap;
+    start: string;
     // This text is shown upon completing the thread
-    end: LocaleMap;
+    end: string;
   };
+}
+
+export function getEventQuestId(eventId: string, questId: string): string {
+  return `eq/${eventId}/${questId}`;
 }

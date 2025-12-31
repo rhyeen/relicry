@@ -1,6 +1,5 @@
 import { Aspect } from './Aspect';
 import { Conditional } from './Conditional';
-import { LocaleMap } from './LocaleMap';
 import { Tag } from './Tag';
 
 export interface CardEffect {
@@ -10,7 +9,7 @@ export interface CardEffect {
     from: number;
     to: number;
   };
-  parts: LocaleMap<CardEffectPart[]>;
+  parts: CardEffectPart[];
 }
 
 export interface CardEffectPartText extends CardEffectPart {
@@ -53,7 +52,7 @@ export function defaultHideCardEffect(effect: CardEffect): CardEffect {
   return {
     conditionals: [...effect.conditionals],
     aura: auraRange,
-    parts: { en: [] },
+    parts: [],
   };
 }
 

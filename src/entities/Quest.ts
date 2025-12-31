@@ -1,21 +1,21 @@
 import { Faction } from './Faction';
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface VersionedQuest extends Quest, Version {}
+export interface VersionedQuest extends Quest, Version, StoredRoot {}
 
 export interface Version {
   season: number;
   archived?: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
   revealed: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
   published?: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
 }
 
@@ -32,5 +32,9 @@ export interface QuestToken {
   questId: string;
   version: number;
   // e.g. "Broken Sword"
-  token: LocaleMap;
+  token: string;
+}
+
+export function getQuestDocId(id: string, season: number): string {
+  return `${id}/${season}`;
 }

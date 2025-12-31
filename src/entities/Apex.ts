@@ -1,5 +1,6 @@
 import { CardEffect, defaultHideCardEffect, defineCardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
+import { StoredRoot } from './Root';
 
 export interface RootApex {
   // ax/a1b2c3
@@ -31,6 +32,7 @@ export interface DefinedApex extends RootApex {
 }
 
 export interface RootRevealedApex {
+  title: string;
   health: number | {
     from: number;
     to: number;
@@ -44,6 +46,7 @@ export interface RootRevealedApex {
 }
 
 export interface RootHiddenApex {
+  title?: string;
   health: {
     from: number;
     to: number;
@@ -59,7 +62,7 @@ export interface RootHiddenApex {
   effects: CardEffect[];
 }
 
-export interface StoredApex extends RootApex {
+export interface StoredApex extends RootApex, StoredRoot {
   revealed: RootRevealedApex;
   hidden: RootHiddenApex;
 }
@@ -101,4 +104,8 @@ export function defineHealth(health: number | { from: number; to: number }): num
 
 export function defineCardEffects(effects: CardEffect[]): CardEffect[] {
   return effects.map(effect => defineCardEffect(effect));
+}
+
+export function getApexDocId(id: string, version: number): string {
+  return `${id}/${version}`;
 }

@@ -1,22 +1,24 @@
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface IllustrationArt extends Art {
+export type Art = IllustrationArt | WritingArt;
+
+export interface IllustrationArt extends RootArt, StoredRoot {
   type: 'illustration';
   imageUrl: string;
 }
 
-export interface WritingArt extends Art {
+export interface WritingArt extends RootArt, StoredRoot {
   type: 'writing';
-  markdown: LocaleMap;
+  markdown: string;
 }
 
-export interface Art {
+export interface RootArt {
   // art/a1b2c3d4e5
   id: string;
   type: 'illustration' | 'writing';
   artistId: string;
-  title?: LocaleMap;
-  description?: LocaleMap;
+  title?: string;
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;

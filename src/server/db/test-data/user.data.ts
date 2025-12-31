@@ -1,0 +1,44 @@
+import { User } from '@/entities/User';
+
+export const userTestIds = {
+  user1: 'u/1111111111',
+  user2: 'u/1111111112',
+  user3: 'u/1111111113',
+}
+
+function defaultUser(id: string, displayName: string, email: string) : User {
+  return {
+    id,
+    firebaseUid: `test-firebase-${id}`,
+    displayName,
+    email,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    archivedAt: null,
+    adminRoles: [],
+  };
+}
+
+export function getExampleUser1(): User {
+  return defaultUser(
+    userTestIds.user1,
+    'Test User 1',
+    'testuser1@example.com',
+  );
+}
+
+export function getExampleUser2(): User {
+  return defaultUser(
+    userTestIds.user2,
+    'Test User 2',
+    'testuser2@example.com',
+  );
+}
+
+export function getExampleUser3(): User {
+  return defaultUser(
+    userTestIds.user3,
+    'Test User 3',
+    'testuser3@example.com',
+  );
+}

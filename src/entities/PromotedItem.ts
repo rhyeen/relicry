@@ -1,14 +1,14 @@
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface PromotedItem {
+export interface PromotedItem extends StoredRoot {
   // pi/a1b2c3d4e5
   id: string;
   artId: string | null;
   override: {
     // Order: override.title || art[artId]?.title
-    title?: LocaleMap;
+    title?: string;
     // Same order as title
-    description?: LocaleMap;
+    description?: string;
     imageUrl?: string;
   };
   price: {

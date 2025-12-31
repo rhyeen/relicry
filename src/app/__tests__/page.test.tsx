@@ -5,6 +5,6 @@ import Home from '../page';
 describe('Home page', () => {
   test('renders welcome message', () => {
     render(<Home />);
-    expect(screen.getByText('Welcome to Relicry')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to Relicry')).toBeDefined();
   });
 });

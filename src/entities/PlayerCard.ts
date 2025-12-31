@@ -1,6 +1,6 @@
-export interface PlayerCard {
-  // pc/${userId}/${cardVersion}/${cardId}
-  id: string;
+import { StoredRoot } from './Root';
+
+export interface PlayerCard extends StoredRoot {
   userId: string;
   cardId: string;
   cardVersion: number;
@@ -32,4 +32,8 @@ export enum PlayerCardOwnership {
   LookingToSell = 'LTS',
   LookingToBuy = 'LTB',
   WishList = 'WL',
+}
+
+export function getPlayerCardId(userId: string, cardId: string, cardVersion: number): string {
+  return `pc/${userId}/${cardId}/${cardVersion}`;
 }

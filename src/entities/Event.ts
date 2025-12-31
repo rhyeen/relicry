@@ -1,10 +1,10 @@
-import { LocaleMap } from './LocaleMap';
+import { StoredRoot } from './Root';
 
-export interface Event {
+export interface Event extends StoredRoot {
   // e/custom123; min-max after `e/` = 5-10 characters; case-insensitive alphanumeric
   id: string;
-  title: LocaleMap;
-  description: LocaleMap;
+  title: string;
+  description: string;
   running: {
     from: Date;
     to: Date;
