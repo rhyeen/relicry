@@ -16,7 +16,7 @@ export class CardDB extends RootDB<VersionedCard> {
 
   public async getBy(
     where: { field: string; op: FirebaseFirestore.WhereFilterOp; value: WhereValue }[],
-    sortBy: { field: string; direction: FirebaseFirestore.OrderByDirection }[],
+    sortBy: { field: string; direction: FirebaseFirestore.OrderByDirection },
     limit?: number,
   ): Promise<VersionedCard[]> {
     let query: FirebaseFirestore.Query = this.firestoreAdmin.collection(this.collectionName);
@@ -25,16 +25,14 @@ export class CardDB extends RootDB<VersionedCard> {
       query = query.where(condition.field, condition.op, this.conformWhereValue(condition.value));
     });
 
-    sortBy.forEach((sort) => {
-      query = query.orderBy(sort.field, sort.direction);
-    });
+    query = query.orderBy(sortBy.field, sortBy.direction);
 
     if (limit !== undefined) {
       query = query.limit(limit);
     }
 
     const querySnapshot = await query.get();
-    return querySnapshot.docs.map((doc) => doc.data() as VersionedCard);
+    return querySnapshot.docs.map((doc) => this.conformData(doc.data()) as VersionedCard);
   }
 
   protected getDocId(item: VersionedCard): string {

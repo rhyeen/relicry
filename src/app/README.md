@@ -34,7 +34,7 @@ Any `imageUrl` or `*ImageUrl` should be cached separately—according to best pr
 
 When requesting the entity from Firestore, assume the id is the docId. Note that the format of the id is listed as a comment above the id itself.
 
-#### `[id]/[card_version]`
+#### `/c/[id]/[card_version]`
 * **Entity**: VersionedGambitCard or VersionedDeckCard or VersionedFocusCard (Card.ts)
 * **Caching Strategy**: LONG
 * **Access Level**: PUBLIC

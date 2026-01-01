@@ -23,7 +23,7 @@ export class PlayerCardDB extends RootDB<PlayerCard> {
     if (querySnapshot.empty) {
       return [];
     }
-    return querySnapshot.docs.map(doc => doc.data() as PlayerCard);
+    return querySnapshot.docs.map(doc => this.conformData(doc.data()) as PlayerCard);
   }
 
   protected getDocId(item: PlayerCard): string {

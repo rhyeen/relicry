@@ -58,7 +58,7 @@ export interface GambitCard extends Card {
 }
 
 export interface Card extends RootCard {
-  // a1b2c3
+  // a1b2
   id: string;
   type: 'deck' | 'focus' | 'gambit';
   title: string;

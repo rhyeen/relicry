@@ -25,7 +25,7 @@ export class DeckDB extends RootDB<VersionedDeck> {
       return null;
     }
     const doc = querySnapshot.docs[0];
-    return doc.data() as VersionedDeck;
+    return this.conformData(doc.data()) as VersionedDeck;
   }
 
   protected getDocId(item: VersionedDeck): string {

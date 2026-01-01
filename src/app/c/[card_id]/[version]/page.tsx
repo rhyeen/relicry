@@ -1,21 +1,28 @@
-import { cache } from 'react';
-import { VersionedCard } from '@/entities/Card';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { CardDB } from '@/server/db/card.db';
+import { cardCache } from '@/server/cache/card.cache';
+import dynamicImport from 'next/dynamic';
+
+// NextJS-read exports
+export const dynamic = 'force-static';
+// @NOTE: Number needs to be a literal for NextJS to pick it up correctly
+export const revalidate = 21600; // 6 hours
 
 type Params = { version: string; card_id: string };
 
-const getCard = cache(async (version: string, id: string): Promise<VersionedCard | null> => {
-  return new CardDB(firestoreAdmin).getFromParts(id, parseInt(version, 10));
-});
+const CardCollectionAction = dynamicImport(
+  () => import('@/components/client/CardCollectionAction'),
+  {
+    ssr: false,
+    loading: () => <div>Loading...</div>
+  }
+);
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ): Promise<Metadata> {
   const { version, card_id } = await params;
-  const card = await getCard(version, card_id);
+  const card = await cardCache.get(card_id, version);
 
   if (!card) {
     return {
@@ -34,7 +41,7 @@ export default async function CardPage(
   { params }: { params: Promise<Params> }
 ) {
   const { version, card_id } = await params;
-  const card = await getCard(version, card_id);
+  const card = await cardCache.get(card_id, version);
 
   if (!card) notFound();
 
@@ -44,6 +51,7 @@ export default async function CardPage(
       <p>ID: {card.id}</p>
       <p>Version: {card.version}</p>
       <p>Title: {card.title}</p>
+      <CardCollectionAction cardId={card.id} />
     </div>
   );
 }

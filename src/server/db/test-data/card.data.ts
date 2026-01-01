@@ -8,9 +8,9 @@ import { artTestIds } from './art.data';
 import { artistTestIds } from './artist.data';
 
 export const cardTestIds = {
-  deckCard1: '111111',
-  deckCard2: '111112',
-  focusCard3: '111113',
+  deckCard1: '1111',
+  deckCard2: '1112',
+  focusCard3: '1113',
 }
 
 function defaultVersion(artId?: string, artistId?: string): Version {
