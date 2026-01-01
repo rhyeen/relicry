@@ -48,6 +48,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [ ] Denormalizing data so when we get things like a Card, we also get Art/Artist.
 - [ ] See if we can recreate the Card printable card itself with CSS
 - [ ] Get Apex design in place
+- [ ] Incorporate caching model in all components, not just Card
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization
