@@ -1,20 +1,23 @@
-import { StoredImage } from '@/components/client/StoredImage';
+import StoredImageSlot from '@/components/client/StoredImage.slot';
 import { ImageSize } from '@/entities/Image';
-import { artCache } from '@/server/cache/art.cache';
+import { LOCAL_CACHE_TAG } from '@/lib/local';
+import { getArt } from '@/server/cache/art.cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
-
-// NextJS-read exports
-export const dynamic = 'force-static';
-// @NOTE: Number needs to be a literal for NextJS to pick it up correctly
-export const revalidate = 3600; // 1 hours
 
 type Params = { id: string };
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ) {
+  'use cache';
   const { id } = await params;
-  const art = await artCache.get(id);
+
+  cacheLife('unlikelyChange');
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(`m/art/${id}`);
+
+  const art = await getArt(id);
 
   if (!art) {
     return {
@@ -32,8 +35,14 @@ export async function generateMetadata(
 export default async function ArtPage(
   { params }: { params: Promise<Params> }
 ) {
+  'use cache';
   const { id } = await params;
-  const art = await artCache.get(id);
+
+  cacheLife('unlikelyChange');
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(`p/art/${id}`);
+
+  const art = await getArt(id);
 
   if (!art) notFound();
 
@@ -44,7 +53,7 @@ export default async function ArtPage(
       <p>Type: {art.type}</p>
       <p>Description: {art.description}</p>
       {art.type === 'illustration' && art.image[ImageSize.CardFull] &&
-        <StoredImage
+        <StoredImageSlot
           image={art.image[ImageSize.CardFull]}
           size={ImageSize.CardFull}
           alt={art.title}

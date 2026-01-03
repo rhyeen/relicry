@@ -1,21 +1,35 @@
-import 'server-only';
+import "server-only";
+
+import { firestoreAdmin } from "@/lib/firebaseAdmin";
+import { LOCAL_CACHE_TAG } from "@/lib/local";
+import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
 import { Art } from '@/entities/Art';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { ArtDB } from '../db/art.db';
-import { CacheLifeValue, RootCache } from './root.cache';
+import { ArtDB } from '@/server/db/art.db';
 
-class ArtCache extends RootCache<Art, [string]> {
-  protected getCacheTag(id: string): string {
-    return `art/${id}`;
-  }
+export const artTags = {
+  data: (id: string) => `d/art/${id}`,
+  page: (id: string) => `p/art/${id}`,
+  meta: (id: string) => `m/art/${id}`,
+};
 
-  protected cacheLifeValue(): CacheLifeValue {
-    return 'unlikelyChange';
-  }
+export async function getArt(id: string): Promise<Art | null> {
+  "use cache";
+  
+  cacheLife('unlikelyChange'); // or your custom profile string
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(artTags.data(id));
 
-  protected getFromParts(id: string): Promise<Art | null> {
-    return new ArtDB(firestoreAdmin).getFromParts(id);
-  }
+  return new ArtDB(firestoreAdmin).getFromParts(id);
 }
 
-export const artCache = new ArtCache();
+export async function invalidateArtNow(id: string): Promise<void> {
+  updateTag(artTags.data(id));
+  updateTag(artTags.page(id));
+  updateTag(artTags.meta(id));
+}
+
+export async function invalidateArtSoon(id: string): Promise<void> {
+  revalidateTag(artTags.data(id), "max");
+  revalidateTag(artTags.page(id), "max");
+  revalidateTag(artTags.meta(id), "max");
+}

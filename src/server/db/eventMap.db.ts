@@ -1,7 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { EventMap } from '@/entities/EventMap';
-import { conformId } from '@/lib/firestoreConform';
+import { EventMap, getEventMapId } from '@/entities/EventMap';
 
 export class EventMapDB extends RootDB<EventMap> {
   constructor(
@@ -10,11 +9,15 @@ export class EventMapDB extends RootDB<EventMap> {
     super(firestoreAdmin, 'eventMaps');
   }
 
+  protected prefixId(id: string): string {
+    return getEventMapId(id);
+  }
+
   public getFromParts(id: string): Promise<EventMap | null> {
     return this.get(id);
   }
 
-  protected getDocId(item: EventMap): string {
-    return conformId(item.id);
+  protected getUnsafeDocId(item: EventMap): string {
+    return item.id;
   }
 }

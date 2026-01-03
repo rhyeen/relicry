@@ -1,16 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cardCache } from '@/server/cache/card.cache';
-import dynamicImport from 'next/dynamic';
-
-// NextJS-read exports
-export const dynamic = 'force-static';
-// @NOTE: Number needs to be a literal for NextJS to pick it up correctly
-export const revalidate = 21600; // 6 hours
+import dynamic from 'next/dynamic';
+import { cacheLife, cacheTag } from 'next/cache';
+import { LOCAL_CACHE_TAG } from '@/lib/local';
 
 type Params = { version: string; card_id: string };
 
-const CardCollectionAction = dynamicImport(
+const CardCollectionAction = dynamic(
   () => import('@/components/client/CardCollectionAction'),
   {
     ssr: false,
@@ -21,7 +18,13 @@ const CardCollectionAction = dynamicImport(
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ): Promise<Metadata> {
+  'use cache';
   const { version, card_id } = await params;
+
+  cacheLife(cardCache.cacheLifeValue() as Parameters<typeof cacheLife>[0]);
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(cardCache.getMetadataTag(card_id, version));
+
   const card = await cardCache.get(card_id, version);
 
   if (!card) {
@@ -40,7 +43,13 @@ export async function generateMetadata(
 export default async function CardPage(
   { params }: { params: Promise<Params> }
 ) {
+  'use cache';
   const { version, card_id } = await params;
+
+  cacheLife(cardCache.cacheLifeValue() as Parameters<typeof cacheLife>[0]);
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(cardCache.getPageTag(card_id, version));
+
   const card = await cardCache.get(card_id, version);
 
   if (!card) notFound();

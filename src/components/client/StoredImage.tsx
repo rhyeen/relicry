@@ -40,7 +40,7 @@ type Props = {
   eager?: boolean; // use true only for above-the-fold “hero” images
 };
 
-export function StoredImage({
+export default function StoredImage({
   image,
   size,
   alt = 'Untitled Image',

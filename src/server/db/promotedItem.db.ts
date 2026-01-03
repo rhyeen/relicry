@@ -1,7 +1,6 @@
 import 'server-only';
-import { PromotedItem } from '@/entities/PromotedItem';
+import { getPromotedItemId, PromotedItem } from '@/entities/PromotedItem';
 import { RootDB } from './root.db';
-import { conformId } from '@/lib/firestoreConform';
 
 export class PromotedItemDB extends RootDB<PromotedItem> {
   constructor(
@@ -10,11 +9,15 @@ export class PromotedItemDB extends RootDB<PromotedItem> {
     super(firestoreAdmin, 'promotedItems');
   }
 
+  protected prefixId(id: string): string {
+    return getPromotedItemId(id);
+  }
+
   public getFromParts(id: string): Promise<PromotedItem | null> {
     return this.get(id);
   }
 
-  protected getDocId(item: PromotedItem): string {
-    return conformId(item.id);
+  protected getUnsafeDocId(item: PromotedItem): string {
+    return item.id;
   }
 }

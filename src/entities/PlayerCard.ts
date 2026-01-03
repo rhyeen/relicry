@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface PlayerCard extends StoredRoot {
   userId: string;
@@ -35,5 +35,5 @@ export enum PlayerCardOwnership {
 }
 
 export function getPlayerCardId(userId: string, cardId: string, cardVersion: number): string {
-  return `pc/${userId}/${cardId}/${cardVersion}`;
+  return prefixId('pc', `${userId}/${cardId}/${cardVersion}`);
 }

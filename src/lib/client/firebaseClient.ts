@@ -1,3 +1,5 @@
+"use client";
+
 /**
   Firebase client helpers optimized for small initial bundles:
 

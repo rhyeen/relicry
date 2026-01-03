@@ -1,7 +1,7 @@
 // Heralds are vendors or others who handle quest threads or are
 // otherwise associated with events in some way, like card artists.
 
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface Herald extends StoredRoot {
   // hrd/a1b2c3d4e5
@@ -31,4 +31,8 @@ export interface Herald extends StoredRoot {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+}
+
+export function getHeraldId(id: string): string {
+  return prefixId('hrd', id);
 }

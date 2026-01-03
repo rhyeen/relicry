@@ -69,9 +69,9 @@ const populateLocalCards = async () => {
 
 const populateLocalArt = async () => {
   const images = await Promise.all([
-    seedImage({ id: 'art1', color: '#FF5733' }),
-    seedImage({ id: 'art2', color: '#33FF57' }),
-    seedImage({ id: 'art3', color: '#3357FF' }),
+    seedImage({ id: 'art1', color: '#ff8c3fff' }),
+    seedImage({ id: 'art2', color: '#0cbd9dff' }),
+    seedImage({ id: 'art3', color: '#b133ffff' }),
   ]);
   
   await new ArtDB(firestoreAdmin).batchSet([

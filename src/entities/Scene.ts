@@ -1,5 +1,5 @@
 import { Aspect } from './Aspect';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface Scene extends StoredRoot {
   // sc/a1b2c3d4e5
@@ -50,4 +50,8 @@ export interface SceneSkillTrialRequirement {
   type: 'aspect' | 'card' | 'damage' | 'quell' | 'scrap';
   threshold: number;
   cardLimit?: number;
+}
+
+export function getSceneId(id: string): string {
+  return prefixId('sc', id);
 }

@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface EventMap extends StoredRoot {
   eventId: string;
@@ -10,4 +10,8 @@ export interface EventMap extends StoredRoot {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+}
+
+export function getEventMapId(id: string): string {
+  return prefixId('map', id);
 }

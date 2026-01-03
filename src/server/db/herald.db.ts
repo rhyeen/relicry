@@ -1,7 +1,6 @@
 import 'server-only';
-import { Herald } from '@/entities/Herald';
+import { getHeraldId, Herald } from '@/entities/Herald';
 import { RootDB } from './root.db';
-import { conformId } from '@/lib/firestoreConform';
 
 export class HeraldDB extends RootDB<Herald> {
   constructor(
@@ -10,11 +9,15 @@ export class HeraldDB extends RootDB<Herald> {
     super(firestoreAdmin, 'heralds');
   }
 
+  protected prefixId(id: string): string {
+    return getHeraldId(id);
+  }
+
   public getFromParts(id: string): Promise<Herald | null> {
     return this.get(id);
   }
 
-  protected getDocId(item: Herald): string {
-    return conformId(item.id);
+  protected getUnsafeDocId(item: Herald): string {
+    return getHeraldId(item.id);
   }
 }

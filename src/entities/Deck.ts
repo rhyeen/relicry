@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface Deck {
   // dk/a1b2c3d4e5
@@ -17,6 +17,10 @@ export interface VersionedDeck extends Deck, StoredRoot {
   version: number;
 }
 
+export function getDeckId(id: string): string {
+  return prefixId('dk', id);
+}
+
 export function getDeckDocId(id: string, version: number): string {
-  return `${id}/${version}`;
+  return `${getDeckId(id)}/${version}`;
 }

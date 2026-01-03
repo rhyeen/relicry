@@ -1,4 +1,4 @@
-import { conformId } from '@/lib/firestoreConform';
+import { conformDocId } from '@/lib/firestoreConform';
 import { DocumentData, Firestore, GeoPoint, Timestamp } from 'firebase-admin/firestore';
 
 export type WhereValue = string | number | boolean | Date;
@@ -14,24 +14,28 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     this.collectionName = collectionName;
   }
 
+  /**
+   * Many ids may only contain the unique portion, if so, prefix it here.
+   */
+  protected abstract prefixId(id: string): string;
+
   public async batchSet(items: T[]): Promise<void> {
     const collection = this.firestoreAdmin.collection(this.collectionName);
     const batch = this.firestoreAdmin.batch();
     items.forEach((item) => {
-      batch.set(collection.doc(conformId(this.getDocId(item))), item);
+      batch.set(collection.doc(conformDocId(this.prefixId(this.getUnsafeDocId(item)))), item);
     });
     await batch.commit();
   }
 
   public refresh(item: T): Promise<T | null> {
-    const docId = this.getDocId(item);
-    return this.get(docId);
+    return this.get(this.getUnsafeDocId(item));
   }
 
   public get(docId: string): Promise<T | null> {
     return this.firestoreAdmin
       .collection(this.collectionName)
-      .doc(conformId(docId))
+      .doc(conformDocId(this.prefixId((docId))))
       .get()
       .then((doc) => (doc.exists ? (this.conformData(doc.data()) as T) : null));
   }
@@ -39,7 +43,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
   public async delete(docId: string): Promise<void> {
     await this.firestoreAdmin
       .collection(this.collectionName)
-      .doc(conformId(docId))
+      .doc(conformDocId(this.prefixId(docId)))
       .delete();
   }
 
@@ -50,7 +54,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     }
     await this.firestoreAdmin
       .collection(this.collectionName)
-      .doc(conformId(this.getDocId(item)))
+      .doc(conformDocId(this.prefixId(this.getUnsafeDocId(item))))
       .set(item);
     return item;
   }
@@ -62,11 +66,11 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     }
     await this.firestoreAdmin
       .collection(this.collectionName)
-      .doc(conformId(docId))
+      .doc(conformDocId(this.prefixId(docId)))
       .update(data);
   }
 
-  protected abstract getDocId(item: T): string;
+  protected abstract getUnsafeDocId(item: T): string;
 
   public abstract getFromParts(...parts: unknown[]): Promise<T | null>;
 

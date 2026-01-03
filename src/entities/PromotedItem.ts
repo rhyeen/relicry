@@ -1,5 +1,5 @@
 import { ImageSize } from './Image';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface PromotedItem extends StoredRoot {
   // pi/a1b2c3d4e5
@@ -27,4 +27,8 @@ export interface PromotedItem extends StoredRoot {
 
 export enum Currency {
   USD = 'USD',
+}
+
+export function getPromotedItemId(id: string): string {
+  return prefixId('pi', id);
 }

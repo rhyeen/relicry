@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 import { ImageSize, ImageStorage } from './Image';
 
 export type Art = IllustrationArt | WritingArt;
@@ -27,4 +27,8 @@ export interface RootArt {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+}
+
+export function getArtId(id: string): string {
+  return prefixId('art', id);
 }

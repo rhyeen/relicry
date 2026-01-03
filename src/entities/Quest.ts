@@ -1,5 +1,5 @@
 import { Faction } from './Faction';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface VersionedQuest extends Quest, Version, StoredRoot {}
 
@@ -35,6 +35,10 @@ export interface QuestToken {
   token: string;
 }
 
+export function getQuestId(id: string): string {
+  return prefixId('q', id);
+}
+
 export function getQuestDocId(id: string, season: number): string {
-  return `${id}/${season}`;
+  return `${getQuestId(id)}/${season}`;
 }

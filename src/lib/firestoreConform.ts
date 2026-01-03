@@ -1,3 +1,3 @@
-export function conformId(id: string): string {
+export function conformDocId(id: string): string {
   return id.replace(/\s+/g, '').toLowerCase().replace(/\//g, '.');
 }

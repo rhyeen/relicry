@@ -1,6 +1,6 @@
 import { AdminRole } from './AdminRole';
 import { ImageSize, ImageStorage } from './Image';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface User extends StoredRoot {
   // u/a1b2c3d4e5
@@ -16,4 +16,8 @@ export interface User extends StoredRoot {
     [ImageSize.Banner]?: ImageStorage;
     [ImageSize.Thumb]?: ImageStorage;
   };
+}
+
+export function getUserId(id: string): string {
+  return prefixId('u', id);
 }

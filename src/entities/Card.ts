@@ -2,7 +2,7 @@ import { Aspect } from './Aspect';
 import { CardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
 import { Rarity } from './Rarity';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 import { Tag } from './Tag';
 
 export type VersionedCard = VersionedDeckCard | VersionedFocusCard | VersionedGambitCard;
@@ -58,7 +58,7 @@ export interface GambitCard extends Card {
 }
 
 export interface Card extends RootCard {
-  // a1b2
+  // c/a1b2
   id: string;
   type: 'deck' | 'focus' | 'gambit';
   title: string;
@@ -71,6 +71,10 @@ export interface RootCard {
   effects: CardEffect[];
 }
 
+export function getCardId(id: string): string {
+  return prefixId('c', id);
+}
+
 export function getCardDocId(id: string, version: number): string {
-  return `${id}/${version}`;
+  return `${getCardId(id)}/${version}`;
 }

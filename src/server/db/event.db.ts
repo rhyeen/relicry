@@ -1,7 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { Event } from '@/entities/Event';
-import { conformId } from '@/lib/firestoreConform';
+import { Event, getEventId } from '@/entities/Event';
 
 export class EventDB extends RootDB<Event> {
   constructor(
@@ -10,11 +9,15 @@ export class EventDB extends RootDB<Event> {
     super(firestoreAdmin, 'events');
   }
 
+  protected prefixId(id: string): string {
+    return getEventId(id);
+  }
+
   public getFromParts(id: string): Promise<Event | null> {
     return this.get(id);
   }
 
-  protected getDocId(item: Event): string {
-    return conformId(item.id);
+  protected getUnsafeDocId(item: Event): string {
+    return item.id;
   }
 }

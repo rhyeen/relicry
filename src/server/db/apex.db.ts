@@ -1,7 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { getApexDocId, StoredApex } from '@/entities/Apex';
-import { conformId } from '@/lib/firestoreConform';
+import { getApexDocId, getApexId, StoredApex } from '@/entities/Apex';
 
 export class ApexDB extends RootDB<StoredApex> {
   constructor(
@@ -10,11 +9,15 @@ export class ApexDB extends RootDB<StoredApex> {
     super(firestoreAdmin, 'apex');
   }
 
+  protected prefixId(id: string): string {
+    return getApexId(id);
+  }
+
   public getFromParts(id: string, version: number): Promise<StoredApex | null> {
     return this.get(getApexDocId(id, version));
   }
 
-  protected getDocId(item: StoredApex): string {
-    return conformId(getApexDocId(item.id, item.version));
+  protected getUnsafeDocId(item: StoredApex): string {
+    return getApexDocId(item.id, item.version);
   }
 }

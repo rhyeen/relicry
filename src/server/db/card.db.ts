@@ -1,7 +1,6 @@
 import 'server-only';
 import { RootDB, WhereValue } from './root.db';
-import { getCardDocId, VersionedCard } from '@/entities/Card';
-import { conformId } from '@/lib/firestoreConform';
+import { getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
 
 export class CardDB extends RootDB<VersionedCard> {
   constructor(
@@ -10,6 +9,10 @@ export class CardDB extends RootDB<VersionedCard> {
     super(firestoreAdmin, 'cards');
   }
 
+  protected prefixId(id: string): string {
+    return getCardId(id);
+  }
+  
   public getFromParts(id: string, version: number): Promise<VersionedCard | null> {
     return this.get(getCardDocId(id, version));
   }
@@ -35,7 +38,7 @@ export class CardDB extends RootDB<VersionedCard> {
     return querySnapshot.docs.map((doc) => this.conformData(doc.data()) as VersionedCard);
   }
 
-  protected getDocId(item: VersionedCard): string {
-    return conformId(getCardDocId(item.id, item.version));
+  protected getUnsafeDocId(item: VersionedCard): string {
+    return getCardDocId(item.id, item.version);
   }
 }

@@ -1,7 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { Artist } from '@/entities/Artist';
-import { conformId } from '@/lib/firestoreConform';
+import { Artist, getArtistId } from '@/entities/Artist';
 
 export class ArtistDB extends RootDB<Artist> {
   constructor(
@@ -10,11 +9,15 @@ export class ArtistDB extends RootDB<Artist> {
     super(firestoreAdmin, 'artists');
   }
 
+  protected prefixId(id: string): string {
+    return getArtistId(id);
+  }
+
   public getFromParts(id: string): Promise<Artist | null> {
     return this.get(id);
   }
 
-  protected getDocId(item: Artist): string {
-    return conformId(item.id);
+  protected getUnsafeDocId(item: Artist): string {
+    return item.id
   }
 }

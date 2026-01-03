@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface TrackEventQuest extends StoredRoot {
   eventId: string;
@@ -22,5 +22,5 @@ export interface TrackEventQuest extends StoredRoot {
 }
 
 export function getTrackEventQuestId(userId: string, eventId: string, questId: string): string {
-  return `teq/${userId}/${eventId}/${questId}`;
+  return prefixId('teq', `${userId}/${eventId}/${questId}`);
 }

@@ -1,4 +1,4 @@
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface Artist extends StoredRoot {
   // @NOTE: We have a distinct Artist ID as an artist may be a team or need to be transfered
@@ -23,4 +23,8 @@ export enum ArtistTag {
   CardAuthor = 'card_author',
   Illustrator = 'illustrator',
   Author = 'author',
+}
+
+export function getArtistId(id: string): string {
+  return prefixId('ast', id);
 }

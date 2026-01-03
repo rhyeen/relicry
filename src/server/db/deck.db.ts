@@ -1,13 +1,16 @@
 import 'server-only';
-import { getDeckDocId, VersionedDeck } from '@/entities/Deck';
+import { getDeckDocId, getDeckId, VersionedDeck } from '@/entities/Deck';
 import { RootDB } from './root.db';
-import { conformId } from '@/lib/firestoreConform';
 
 export class DeckDB extends RootDB<VersionedDeck> {
   constructor(
     firestoreAdmin: FirebaseFirestore.Firestore,
   ) {
     super(firestoreAdmin, 'decks');
+  }
+
+  protected prefixId(id: string): string {
+    return getDeckId(id);
   }
 
   public getFromParts(id: string, version: number): Promise<VersionedDeck | null> {
@@ -17,7 +20,7 @@ export class DeckDB extends RootDB<VersionedDeck> {
   public async getLatest(id: string): Promise<VersionedDeck | null> {
     const querySnapshot = await this.firestoreAdmin
       .collection(this.collectionName)
-      .where('id', '==', id)
+      .where('id', '==', this.prefixId(id))
       .orderBy('version', 'desc')
       .limit(1)
       .get();
@@ -28,7 +31,7 @@ export class DeckDB extends RootDB<VersionedDeck> {
     return this.conformData(doc.data()) as VersionedDeck;
   }
 
-  protected getDocId(item: VersionedDeck): string {
-    return conformId(getDeckDocId(item.id, item.version));
+  protected getUnsafeDocId(item: VersionedDeck): string {
+    return getDeckDocId(item.id, item.version);
   }
 }

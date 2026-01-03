@@ -1,13 +1,18 @@
 import 'server-only';
 import { getPlayerCardId, PlayerCard } from '@/entities/PlayerCard';
 import { RootDB } from './root.db';
-import { conformId } from '@/lib/firestoreConform';
+import { getUserId } from '@/entities/User';
 
 export class PlayerCardDB extends RootDB<PlayerCard> {
   constructor(
     firestoreAdmin: FirebaseFirestore.Firestore,
   ) {
     super(firestoreAdmin, 'playerCards');
+  }
+
+  protected prefixId(id: string): string {
+    // @NOTE: Always performed as getPlayerCardId
+    return id;
   }
 
   public getFromParts(userId: string, cardId: string, cardVersion: number): Promise<PlayerCard | null> {
@@ -17,7 +22,7 @@ export class PlayerCardDB extends RootDB<PlayerCard> {
   public async getByUserId(userId: string): Promise<PlayerCard[]> {
     const querySnapshot = await this.firestoreAdmin
       .collection(this.collectionName)
-      .where('userId', '==', userId)
+      .where('userId', '==', getUserId(userId))
       .limit(100)
       .get();
     if (querySnapshot.empty) {
@@ -26,7 +31,7 @@ export class PlayerCardDB extends RootDB<PlayerCard> {
     return querySnapshot.docs.map(doc => this.conformData(doc.data()) as PlayerCard);
   }
 
-  protected getDocId(item: PlayerCard): string {
-    return conformId(getPlayerCardId(item.userId, item.cardId, item.cardVersion));
+  protected getUnsafeDocId(item: PlayerCard): string {
+    return getPlayerCardId(item.userId, item.cardId, item.cardVersion);
   }
 }

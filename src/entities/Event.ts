@@ -1,5 +1,5 @@
 import { ImageSize, ImageStorage } from './Image';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface Event extends StoredRoot {
   // e/custom123; min-max after `e/` = 5-10 characters; case-insensitive alphanumeric
@@ -18,4 +18,8 @@ export interface Event extends StoredRoot {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+}
+
+export function getEventId(id: string): string {
+  return prefixId('e', id);
 }

@@ -1,40 +1,69 @@
-import 'server-only';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
-import { LOCAL_CACHE_TAG } from '@/lib/local';
+import "server-only";
+import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
+import { LOCAL_CACHE_TAG } from "@/lib/local";
 
-export type CacheLifeValue = Parameters<typeof cacheLife>[0] | 'noChange' | 'unlikelyChange' | 'expectedChangeLowConsequenceIfStale';
+export type CacheLifeValue =
+  | Parameters<typeof cacheLife>[0]
+  | "noChange"
+  | "unlikelyChange"
+  | "expectedChangeLowConsequenceIfStale";
 
-export abstract class RootCache<T, TArgs extends readonly unknown[]> {
-  protected fsAdmin: FirebaseFirestore.Firestore = firestoreAdmin;
+export type CacheHandle<T, TArgs extends readonly unknown[]> = {
+  get: (...args: TArgs) => Promise<T | null>;
+  getDataTag: (...args: TArgs) => string;
+  getPageTag: (...args: TArgs) => string;
+  getMetadataTag: (...args: TArgs) => string;
+  invalidateNow: (...args: TArgs) => Promise<void>;
+  invalidateSoon: (...args: TArgs) => Promise<void>;
+  cacheLifeValue: () => CacheLifeValue;
+};
 
-  protected abstract getCacheTag(...args: TArgs): string;
+export function asNumber(value: number | string): number {
+  return typeof value === "number" ? value : parseInt(value, 10);
+}
 
-  protected abstract cacheLifeValue(): CacheLifeValue;
+/**
+ * Creates a cached data accessor + tag helpers without using `this` anywhere.
+ * This is the most compatible pattern with Next's "use cache" transform.
+ */
+export function createCache<T, TArgs extends readonly unknown[]>(opts: {
+  getCacheTag: (...args: TArgs) => string;
+  cacheLifeValue: () => CacheLifeValue;
+  getFromParts: (...args: TArgs) => Promise<T | null>;
+}): CacheHandle<T, TArgs> {
+  const getDataTag = (...args: TArgs) => `d/${opts.getCacheTag(...args)}`;
+  const getPageTag = (...args: TArgs) => `p/${opts.getCacheTag(...args)}`;
+  const getMetadataTag = (...args: TArgs) => `m/${opts.getCacheTag(...args)}`;
 
-  protected asNumber(value: number | string): number {
-    const n = typeof value === 'string' ? Number.parseInt(value, 10) : value;
-    if (!Number.isFinite(n)) throw new Error(`Invalid numeric value: ${value}`);
-    return n;
-  }
+  const get = async (...args: TArgs): Promise<T | null> => {
+    "use cache";
 
-  protected abstract getFromParts(...args: TArgs): Promise<T | null>;
-
-  public async get(...args: TArgs): Promise<T | null> {
-    'use cache';
-    const tag = this.getCacheTag(...args);
-    const cacheLifeValue = this.cacheLifeValue();
-    cacheLife(cacheLifeValue as Parameters<typeof cacheLife>[0]);
+    cacheLife(opts.cacheLifeValue() as Parameters<typeof cacheLife>[0]);
     cacheTag(LOCAL_CACHE_TAG);
-    cacheTag(tag);
-    return await this.getFromParts(...args);
-  }
+    cacheTag(getDataTag(...args));
 
-  public async invalidateNow(...args: TArgs): Promise<void> {
-    updateTag(this.getCacheTag(...args));
-  }
+    return await opts.getFromParts(...args);
+  };
 
-  public async invalidateSoon(...args: TArgs): Promise<void> {
-    revalidateTag(this.getCacheTag(...args), 'max');
-  }
+  const invalidateNow = async (...args: TArgs) => {
+    updateTag(getDataTag(...args));
+    updateTag(getPageTag(...args));
+    updateTag(getMetadataTag(...args));
+  };
+
+  const invalidateSoon = async (...args: TArgs) => {
+    revalidateTag(getDataTag(...args), "max");
+    revalidateTag(getPageTag(...args), "max");
+    revalidateTag(getMetadataTag(...args), "max");
+  };
+
+  return {
+    get,
+    getDataTag,
+    getPageTag,
+    getMetadataTag,
+    invalidateNow,
+    invalidateSoon,
+    cacheLifeValue: opts.cacheLifeValue,
+  };
 }

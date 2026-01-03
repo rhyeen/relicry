@@ -1,6 +1,6 @@
 import { CardEffect, defaultHideCardEffect, defineCardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
-import { StoredRoot } from './Root';
+import { prefixId, StoredRoot } from './Root';
 
 export interface RootApex {
   // ax/a1b2c3
@@ -106,6 +106,10 @@ export function defineCardEffects(effects: CardEffect[]): CardEffect[] {
   return effects.map(effect => defineCardEffect(effect));
 }
 
+export function getApexId(id: string): string {
+  return prefixId('ax', id);
+}
+
 export function getApexDocId(id: string, version: number): string {
-  return `${id}/${version}`;
+  return `${getApexId(id)}/${version}`;
 }
