@@ -1,8 +1,8 @@
-import "server-only";
+import 'server-only';
 
-import { firestoreAdmin } from "@/lib/firebaseAdmin";
-import { LOCAL_CACHE_TAG } from "@/lib/local";
-import { cacheLife, cacheTag, revalidateTag, updateTag } from "next/cache";
+import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { LOCAL_CACHE_TAG } from '@/lib/local';
+import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Art } from '@/entities/Art';
 import { ArtDB } from '@/server/db/art.db';
 
@@ -12,10 +12,12 @@ export const artTags = {
   meta: (id: string) => `m/art/${id}`,
 };
 
+export const ART_LIFE = 'unlikelyChange';
+
 export async function getArt(id: string): Promise<Art | null> {
-  "use cache";
+  'use cache';
   
-  cacheLife('unlikelyChange'); // or your custom profile string
+  cacheLife(ART_LIFE);
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(artTags.data(id));
 
@@ -29,7 +31,7 @@ export async function invalidateArtNow(id: string): Promise<void> {
 }
 
 export async function invalidateArtSoon(id: string): Promise<void> {
-  revalidateTag(artTags.data(id), "max");
-  revalidateTag(artTags.page(id), "max");
-  revalidateTag(artTags.meta(id), "max");
+  revalidateTag(artTags.data(id), 'max');
+  revalidateTag(artTags.page(id), 'max');
+  revalidateTag(artTags.meta(id), 'max');
 }

@@ -1,7 +1,7 @@
 import StoredImageSlot from '@/components/client/StoredImage.slot';
 import { ImageSize } from '@/entities/Image';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
-import { getArt } from '@/server/cache/art.cache';
+import { ART_LIFE, artTags, getArt } from '@/server/cache/art.cache';
 import { cacheLife, cacheTag } from 'next/cache';
 import { notFound } from 'next/navigation';
 
@@ -13,9 +13,9 @@ export async function generateMetadata(
   'use cache';
   const { id } = await params;
 
-  cacheLife('unlikelyChange');
+  cacheLife(ART_LIFE);
   cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(`m/art/${id}`);
+  cacheTag(artTags.meta(id));
 
   const art = await getArt(id);
 
@@ -38,9 +38,9 @@ export default async function ArtPage(
   'use cache';
   const { id } = await params;
 
-  cacheLife('unlikelyChange');
+  cacheLife(ART_LIFE);
   cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(`p/art/${id}`);
+  cacheTag(artTags.page(id));
 
   const art = await getArt(id);
 
