@@ -4,9 +4,9 @@ import { eventTestIds } from './event.data';
 import { eventMapTestIds } from './eventMap.data';
 
 export const heraldTestIds = {
-  herald1: 'hrd/1111111111',
-  herald2: 'hrd/1111111112',
-  herald3: 'hrd/1111111113',
+  herald1: 'hrd/0000000001',
+  herald2: 'hrd/0000000002',
+  herald3: 'hrd/0000000003',
 }
 
 function defaultHerald(id: string, userId: string, eventId: string, mapId: string): Herald {

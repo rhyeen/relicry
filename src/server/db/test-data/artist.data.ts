@@ -2,9 +2,9 @@ import { Artist } from '@/entities/Artist';
 import { userTestIds } from './user.data';
 
 export const artistTestIds = {
-  artist1: 'ast/1111111111',
-  artist2: 'ast/1111111112',
-  artist3: 'ast/1111111113',
+  artist1: 'ast/0000000001',
+  artist2: 'ast/0000000002',
+  artist3: 'ast/0000000003',
 };
 
 function defaultArtist(id: string, userId: string, name: string): Artist {

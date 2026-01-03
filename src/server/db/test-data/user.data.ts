@@ -1,9 +1,9 @@
 import { User } from '@/entities/User';
 
 export const userTestIds = {
-  user1: 'u/1111111111',
-  user2: 'u/1111111112',
-  user3: 'u/1111111113',
+  user1: 'u/0000000001',
+  user2: 'u/0000000002',
+  user3: 'u/0000000003',
 }
 
 function defaultUser(id: string, displayName: string, email: string) : User {

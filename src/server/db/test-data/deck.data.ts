@@ -2,9 +2,9 @@ import { VersionedDeck } from '@/entities/Deck';
 import { userTestIds } from './user.data';
 
 export const deckTestIds = {
-  deck1: 'dk/1111111111',
-  deck2: 'dk/2222222222',
-  deck3: 'dk/3333333333',
+  deck1: 'dk/0000000001',
+  deck2: 'dk/0000000002',
+  deck3: 'dk/0000000003',
 }
 
 function defaultDeck(id: string, name: string, userId: string): VersionedDeck {

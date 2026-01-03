@@ -1,10 +1,15 @@
 import { StoredRoot } from './Root';
+import { ImageSize, ImageStorage } from './Image';
 
 export type Art = IllustrationArt | WritingArt;
 
 export interface IllustrationArt extends RootArt, StoredRoot {
   type: 'illustration';
-  imageUrl: string;
+  image: {
+    [ImageSize.Card]?: ImageStorage;
+    [ImageSize.CardPreview]?: ImageStorage;
+    [ImageSize.CardFull]?: ImageStorage;
+  };
 }
 
 export interface WritingArt extends RootArt, StoredRoot {

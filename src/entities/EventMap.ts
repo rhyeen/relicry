@@ -4,7 +4,7 @@ export interface EventMap extends StoredRoot {
   eventId: string;
   // map/a1b2c3d4e5
   id: string;
-  imageUrl: string;
+  imagePath: string;
   imageWidthPx: number;
   imageHeightPx: number;
   createdAt: Date;

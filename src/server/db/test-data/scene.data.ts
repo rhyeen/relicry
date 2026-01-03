@@ -1,9 +1,9 @@
 import { Scene, ScenePath } from '@/entities/Scene';
 
 export const sceneTestIds = {
-  scene1: 'sc/1111111111',
-  scene2: 'sc/1111111112',
-  scene3: 'sc/1111111113',
+  scene1: 'sc/0000000001',
+  scene2: 'sc/0000000002',
+  scene3: 'sc/0000000003',
 };
 
 function defaultScene(

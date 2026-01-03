@@ -1,3 +1,4 @@
+import { ImageSize, ImageStorage } from './Image';
 import { StoredRoot } from './Root';
 
 export interface Event extends StoredRoot {
@@ -9,7 +10,10 @@ export interface Event extends StoredRoot {
     from: Date;
     to: Date;
   };
-  imageUrl?: string;
+  image?: {
+    [ImageSize.Banner]?: ImageStorage;
+    [ImageSize.Thumb]?: ImageStorage;
+  };
   // See EventMap for map details
   createdAt: Date;
   updatedAt: Date;

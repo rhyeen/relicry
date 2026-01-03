@@ -1,20 +1,20 @@
-import { Art } from '@/entities/Art';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { ArtDB } from '@/server/db/art.db';
+import { StoredImage } from '@/components/client/StoredImage';
+import { ImageSize } from '@/entities/Image';
+import { artCache } from '@/server/cache/art.cache';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+
+// NextJS-read exports
+export const dynamic = 'force-static';
+// @NOTE: Number needs to be a literal for NextJS to pick it up correctly
+export const revalidate = 3600; // 1 hours
 
 type Params = { id: string };
-
-const getArt = cache(async (id: string): Promise<Art | null> => {
-  return new ArtDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ) {
   const { id } = await params;
-  const art = await getArt(id);
+  const art = await artCache.get(id);
 
   if (!art) {
     return {
@@ -33,7 +33,7 @@ export default async function ArtPage(
   { params }: { params: Promise<Params> }
 ) {
   const { id } = await params;
-  const art = await getArt(id);
+  const art = await artCache.get(id);
 
   if (!art) notFound();
 
@@ -43,6 +43,13 @@ export default async function ArtPage(
       <p>ID: {art.id}</p>
       <p>Type: {art.type}</p>
       <p>Description: {art.description}</p>
+      {art.type === 'illustration' && art.image[ImageSize.CardFull] &&
+        <StoredImage
+          image={art.image[ImageSize.CardFull]}
+          size={ImageSize.CardFull}
+          alt={art.title}
+        />
+      }
     </div>
   );
 }

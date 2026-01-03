@@ -33,6 +33,7 @@ import { EventQuestDB } from './eventQuest.db';
 import { SceneDB } from './scene.db';
 import { TrackQuestEventDB } from './trackers.db';
 import { PlayerCardDB } from './playerCard.db';
+import { seedImage } from './seeds/image.seed';
 
 export const populateLocal = async () => {
   if (!isEmulated) {
@@ -67,10 +68,16 @@ const populateLocalCards = async () => {
 }
 
 const populateLocalArt = async () => {
+  const images = await Promise.all([
+    seedImage({ id: 'art1', color: '#FF5733' }),
+    seedImage({ id: 'art2', color: '#33FF57' }),
+    seedImage({ id: 'art3', color: '#3357FF' }),
+  ]);
+  
   await new ArtDB(firestoreAdmin).batchSet([
-    getExampleArt1(),
-    getExampleArt2(),
-    getExampleArt3(),
+    getExampleArt1(images[0]),
+    getExampleArt2(images[1]),
+    getExampleArt3(images[2]),
     getExampleArt4(),
   ]);
 }
@@ -186,31 +193,3 @@ const populateLocalPlayerCards = async () => {
     getExamplePlayerCard3(),
   ]);
 }
-
-// export const getLinks = async () => {
-//   const linkSnapshot = await firestoreAdmin.collection("links").get();
-//   const documents = linkSnapshot.docs.map((link) => ({
-//     url: link.data().url,
-//     title: link.data().title,
-//     desc: link.data().desc,
-//   }));
-
-//   return documents;
-// };
-
-// export const getLogo = async () => {
-//   const logoSnapshot = await firestoreAdmin.collection("images").doc("logo").get();
-//   const logoData = logoSnapshot.data() as { url: string } | undefined;
-//   if (!logoSnapshot.exists || !logoData) {
-//     return null;
-//   }
-//   return logoData.url;
-// };
-
-// export const getLogoFromStorage = async () => {
-//   const bucket = getStorage().bucket();
-//   const file = bucket.file("images/logo.png");
-//   const imageUrl = await getDownloadURL(file);
-//   console.log(imageUrl);
-//   return imageUrl;
-// };

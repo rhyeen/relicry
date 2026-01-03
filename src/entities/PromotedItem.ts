@@ -1,3 +1,4 @@
+import { ImageSize } from './Image';
 import { StoredRoot } from './Root';
 
 export interface PromotedItem extends StoredRoot {
@@ -9,7 +10,10 @@ export interface PromotedItem extends StoredRoot {
     title?: string;
     // Same order as title
     description?: string;
-    imageUrl?: string;
+    imagePaths?: {
+      [ImageSize.Thumb]?: string;
+      [ImageSize.Custom]?: string;
+    };
   };
   price: {
     currency: Currency;

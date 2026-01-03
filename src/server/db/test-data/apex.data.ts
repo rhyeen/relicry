@@ -3,9 +3,9 @@ import { artTestIds } from './art.data';
 import { artistTestIds } from './artist.data';
 
 export const apexTestIds = {
-  apex1: 'ax/111111',
-  apex2: 'ax/222222',
-  apex3: 'ax/333333',
+  apex1: 'ax/000001',
+  apex2: 'ax/000002',
+  apex3: 'ax/000003',
 };
 
 export function getDefaultApex(

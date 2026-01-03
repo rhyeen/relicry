@@ -1,18 +1,19 @@
 import { Art, IllustrationArt, WritingArt } from '@/entities/Art';
 import { artistTestIds } from './artist.data';
+import { ImageBySize } from '@/entities/Image';
 
 export const artTestIds = {
-  illustrationArt1: 'art/1111111111',
-  illustrationArt2: 'art/1111111112',
-  illustrationArt3: 'art/1111111113',
-  writingArt4: 'art/1111111114',
+  illustrationArt1: 'art/0000000001',
+  illustrationArt2: 'art/0000000002',
+  illustrationArt3: 'art/0000000003',
+  writingArt4: 'art/0000000004',
 };
 
-function defaultIllustrationArt(id: string, artistId: string): IllustrationArt {
+function defaultIllustrationArt(image: ImageBySize, id: string, artistId: string): IllustrationArt {
   return {
     id,
     type: 'illustration',
-    imageUrl: 'https://fastly.picsum.photos/id/415/600/900.jpg?hmac=Z2Cski6viZ2maN9WNnVaf53djeBSIo4vMBoVzP4LShE',
+    image,
     artistId,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -32,21 +33,22 @@ function defaultWritingArt(id: string, artistId: string): WritingArt {
   };
 }
 
-export function getExampleArt1(): IllustrationArt {
+// @TODO: Replace imageUrl with storage URLs; one for each size that was uploaded
+export function getExampleArt1(image: ImageBySize): IllustrationArt {
   return {
-    ...defaultIllustrationArt(artTestIds.illustrationArt1, artistTestIds.artist1),
+    ...defaultIllustrationArt(image, artTestIds.illustrationArt1, artistTestIds.artist1),
   };
 }
 
-export function getExampleArt2(): IllustrationArt {
+export function getExampleArt2(image: ImageBySize): IllustrationArt {
   return {
-    ...defaultIllustrationArt(artTestIds.illustrationArt2, artistTestIds.artist1),
+    ...defaultIllustrationArt(image, artTestIds.illustrationArt2, artistTestIds.artist1),
   };
 }
 
-export function getExampleArt3(): Art {
+export function getExampleArt3(image: ImageBySize): Art {
   return {
-    ...defaultIllustrationArt(artTestIds.illustrationArt3, artistTestIds.artist2),
+    ...defaultIllustrationArt(image, artTestIds.illustrationArt3, artistTestIds.artist2),
   };
 }
 

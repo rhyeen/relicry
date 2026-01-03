@@ -30,7 +30,7 @@ Unless stated otherwise, do NOT retrieve or cache:
 * cardPathId(s) => Card.version + Card.id (Card.ts)
 * sceneId(s) => Scene.id (Scene.ts)
 
-Any `imageUrl` or `*ImageUrl` should be cached separately—according to best practices for caching images—assuming a LONG caching strategy for the image.
+Any `imageUrl*`, `imagePath*`, `*ImageUrl*`, `*ImagePath*` should be cached separately—according to best practices for caching images—assuming a LONG caching strategy for the image.
 
 When requesting the entity from Firestore, assume the id is the docId. Note that the format of the id is listed as a comment above the id itself.
 

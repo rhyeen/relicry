@@ -2,9 +2,9 @@ import { EventMap } from '@/entities/EventMap';
 import { eventTestIds } from './event.data';
 
 export const eventMapTestIds = {
-  eventMap1: 'map/1111111111',
-  eventMap2: 'map/1111111112',
-  eventMap3: 'map/1111111113',
+  eventMap1: 'map/0000000001',
+  eventMap2: 'map/0000000002',
+  eventMap3: 'map/0000000003',
 };
 
 function defaultEventMap(eventId: string, id: string): EventMap {

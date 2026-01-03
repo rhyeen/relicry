@@ -2,9 +2,9 @@ import { Faction } from '@/entities/Faction';
 import { VersionedQuest } from '@/entities/Quest';
 
 export const questTestIds = {
-  quest1: 'q/111',
-  quest2: 'q/112',
-  quest3: 'q/113',
+  quest1: 'q/001',
+  quest2: 'q/002',
+  quest3: 'q/003',
 };
 
 function defaultVersionedQuest(id: string, faction: Faction, level: number): VersionedQuest {
