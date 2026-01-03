@@ -45,9 +45,9 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
 function initAdmin() {
   const params = {
     projectId: "relicry-prod",
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL as string,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL as string || '',
     storageBucket: "relicry-prod.firebasestorage.app",
-    privateKey: process.env.FIREBASE_PRIVATE_KEY as string,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY as string || '',
   };
 
   return initializeFirebaseAdminApp(params);

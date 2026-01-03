@@ -1,3 +1,5 @@
+import { prefixId } from './Root';
+
 export interface RewardOption {
   // ro/a1b2c3d4e5
   id: string;
@@ -16,4 +18,8 @@ export enum RewardArchivedReason {
   MistakeListing = 'mistake_listing',
   HeraldNotAvailable = 'herald_not_available',
   FlaggedAsInappropriate = 'item_flagged_as_inappropriate',
+}
+
+export function getRewardOptionId(id: string): string {
+  return prefixId('ro', id);
 }

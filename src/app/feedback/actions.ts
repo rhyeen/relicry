@@ -6,7 +6,7 @@ const schema = z.object({
   feedback: z.string().min(1),
 });
 
-export async function saveFeedback(prevState: { message: string }, formData: FormData) {
+export async function saveFeedback(prevState: { message?: string }, formData: FormData) {
   const validatedFields = schema.safeParse({
     feedback: formData.get('feedback'),
   });

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
+import FooterYear from './FooterYear';
 
 export default function Footer() {
   return (
@@ -15,7 +16,7 @@ export default function Footer() {
           Discord
         </a>
       </div>
-      <p className={styles.copyright}>&copy; {new Date().getFullYear()} Relicry. All rights reserved.</p>
+      <p className={styles.copyright}>&copy; <FooterYear /> Relicry. All rights reserved.</p>
     </footer>
   );
 }

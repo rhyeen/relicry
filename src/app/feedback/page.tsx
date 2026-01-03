@@ -1,15 +1,16 @@
 'use client';
 
-import { useFormState } from 'react-dom';
 import { saveFeedback } from './actions';
 import styles from './page.module.css';
+import { useActionState } from 'react';
 
 const initialState = {
-  message: '',
+  errors: { feedback: undefined as string[] | undefined },
+  message: undefined,
 };
 
 export default function FeedbackPage() {
-  const [state, formAction] = useFormState(saveFeedback, initialState);
+  const [state, formAction] = useActionState(saveFeedback, initialState);
 
   return (
     <div className={styles.container}>

@@ -3,8 +3,8 @@ import { Barlow_Condensed, Bree_Serif, Pirata_One } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { AuthProvider } from "@/lib/firebaseAuth";
 import styles from './layout.module.css';
+import ServiceWorkerRegister from '@/components/client/ServiceWorkerRegister';
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -39,11 +39,10 @@ export default function RootLayout({
       <body
         className={`${barlowCondensed.variable} ${breeSerif.variable} ${pirataOne.variable} ${styles.body}`}
       >
-        <AuthProvider>
-          <Header />
-          <main className={styles.main}>{children}</main>
-          <Footer />
-        </AuthProvider>
+        <Header />
+        <ServiceWorkerRegister />
+        <main className={styles.main}>{children}</main>
+        <Footer />
       </body>
     </html>
   );

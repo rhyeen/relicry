@@ -1,6 +1,6 @@
-import { LocaleMap } from './LocaleMap';
+import { prefixId, StoredRoot } from './Root';
 
-export interface Artist {
+export interface Artist extends StoredRoot {
   // @NOTE: We have a distinct Artist ID as an artist may be a team or need to be transfered
   // to a different user.
   // ast/a1b2c3d4e5
@@ -9,7 +9,7 @@ export interface Artist {
   name: string;
   profileImageUrl?: string;
   bannerImageUrl?: string;
-  summary?: LocaleMap;
+  summary?: string;
   promotedArtIds: string[];
   promotedItemIds: string[];
   tags: ArtistTag[];
@@ -23,4 +23,8 @@ export enum ArtistTag {
   CardAuthor = 'card_author',
   Illustrator = 'illustrator',
   Author = 'author',
+}
+
+export function getArtistId(id: string): string {
+  return prefixId('ast', id);
 }

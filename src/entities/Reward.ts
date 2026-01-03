@@ -1,6 +1,6 @@
-export interface Reward {
-  // Id is `${eventId}/r${level}`
-  id: string;
+import { StoredRoot } from './Root';
+
+export interface Reward extends StoredRoot {
   eventId: string;
   level: number;
   // Either the reward is tied to a specific quest or scene
@@ -10,4 +10,8 @@ export interface Reward {
   updatedAt: Date;
   archivedAt: Date | null;
   // @NOTE: See RewardOption for more details
+}
+
+export function getRewardId(eventId: string, level: number): string {
+  return `${eventId}/r/${level}`;
 }

@@ -1,14 +1,13 @@
 'use client';
 
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { authClient } from "@/lib/firebaseClient";
-import { useAuth } from "@/lib/firebaseAuth";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import styles from './page.module.css';
+import { useAuthUser } from '@/lib/client/useAuthUser';
+import { signInWithGoogle } from '@/lib/client/signInClient';
 
 export default function LoginPage() {
-  const { user } = useAuth();
+  const { user, ready } = useAuthUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -17,15 +16,7 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  const handleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(authClient, provider);
-      router.push("/");
-    } catch (error) {
-      console.error("Error signing in with Google", error);
-    }
-  };
+  if (!ready) return null;
 
   return (
     <div className={styles.container}>
@@ -33,7 +24,7 @@ export default function LoginPage() {
         <h1 className={styles.title}>Welcome to Relicry</h1>
         <p className={styles.subtitle}>Sign in to continue your adventure.</p>
         <button
-          onClick={handleSignIn}
+          onClick={signInWithGoogle}
           className={`${styles.button} ${styles.goldButton}`}
         >
           Sign in with Google
