@@ -43,7 +43,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Create test data populators for all routes shown in /src/app/README.md, utilizing consts to share the same test ID values to ensure each entity can properly reference other entities (e.g. an Art entity, references an Artist via its artistId property which references the Art's id property—the test data should have the same value for both of these test entities for artistId=>id). Populator should update `populateLocal` in /src/app/server/db/local.db.ts, creating additional helper functions/files to keep the population method clean. `populateLocalCards` is used as an example of how to do so logically, but can definitely be cleaned up or moved.
 - [x] Get auth vs no auth parts of pages working together so more info is displayed based on auth.
 - [x] Set up localStorage-level caching for pages.
-- [ ] Getting Firebase storage images to work
+- [x] Getting Firebase storage images to work
 - [ ] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
 - [ ] Denormalizing data so when we get things like a Card, we also get Art/Artist.
 - [ ] See if we can recreate the Card printable card itself with CSS

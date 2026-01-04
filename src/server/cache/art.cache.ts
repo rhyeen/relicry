@@ -8,8 +8,6 @@ import { ArtDB } from '@/server/db/art.db';
 
 export const artTags = {
   data: (id: string) => `d/art/${id}`,
-  page: (id: string) => `p/art/${id}`,
-  meta: (id: string) => `m/art/${id}`,
 };
 
 export const ART_LIFE = 'unlikelyChange';
@@ -26,12 +24,8 @@ export async function getArt(id: string): Promise<Art | null> {
 
 export async function invalidateArtNow(id: string): Promise<void> {
   updateTag(artTags.data(id));
-  updateTag(artTags.page(id));
-  updateTag(artTags.meta(id));
 }
 
 export async function invalidateArtSoon(id: string): Promise<void> {
   revalidateTag(artTags.data(id), 'max');
-  revalidateTag(artTags.page(id), 'max');
-  revalidateTag(artTags.meta(id), 'max');
 }

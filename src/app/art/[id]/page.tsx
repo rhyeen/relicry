@@ -1,22 +1,15 @@
 import StoredImageSlot from '@/components/client/StoredImage.slot';
 import { ImageSize } from '@/entities/Image';
-import { LOCAL_CACHE_TAG } from '@/lib/local';
-import { ART_LIFE, artTags, getArt } from '@/server/cache/art.cache';
-import { cacheLife, cacheTag } from 'next/cache';
+import { getArt } from '@/server/cache/art.cache';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 type Params = { id: string };
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ) {
-  'use cache';
   const { id } = await params;
-
-  cacheLife(ART_LIFE);
-  cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(artTags.meta(id));
-
   const art = await getArt(id);
 
   if (!art) {
@@ -35,15 +28,21 @@ export async function generateMetadata(
 export default async function ArtPage(
   { params }: { params: Promise<Params> }
 ) {
-  'use cache';
+  return (
+    <div>
+      <h1>Art Details</h1>
+      <Suspense fallback={<div>Loading art data...</div>}>
+        <ArtPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ArtPageData(
+  { params }: { params: Promise<Params> }
+) {
   const { id } = await params;
-
-  cacheLife(ART_LIFE);
-  cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(artTags.page(id));
-
   const art = await getArt(id);
-
   if (!art) notFound();
 
   return (

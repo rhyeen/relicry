@@ -1,31 +1,16 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { cardCache } from '@/server/cache/card.cache';
-import dynamic from 'next/dynamic';
-import { cacheLife, cacheTag } from 'next/cache';
-import { LOCAL_CACHE_TAG } from '@/lib/local';
+import CardCollectionActionSlot from '@/components/client/CardCollectionAction.slot';
+import { getCard } from '@/server/cache/card.cache';
+import { Suspense } from 'react';
 
 type Params = { version: string; card_id: string };
-
-const CardCollectionAction = dynamic(
-  () => import('@/components/client/CardCollectionAction'),
-  {
-    ssr: false,
-    loading: () => <div>Loading...</div>
-  }
-);
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ): Promise<Metadata> {
-  'use cache';
   const { version, card_id } = await params;
-
-  cacheLife(cardCache.cacheLifeValue() as Parameters<typeof cacheLife>[0]);
-  cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(cardCache.getMetadataTag(card_id, version));
-
-  const card = await cardCache.get(card_id, version);
+  const card = await getCard(card_id, version);
 
   if (!card) {
     return {
@@ -43,24 +28,29 @@ export async function generateMetadata(
 export default async function CardPage(
   { params }: { params: Promise<Params> }
 ) {
-  'use cache';
+  return (
+    <div>
+      <h1>Card Details</h1>
+      <Suspense fallback={<div>Loading card data...</div>}>
+        <CardPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function CardPageData(
+  { params }: { params: Promise<Params> }
+) {
   const { version, card_id } = await params;
-
-  cacheLife(cardCache.cacheLifeValue() as Parameters<typeof cacheLife>[0]);
-  cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(cardCache.getPageTag(card_id, version));
-
-  const card = await cardCache.get(card_id, version);
-
+  const card = await getCard(card_id, version);
   if (!card) notFound();
 
   return (
     <div>
-      <h1>Card Details</h1>
       <p>ID: {card.id}</p>
       <p>Version: {card.version}</p>
       <p>Title: {card.title}</p>
-      <CardCollectionAction cardId={card.id} />
+      <CardCollectionActionSlot cardId={card.id} />
     </div>
   );
 }

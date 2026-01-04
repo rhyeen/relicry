@@ -1,4 +1,6 @@
 
+'use client';
+
 type Props = { cardId: string };
 
 export default function CardCollectionAction({ cardId }: Props) {
