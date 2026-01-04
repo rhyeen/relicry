@@ -1,20 +1,32 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import styles from './page.module.css';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { signInWithGoogle } from '@/lib/client/signInClient';
 
+function sanitizeNext(nextValue: string | null): string {
+  if (!nextValue) return "/";
+  // Prevent open redirects: only allow internal paths
+  if (!nextValue.startsWith("/")) return "/";
+  // Optional: block protocol-relative URLs like //evil.com
+  if (nextValue.startsWith("//")) return "/";
+  return nextValue;
+}
+
 export default function LoginPage() {
   const { user, ready } = useAuthUser();
   const router = useRouter();
+  const sp = useSearchParams();
+
+  const nextPath = useMemo(() => sanitizeNext(sp.get("next")), [sp]);
 
   useEffect(() => {
     if (user) {
-      router.push("/");
+      router.replace(nextPath);
     }
-  }, [user, router]);
+  }, [user, router, nextPath]);
 
   if (!ready) return null;
 
@@ -24,7 +36,10 @@ export default function LoginPage() {
         <h1 className={styles.title}>Welcome to Relicry</h1>
         <p className={styles.subtitle}>Sign in to continue your adventure.</p>
         <button
-          onClick={signInWithGoogle}
+          onClick={async () => {
+            await signInWithGoogle();
+            // No redirect here; the effect will run once `user` becomes non-null.
+          }}
           className={`${styles.button} ${styles.goldButton}`}
         >
           Sign in with Google

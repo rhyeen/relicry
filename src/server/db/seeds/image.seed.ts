@@ -48,7 +48,7 @@ export async function seedImage(params: {
       if (!context.h || context.h <= 0) {
         context.h = Math.floor(Math.random() * 800 + 200);
       }
-      console.log(`Seeding image ${id} at size ${size} (${context.w}x${context.h})`);
+      console.info(`Seeding image ${id} at size ${size} (${context.w}x${context.h})`);
       const buffer = await makeSolidWebpBuffer({
         width: context.w,
         height: context.h,

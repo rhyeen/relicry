@@ -27,16 +27,16 @@ High performant caching and reduced page size is high priority as most pages are
 
 ### Features
 
-*   **Local Develoment Data:** By hitting the root page while local (https://localhost:5007), this will automatically populate the Firestore database with example cards and other data.
-*   **Card Display:** By navigating to the QR code of a card (e.g. https://localhost:5007/1/abcdef), it will display information about this card.
+*   **Local Develoment Data:** By hitting the root page while local (https://localhost:3000), this will automatically populate the Firestore database with example cards and other data.
+*   **Card Display:** By navigating to the QR code of a card (e.g. https://localhost:3000/1/abcdef), it will display information about this card.
 *   **Responsive Design:** The UI is fully responsive and works seamlessly on both desktop and mobile devices, but focuses mostly on mobile or tablet display.
 
 ## Current Plan
 
 The current plan is to get the scaffolding in place so that the developer can focus on the finer details.
 
-- [x] Get Firebase authentication working so that if a user navigates to https://localhost:5007/login, there is a Google Auth Login page for them.
-- [x] Set up a base layout for all pages that contains a navigation bar that detects if the user is logged in and displays their profile in the right corner or displays a button to login. There is also a button icon for navigating to the home screen and one for seeing ongoing events (navigating to https://localhost:5007/e). There should also be a basic footer with the email relicry@googlegroups.com for contact, a copyright for Relicry, and a link to leave feedback (https://localhost:5007/feedback), and a link to the Discord server (https://discord.gg/YF5RyAaj).
+- [x] Get Firebase authentication working so that if a user navigates to https://localhost:3000/login, there is a Google Auth Login page for them.
+- [x] Set up a base layout for all pages that contains a navigation bar that detects if the user is logged in and displays their profile in the right corner or displays a button to login. There is also a button icon for navigating to the home screen and one for seeing ongoing events (navigating to https://localhost:3000/e). There should also be a basic footer with the email relicry@googlegroups.com for contact, a copyright for Relicry, and a link to leave feedback (https://localhost:3000/feedback), and a link to the Discord server (https://discord.gg/YF5RyAaj).
 - [x] Differentiates the statically loaded content from the server and the authenticated client instances (especially in the layout) so that as much as possible can render on the server. Lazy loading the other stuff on the page as needed.
 - [x] Setting up error boundaries, 404s, and other useful accessibilty features to ensure QoL upfront.
 - [x] Create basic endpoints as specified in /src/app/README.md.

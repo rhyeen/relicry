@@ -50,7 +50,7 @@ async function CardPageData(
       <p>ID: {card.id}</p>
       <p>Version: {card.version}</p>
       <p>Title: {card.title}</p>
-      <CardCollectionActionSlot cardId={card.id} />
+      <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
     </div>
   );
 }

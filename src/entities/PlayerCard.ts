@@ -1,4 +1,5 @@
 import { prefixId, StoredRoot } from './Root';
+import type { SerializeDates } from '@/lib/serialization';
 
 export interface PlayerCard extends StoredRoot {
   userId: string;
@@ -10,13 +11,14 @@ export interface PlayerCard extends StoredRoot {
     signedByAuthor: boolean;
     notes: string;
     acquiredAt: Date;
-    // Either userId, eventId or custom string.
     acquiredFrom: string;
     foiled: boolean;
     ownership: PlayerCardOwnership;
   }[];
   updatedAt: Date;
 }
+
+export type PlayerCardDTO = SerializeDates<PlayerCard>;
 
 export enum PlayerCardCondition {
   Mint = 'MT',

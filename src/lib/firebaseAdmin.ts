@@ -1,11 +1,20 @@
 import "server-only";
 import admin from "firebase-admin";
+import { isEmulated } from './environment';
 
 interface FirebaseAdminAppParams {
   projectId: string;
   clientEmail: string;
   storageBucket: string;
   privateKey: string;
+}
+
+// IMPORTANT: set emulator env vars BEFORE initializeApp()
+// This has to be done because we are running within NextJS rather than Firebase Functions
+if (isEmulated) {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST ||= 'localhost:9097';
+  process.env.FIRESTORE_EMULATOR_HOST ||= 'localhost:8087';
+  process.env.FIREBASE_STORAGE_EMULATOR_HOST ||= 'localhost:9197';
 }
 
 function formatPrivateKey(key: string) {
