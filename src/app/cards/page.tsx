@@ -6,21 +6,17 @@ import { cacheLife, cacheTag, updateTag } from 'next/cache';
 
 async function getCards(): Promise<VersionedCard[]> {
   'use cache';
+  const index = 0;
   cacheLife('hours');
   cacheTag(LOCAL_CACHE_TAG);
-  cacheTag('cards:list');
+  cacheTag(`cards:list:${index}`);
 
-  const cards = await new CardDB(firestoreAdmin).getBy(
-    [],
-    { field: 'revealedAt', direction: 'desc' },
-    100,
-  );
-
+  const { entities } = await new CardDB(firestoreAdmin).getAllFeatured(index);
   // @NOTE: This is likely either due to a bug or emulated local environment is not populated yet.
-  if (!cards) {
-    updateTag('cards:list');
+  if (!entities.length) {
+    updateTag(`cards:list:${index}`);
   }
-  return cards;
+  return entities;
 }
 
 export function generateMetadata() {

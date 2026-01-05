@@ -24,6 +24,9 @@ export interface VersionedFocusCard extends FocusCard, Version, StoredRoot {
 export interface Version {
   version: number;
   season: number;
+  // @NOTE: When looking at the list of cards, this is the one that should be shown.
+  // There should only ever be one "isFeatured".
+  isFeatured: boolean;
   illustration: {
     artId: string;
     artistId: string;

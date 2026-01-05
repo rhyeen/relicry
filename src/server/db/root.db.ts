@@ -20,6 +20,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
   protected abstract prefixId(id: string): string;
 
   public async batchSet(items: T[]): Promise<void> {
+    if (items.length === 0) return;
     const collection = this.firestoreAdmin.collection(this.collectionName);
     const batch = this.firestoreAdmin.batch();
     items.forEach((item) => {
@@ -28,8 +29,39 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     await batch.commit();
   }
 
+  public async batchDelete(docIds: string[]): Promise<void> {
+    if (docIds.length === 0) return;
+    const collection = this.firestoreAdmin.collection(this.collectionName);
+    const batch = this.firestoreAdmin.batch();
+    docIds.forEach((docId) => {
+      batch.delete(collection.doc(conformDocId(this.prefixId(docId))));
+    });
+    await batch.commit();
+  }
+
   public refresh(item: T): Promise<T | null> {
     return this.get(this.getUnsafeDocId(item));
+  }
+
+  /**
+   * Generate a unique id using the provided generator function.
+   * Note that this does not reserve the id, so to avoid collisions,
+   * the caller should set the item immediately after receiving the id.
+   */
+  protected async getUniqueId(
+    idGenerator: () => string,
+  ): Promise<string> {
+    let id: string;
+    let exists: boolean;
+    do {
+      id = idGenerator();
+      const doc = await this.firestoreAdmin
+        .collection(this.collectionName)
+        .doc(conformDocId(this.prefixId(id)))
+        .get();
+      exists = doc.exists;
+    } while (exists);
+    return id;
   }
 
   public get(docId: string): Promise<T | null> {
@@ -79,6 +111,25 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
       return Timestamp.fromDate(value);
     }
     return value;
+  }
+
+  public async getBy(params: {
+    where: { field: string; op: FirebaseFirestore.WhereFilterOp; value: WhereValue }[];
+    sortBy?: { field: string; direction: FirebaseFirestore.OrderByDirection };
+    limit?: number,
+  }): Promise<T[]> {
+    let query: FirebaseFirestore.Query = this.firestoreAdmin.collection(this.collectionName);
+    params.where.forEach((condition) => {
+      query = query.where(condition.field, condition.op, this.conformWhereValue(condition.value));
+    });
+    if (params.sortBy) {
+      query = query.orderBy(params.sortBy.field, params.sortBy.direction);
+    }
+    if (params.limit !== undefined) {
+      query = query.limit(params.limit);
+    }
+    const querySnapshot = await query.get();
+    return querySnapshot.docs.map((doc) => this.conformData(doc.data()) as T);
   }
 
   protected conformData(data: DocumentData | undefined): Record<string, unknown> {

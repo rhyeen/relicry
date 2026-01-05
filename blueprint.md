@@ -44,11 +44,12 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Get auth vs no auth parts of pages working together so more info is displayed based on auth.
 - [x] Set up localStorage-level caching for pages.
 - [x] Getting Firebase storage images to work
-- [ ] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
-- [ ] Denormalizing data so when we get things like a Card, we also get Art/Artist.
+- [x] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
+- [x] Denormalizing data so when we get things like a Card, we also get Art/Artist.
 - [ ] See if we can recreate the Card printable card itself with CSS
 - [ ] Get Apex design in place
 - [ ] Incorporate caching model in all components, not just Card
+- [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization

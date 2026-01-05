@@ -1,3 +1,4 @@
+import { generateId } from '@/lib/idGenerator';
 import { AdminRole } from './AdminRole';
 import { ImageSize, ImageStorage } from './Image';
 import { prefixId, StoredRoot } from './Root';
@@ -20,4 +21,8 @@ export interface User extends StoredRoot {
 
 export function getUserId(id: string): string {
   return prefixId('u', id);
+}
+
+export function generateUserId(): string {
+  return getUserId(generateId(10));
 }

@@ -4,3 +4,22 @@ export enum AdminRole {
   EventAdmin = 'event',
   SceneAdmin = 'scene',
 }
+
+export function spreadUserRoles(roles: AdminRole[]): AdminRole[] {
+  const uniqueRoles = new Set<AdminRole>(roles);
+  if (uniqueRoles.has(AdminRole.SuperAdmin)) {
+    uniqueRoles.add(AdminRole.ContentAdmin);
+  }
+  if (uniqueRoles.has(AdminRole.ContentAdmin)) {
+    uniqueRoles.add(AdminRole.EventAdmin);
+  }
+  if (uniqueRoles.has(AdminRole.EventAdmin)) {
+    uniqueRoles.add(AdminRole.SceneAdmin);
+  }
+  return Array.from(uniqueRoles);
+}
+
+export function hasRole(userRoles: AdminRole[], requiredRole: AdminRole): boolean {
+  const spreadRoles = spreadUserRoles(userRoles);
+  return spreadRoles.includes(requiredRole);
+}

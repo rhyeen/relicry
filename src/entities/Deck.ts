@@ -15,6 +15,7 @@ export interface Deck {
 // A deck that has been versioned for tracking changes over time
 export interface VersionedDeck extends Deck, StoredRoot {
   version: number;
+  isLatest: boolean;
 }
 
 export function getDeckId(id: string): string {
