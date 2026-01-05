@@ -25,6 +25,7 @@ function defaultVersion(artId?: string, artistId?: string): Version {
     publishedAt: new Date(),
     archivedAt: null,
     isSample: true,
+    isFeatured: true,
   };
 }
 

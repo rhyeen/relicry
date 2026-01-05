@@ -15,6 +15,7 @@
     "emulators:stop": "firebase emulators:stop || echo 'Stop the emulators manually if needed'"
   },
   "dependencies": {
+    "@base-ui/react": "^1.0.0",
     "firebase": "^12.7.0",
     "firebase-admin": "^13.6.0",
     "next": "^16.1.0",

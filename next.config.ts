@@ -6,6 +6,20 @@ const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
 const nextConfig: NextConfig = {
+  // @NOTE: These are to tell Firebase App Hosting to set proper caching headers.
+  async headers() {
+    return [
+      {
+        source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
   cacheComponents: true,
   cacheLife: {
     noChange: {

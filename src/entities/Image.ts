@@ -13,7 +13,7 @@ export const ImageSizeContext: {
   [ImageSize.Thumb]: { w: 100, h: 100, quality: 82 },
   [ImageSize.Banner]: { w: 1920, h: 480, quality: 82 },
   [ImageSize.CardPreview]: { w: 300, h: 300, quality: 62 },
-  [ImageSize.Card]: { w: 768, h: 768, quality: 82 },
+  [ImageSize.Card]: { w: 470, h: 660, quality: 82 },
   [ImageSize.CardFull]: { w: 1536, h: 1536, quality: 100 },
   [ImageSize.Custom]: { w: 0, h: 0, quality: 82 },
 };

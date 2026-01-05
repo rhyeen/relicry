@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { getArt } from '@/server/cache/art.cache';
 import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
+import Card from '@/components/card/Card';
 
 type Params = { version: string; card_id: string };
 
@@ -56,7 +57,7 @@ async function CardPageData(
     flavorTextExtendedArtist,
     awakenedIllustrationArt,
     awakenedIllustrationArtist,
-    awakaenedFlavorTextExtendedArt,
+    awakenedFlavorTextExtendedArt,
     awakenedFlavorTextExtendedArtist,
   ] = await Promise.all([
     getArt(card.illustration.artId),
@@ -76,16 +77,19 @@ async function CardPageData(
     'Flavor Text Extended Artist:', flavorTextExtendedArtist,
     'Awakened Illustration Art:', awakenedIllustrationArt,
     'Awakened Illustration Artist:', awakenedIllustrationArtist,
-    'Awakened Flavor Text Extended Art:', awakaenedFlavorTextExtendedArt,
+    'Awakened Flavor Text Extended Art:', awakenedFlavorTextExtendedArt,
     'Awakened Flavor Text Extended Artist:', awakenedFlavorTextExtendedArtist,
   );
 
   return (
-    <div>
-      <p>ID: {card.id}</p>
-      <p>Version: {card.version}</p>
-      <p>Title: {card.title}</p>
+    <section>
+      <Card
+        card={card}
+        art={illustrationArt}
+        artist={illustrationArtist}
+        type="full"
+      />
       <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
-    </div>
+    </section>
   );
 }
