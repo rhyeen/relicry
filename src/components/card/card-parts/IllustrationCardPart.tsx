@@ -1,5 +1,5 @@
 import { Art } from '@/entities/Art';
-import styles from './Card.module.css';
+import styles from '../Card.module.css';
 
 type Props = {
   art: Art | null;
@@ -13,6 +13,8 @@ export default function IllustrationCardPart({ art }: Props) {
       style={{
         backgroundImage: `url(/assets/card/example-illustration.ai.webp)`,
       }}
-    />
+    >
+      <div className={styles.illustrationClickable} />
+    </div>
   );
 }

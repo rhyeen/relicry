@@ -2,11 +2,15 @@ import { Art } from '@/entities/Art';
 import { Artist } from '@/entities/Artist';
 import { VersionedCard, VersionedDeckCard } from '@/entities/Card';
 import styles from './Card.module.css';
-import RarityCardPart from './RarityCardPart';
+import RarityCardPart from './card-parts/RarityCardPart';
 import { ASSET_VERSION } from './assetVersion';
-import QRTextureCardPart from './QRTextureCardPart';
-import IllustrationCardPart from './IllustrationCardPart';
-import BannerCardPart from './BannerCardPart';
+import QRTextureCardPart from './card-parts/QRTextureCardPart';
+import IllustrationCardPart from './card-parts/IllustrationCardPart';
+import BannerCardPart from './card-parts/BannerCardPart';
+import QRCodeCardPart from './card-parts/QRCodeCardPart';
+import DrawLimitCardPart from './card-parts/DrawLimitCardPart';
+import TitleCardPart from './card-parts/TitleCardPart';
+import HeaderCardPart from './card-parts/HeaderCardPart';
 
 type Props = {
   card: VersionedCard;
@@ -33,6 +37,10 @@ export default function FullDeckCard({
         }}
         aria-hidden="true"
       />
+      <HeaderCardPart artist={artist} card={card} />
+      <DrawLimitCardPart drawLimit={_card.drawLimit} />
+      <TitleCardPart title={_card.title} subTitle={_card.subTitle} />
+      <QRCodeCardPart card={card} />
       <QRTextureCardPart />
     </section>
   );

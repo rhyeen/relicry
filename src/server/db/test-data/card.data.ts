@@ -38,7 +38,7 @@ export function getExampleCard1(): VersionedDeckCard {
     tags: [Tag.Item, Tag.Weapon, Tag.Blade],
     effects: dealXDamage(2),
     drawLimit: 3,
-    scrapCost: [Aspect.Brave],
+    scrapCost: [],
     aspect: Aspect.Brave,
     ...defaultVersion(artTestIds.illustrationArt1, artistTestIds.artist1),
   };
@@ -49,11 +49,16 @@ export function getExampleCard2(): VersionedDeckCard {
     id: cardTestIds.deckCard2,
     type: 'deck',
     title: 'Deck Card 2',
-    rarity: Rarity.Legendary,
+    subTitle: 'The Epic Card of Awesomeness',
+    rarity: Rarity.Epic,
     tags: [Tag.Ability, Tag.Bling],
     effects: drawXCards(3),
     drawLimit: 5,
-    scrapCost: [],
+    scrapCost: [Aspect.Cunning, Aspect.Charming],
+    flavorText: {
+      onCard: { text: 'A legendary card with mysterious powers.', source: 'Ancient Lore' },
+      extended: null,
+    },
     aspect: Aspect.Charming,
     ...defaultVersion(artTestIds.illustrationArt2, artistTestIds.artist2),
   };

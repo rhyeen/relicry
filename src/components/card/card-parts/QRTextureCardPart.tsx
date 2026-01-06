@@ -1,5 +1,5 @@
-import { ASSET_VERSION } from './assetVersion';
-import styles from './Card.module.css';
+import { ASSET_VERSION } from '../assetVersion';
+import styles from '../Card.module.css';
 
 export default function QRTextureCardPart() {
   return (

@@ -1,5 +1,5 @@
-import { ASSET_VERSION } from './assetVersion';
-import styles from './Card.module.css';
+import { ASSET_VERSION } from '../assetVersion';
+import styles from '../Card.module.css';
 import { Rarity } from '@/entities/Rarity';
 
 type Props = {
@@ -15,6 +15,8 @@ export default function RarityCardPart({
         return `/assets/card/rarity/common.${ASSET_VERSION}.png`;
       case 'rare':
         return `/assets/card/rarity/rare.${ASSET_VERSION}.png`;
+      case 'epic':
+        return `/assets/card/rarity/epic.${ASSET_VERSION}.png`;
       case 'legendary':
         return `/assets/card/rarity/legendary.${ASSET_VERSION}.png`;
       default:
@@ -30,6 +32,8 @@ export default function RarityCardPart({
         backgroundImage: `url(${getRarityImageUrl()})`,
       }}
       aria-label={`Rarity: ${rarity}`}
-    />
+    >
+      <div className={styles.rarityClickable} />
+    </div>
   );
 }

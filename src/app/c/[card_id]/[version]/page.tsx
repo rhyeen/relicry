@@ -70,16 +70,16 @@ async function CardPageData(
     awakenedVersion?.flavorText?.extended ? getArtist(awakenedVersion.flavorText.extended.artistId) : null,
   ]);
 
-  console.log(
-    'Illustration Art:', illustrationArt,
-    'Illustration Artist:', illustrationArtist,
-    'Flavor Text Extended Art:', flavorTextExtendedArt,
-    'Flavor Text Extended Artist:', flavorTextExtendedArtist,
-    'Awakened Illustration Art:', awakenedIllustrationArt,
-    'Awakened Illustration Artist:', awakenedIllustrationArtist,
-    'Awakened Flavor Text Extended Art:', awakenedFlavorTextExtendedArt,
-    'Awakened Flavor Text Extended Artist:', awakenedFlavorTextExtendedArtist,
-  );
+  // console.log(
+  //   'Illustration Art:', illustrationArt,
+  //   'Illustration Artist:', illustrationArtist,
+  //   'Flavor Text Extended Art:', flavorTextExtendedArt,
+  //   'Flavor Text Extended Artist:', flavorTextExtendedArtist,
+  //   'Awakened Illustration Art:', awakenedIllustrationArt,
+  //   'Awakened Illustration Artist:', awakenedIllustrationArtist,
+  //   'Awakened Flavor Text Extended Art:', awakenedFlavorTextExtendedArt,
+  //   'Awakened Flavor Text Extended Artist:', awakenedFlavorTextExtendedArtist,
+  // );
 
   return (
     <section>

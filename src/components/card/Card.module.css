@@ -1,11 +1,12 @@
 .fullCard {
   position: relative;
-  width: clamp(238px, 476px, 476px);
+  width: 476px;
   aspect-ratio: 476 / 664;
   border-radius: 12px;
   overflow: hidden;
   isolation: isolate; /* Important for blend/mask/overlay effects */
   background-color: black;
+  transform: scale(75%);
 }
 
 .qrtexture,
@@ -26,6 +27,73 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  transition: filter 0.3s ease 0s;
+}
+
+.illustrationClickable {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  top: 40px;
+  left: 90px;
+  width: 260px;
+  height: 340px;
+}
+
+.illustration:has(.illustrationClickable:hover) {
+  filter: brightness(1.2);
+}
+
+.qrcode {
+  position: absolute;
+  top: 19px;
+  right: 19px;
+  width: 93px;
+  height: 93px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease 0s, box-shadow 0.3s ease 0s;
+}
+
+.drawLimit {
+  position: absolute;
+  top: 21px;
+  left: 19px;
+  width: 65px;
+  height: 65px;
+  border-radius: 65px;
+  line-height: 65px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 57px;
+  font-family: var(--font-unifraktur-cook);
+  color: black;
+  transition: background-color 0.2s ease 0s, box-shadow 0.2s ease 0s;
+}
+
+.drawLimit:hover,
+.qrcode:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5);
+}
+
+.qrcodeImageHover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  user-select: none;
+  transition: opacity 0.3s ease 0s;
+}
+
+.qrcodeImageHover:hover {
+  z-index: 10;
+  opacity: 1;
 }
 
 .bannerContainer {
@@ -50,13 +118,15 @@
 .banner.top.red {
   background: linear-gradient(
     110deg,
-    rgba(202, 0, 38, 0.77) 40%,
-    rgba(239, 78, 113, 0.77) 80%,
-    rgba(173, 0, 33, 0.67) 100%
+    rgba(173, 0, 33, 0.67) 0%,
+    rgba(239, 78, 113, 0.77) 20%,
+    rgba(202, 0, 38, 0.77) 60%
   );
 }
 
-.banner.bottom.red {
+.banner.bottom.red,
+.banner.bottom.redBlue,
+.banner.bottom.redGreen {
   background: linear-gradient(
     110deg,
     rgba(202, 0, 38, 1.0) 20%,
@@ -64,4 +134,224 @@
     rgba(239, 78, 113, 0.46) 80%,
     rgba(173, 0, 33, 0.35) 100%
   );
+}
+
+.banner.top.yellow {
+  background: linear-gradient(
+    110deg,
+    rgba(233, 203, 0, 0.67) 0%,
+    rgba(255, 255, 103, 0.77) 20%,
+    rgba(242, 210, 0, 0.77) 60%
+  );
+}
+
+.banner.bottom.yellow,
+.banner.bottom.yellowRed,
+.banner.bottom.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(178, 126, 0, 1.0) 20%,
+    rgba(217, 164, 0, 0.69) 45%,
+    rgba(255, 255, 0, 0.46) 80%,
+    rgba(161, 114, 0, 0.35) 100%
+  );
+}
+
+.banner.top.blue {
+  background: linear-gradient(
+    110deg,
+    rgba(78, 49, 206, 0.67) 0%,
+    rgba(146, 125, 255, 0.77) 20%,
+    rgba(86, 49, 235, 0.77) 60%
+  );
+}
+
+.banner.bottom.blue,
+.banner.bottom.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(62, 24, 242, 1.0) 20%,
+    rgba(84, 51, 252, 0.69) 45%,
+    rgba(124, 100, 255, 0.46) 80%,
+    rgba(56, 23, 208, 0.35) 100%
+  );
+}
+
+.banner.top.green {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 82, 44, 0.67) 0%,
+    rgba(0, 153, 113, 0.77) 20%,
+    rgba(0, 93, 49, 0.77) 60%
+  );
+}
+
+.banner.bottom.green,
+.banner.bottom.greenBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 93, 49, 1.0) 20%,
+    rgba(0, 113, 71, 0.69) 45%,
+    rgba(0, 153, 113, 0.46) 80%,
+    rgba(0, 80, 42, 0.35) 100%
+  );
+}
+
+.banner.middle {
+  opacity: 0.33;
+}
+
+.banner.top.greenBlue,
+.banner.middle.greenBlue,
+.banner.top.redBlue,
+.banner.middle.redBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(124, 100, 255, 0) 20%,
+    rgba(62, 24, 242, 1) 80%
+  );
+}
+
+.banner.top.redGreen,
+.banner.middle.redGreen,
+.banner.top.yellowGreen,
+.banner.middle.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(5, 198, 63, 0) 20%,
+    rgba(251, 188, 0, 0.5) 50%,
+    rgba(0, 155, 83, 1) 80%
+  );
+}
+
+.banner.top.yellowRed,
+.banner.middle.yellowRed {
+  background: linear-gradient(
+    110deg,
+    rgba(239, 78, 113, 0) 20%,
+    rgba(255, 217, 0, 0.5) 50%,
+    rgba(202, 0, 38, 1) 80%
+  );
+}
+
+.banner.top.blueYellow,
+.banner.middle.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(77, 255, 0, 0) 20%,
+    rgba(77, 255, 0, .5) 50%,
+    rgb(254, 246, 5) 80%
+  );
+}
+
+.titleContainer {
+  position: absolute;
+  bottom: 208px;
+  left: 19px;
+  width: calc(100% - 38px);
+  height: 66px;
+  padding: 0 15px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0);
+  transition: background-color 0.3s ease 0s;
+}
+
+.titleContainer:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-family: var(--font-bree-serif);
+  font-size: 30px;
+  font-weight: 400;
+  color: white;
+  line-height: 30px;
+  margin-top: -4px;
+}
+
+.subtitle {
+  font-family: var(--font-bree-serif);
+  font-size: 20px;
+  line-height: 22px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.header {
+  position: absolute;
+  top: 19px;
+  line-height: 12px;
+  left: 95px;
+  display: flex;
+  justify-content: space-between;
+  width: 262px;
+  gap: 8px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+.headerLeft,
+.headerRight {
+  cursor: pointer;
+  transition: text-shadow 0.3s ease 0s;
+}
+
+.headerLeft:hover,
+.headerRight:hover {
+  text-shadow: 0 0 3px rgba(255, 255, 255, 1);
+}
+
+.rarityClickable {
+  position: absolute;
+  cursor: pointer;
+  pointer-events: auto;
+  width: 30px;
+  height: 30px;
+  bottom: 19px;
+  right: 19px;
+}
+
+.rarity {
+  transition: filter 0.3s ease 0s;
+}
+
+.rarity:has(.rarityClickable:hover) {
+  filter: brightness(1.2);
+}
+
+.flavorTextContainer {
+  position: absolute;
+  bottom: 80px;
+  left: 19px;
+  width: calc(100% - 38px);
+  height: 100px;
+  padding: 10px 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0);
+  transition: background-color 0.3s ease 0s;
+}
+
+.flavorTextContainer:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.flavorText {
+  font-family: var(--font-barlow-condensed);
+  font-size: 16px;
+  font-style: italic;
+  color: white;
+  line-height: 1.2;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
