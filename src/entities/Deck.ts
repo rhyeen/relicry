@@ -1,3 +1,5 @@
+import { prefixId, StoredRoot } from './Root';
+
 export interface Deck {
   // dk/a1b2c3d4e5
   id: string;
@@ -11,6 +13,15 @@ export interface Deck {
 }
 
 // A deck that has been versioned for tracking changes over time
-export interface VersionedDeck extends Deck {
+export interface VersionedDeck extends Deck, StoredRoot {
   version: number;
+  isLatest: boolean;
+}
+
+export function getDeckId(id: string): string {
+  return prefixId('dk', id);
+}
+
+export function getDeckDocId(id: string, version: number): string {
+  return `${getDeckId(id)}/${version}`;
 }
