@@ -11,6 +11,7 @@ import QRCodeCardPart from './card-parts/QRCodeCardPart';
 import DrawLimitCardPart from './card-parts/DrawLimitCardPart';
 import TitleCardPart from './card-parts/TitleCardPart';
 import HeaderCardPart from './card-parts/HeaderCardPart';
+import DetailsCardPart from './card-parts/DetailsCardPart';
 
 type Props = {
   card: VersionedCard;
@@ -40,6 +41,7 @@ export default function FullDeckCard({
       <HeaderCardPart artist={artist} card={card} />
       <DrawLimitCardPart drawLimit={_card.drawLimit} />
       <TitleCardPart title={_card.title} subTitle={_card.subTitle} />
+      <DetailsCardPart card={_card} />
       <QRCodeCardPart card={card} />
       <QRTextureCardPart />
     </section>

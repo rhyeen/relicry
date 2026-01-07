@@ -56,7 +56,7 @@ export function getExampleCard2(): VersionedDeckCard {
     drawLimit: 5,
     scrapCost: [Aspect.Cunning, Aspect.Charming],
     flavorText: {
-      onCard: { text: 'A legendary card with mysterious powers.', source: 'Ancient Lore' },
+      onCard: { text: 'A really valuable card with mysterious powers that only the chosen can wield.', source: 'Ancient Lore' },
       extended: null,
     },
     aspect: Aspect.Charming,

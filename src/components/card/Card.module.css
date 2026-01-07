@@ -12,7 +12,8 @@
 .qrtexture,
 .rarity,
 .frame,
-.illustration {
+.illustration,
+.flavorTextLine {
   content: '';
   position: absolute;
   inset: 0;
@@ -244,24 +245,57 @@
   );
 }
 
-.titleContainer {
+.titleContainer,
+.details {
   position: absolute;
-  bottom: 208px;
   left: 19px;
   width: calc(100% - 38px);
-  height: 66px;
-  padding: 0 15px;
   text-align: left;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  cursor: pointer;
-  background-color: rgba(255, 255, 255, 0);
-  transition: background-color 0.3s ease 0s;
 }
 
-.titleContainer:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.titleContainer {
+  height: 66px;
+  bottom: 208px;
+  justify-content: center;
+}
+
+@property --hoverGradientColor1 {
+  syntax: '<color>';
+  initial-value: rgba(255, 255, 255, 0);
+  inherits: false;
+}
+
+@property --hoverGradientColor2 {
+  syntax: '<color>';
+  initial-value: rgba(255, 255, 255, 0);
+  inherits: false;
+}
+
+.titleContainer,
+.flavorTextContainer {
+  padding: 0 15px;
+  cursor: pointer;
+  background: linear-gradient(
+    110deg,
+    var(--hoverGradientColor1) 0%,
+    var(--hoverGradientColor2) 90%
+  );
+  transition: --hoverGradientColor1 0.3s ease 0s,
+    --hoverGradientColor2 0.3s ease 0s;
+}
+
+.titleContainer:hover,
+.flavorTextContainer:hover {
+  --hoverGradientColor1: rgba(255, 255, 255, 0.2);
+  --hoverGradientColor2: rgba(255, 255, 255, 0);
+}
+
+.details {
+  bottom: 60px;
+  height: 148px;
+  justify-content: flex-start;
 }
 
 .title {
@@ -325,33 +359,20 @@
   filter: brightness(1.2);
 }
 
-.flavorTextContainer {
-  position: absolute;
-  bottom: 80px;
-  left: 19px;
-  width: calc(100% - 38px);
-  height: 100px;
-  padding: 10px 15px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, 0);
-  transition: background-color 0.3s ease 0s;
-}
-
-.flavorTextContainer:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
 .flavorText {
+  position: relative;
+  margin-top: 4px;
   font-family: var(--font-barlow-condensed);
-  font-size: 16px;
+  font-size: 20px;
   font-style: italic;
   color: white;
-  line-height: 1.2;
-  max-height: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.flavorTextLine {
+  position: relative;
+  margin-left: -8px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  width: 397px;
+  height: 15px;
 }
