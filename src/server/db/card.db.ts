@@ -47,6 +47,39 @@ export class CardDB extends RootDB<VersionedCard> {
     await this.batchSet([card, ...featuredCards]);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected conformItemGet(item: any): VersionedCard {
+    let _item = item;
+    if (_item.scrapCost) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const scrapCost = (_item.scrapCost as unknown[]).map((aspect: any) => {
+        if (aspect.includes('/')) {
+          const [aspect1, aspect2] = (aspect as string).split('/');
+          return [aspect1, aspect2];
+        }
+        return aspect;
+      });
+      _item = { ..._item, scrapCost };
+    }
+    return _item as VersionedCard;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected conformItemSet(item: VersionedCard): any {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let _item: any = item;
+    if (_item.scrapCost) {
+      const scrapCost = (_item.scrapCost as (string | [string, string])[]).map((aspect) => {
+        if (Array.isArray(aspect)) {
+          return aspect.join('/');
+        }
+        return aspect;
+      });
+      _item = { ..._item, scrapCost };
+    }
+    return _item;
+  }
+
   public getFromParts(id: string, version: number): Promise<VersionedCard | null> {
     return this.get(getCardDocId(id, version));
   }

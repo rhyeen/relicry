@@ -24,7 +24,7 @@ export default function FlavorTextCardPart({ flavorText }: Props) {
   }
 
   const getFlavorLineImageUrl = () => {
-    if (!flavorText.extended) {
+    if (flavorText.extended) {
       return '/assets/card/flavor-extended.2.png';
     } else {
       return '/assets/card/flavor-normal.2.png';

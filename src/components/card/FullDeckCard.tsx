@@ -12,6 +12,9 @@ import DrawLimitCardPart from './card-parts/DrawLimitCardPart';
 import TitleCardPart from './card-parts/TitleCardPart';
 import HeaderCardPart from './card-parts/HeaderCardPart';
 import DetailsCardPart from './card-parts/DetailsCardPart';
+import ScrapCostCardPart from './card-parts/ScrapCostCardPart';
+import AspectCardPart from './card-parts/AspectCardPart';
+import TagsCardPart from './card-parts/TagsCardPart';
 
 type Props = {
   card: VersionedCard;
@@ -31,6 +34,8 @@ export default function FullDeckCard({
       <IllustrationCardPart art={art} />
       <RarityCardPart rarity={_card.rarity} />
       <BannerCardPart aspect={_card.aspect} />
+      <TagsCardPart tags={_card.tags} aspect={_card.aspect} />
+      <AspectCardPart aspect={_card.aspect} />
       <div
         className={styles.frame}
         style={{
@@ -40,6 +45,7 @@ export default function FullDeckCard({
       />
       <HeaderCardPart artist={artist} card={card} />
       <DrawLimitCardPart drawLimit={_card.drawLimit} />
+      <ScrapCostCardPart scrapCost={_card.scrapCost} />
       <TitleCardPart title={_card.title} subTitle={_card.subTitle} />
       <DetailsCardPart card={_card} />
       <QRCodeCardPart card={card} />

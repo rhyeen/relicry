@@ -1,5 +1,6 @@
 import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
+import { aspectAsArray } from './aspectsAsArray';
 
 type Props = {
   aspect: Aspect | [Aspect, Aspect];
@@ -7,11 +8,13 @@ type Props = {
 
 export default function BannerCardPart({ aspect }: Props) {
   const getColorStyle = () => {
-    const sortedAspects = Array.isArray(aspect) ? [...aspect] : [aspect];
-    switch (sortedAspects[0]) {
+    const asArray = aspectAsArray(aspect);
+    const aspectString = `${asArray[0]}/${asArray[1]}`;
+    const sameAspect = asArray[0] === asArray[1];
+    switch (asArray[0]) {
       case Aspect.Brave:
-        if (sortedAspects.length === 2) {
-          switch (sortedAspects[1]) {
+        if (!sameAspect) {
+          switch (asArray[1]) {
             case Aspect.Cunning:
               return styles.redGreen;
             case Aspect.Wise:
@@ -19,13 +22,13 @@ export default function BannerCardPart({ aspect }: Props) {
             case Aspect.Charming:
               return styles.yellowRed;
             default:
-              throw new Error(`Unknown card aspect combination: ${aspect}`);
+              throw new Error(`Unknown card aspect combination: ${aspectString}`);
           }
         }
         return styles.red;
       case Aspect.Cunning:
-        if (sortedAspects.length === 2) {
-          switch (sortedAspects[1]) {
+        if (!sameAspect) {
+          switch (asArray[1]) {
             case Aspect.Brave:
               return styles.redGreen;
             case Aspect.Wise:
@@ -33,13 +36,13 @@ export default function BannerCardPart({ aspect }: Props) {
             case Aspect.Charming:
               return styles.yellowGreen;
             default:
-              throw new Error(`Unknown card aspect combination: ${aspect}`);
+              throw new Error(`Unknown card aspect combination: ${aspectString}`);
           }
         }
         return styles.green;
       case Aspect.Wise:
-        if (sortedAspects.length === 2) {
-          switch (sortedAspects[1]) {
+        if (!sameAspect) {
+          switch (asArray[1]) {
             case Aspect.Brave:
               return styles.redBlue;
             case Aspect.Cunning:
@@ -47,13 +50,13 @@ export default function BannerCardPart({ aspect }: Props) {
             case Aspect.Charming:
               return styles.blueYellow;
             default:
-              throw new Error(`Unknown card aspect combination: ${aspect}`);
+              throw new Error(`Unknown card aspect combination: ${aspectString}`);
           }
         }
         return styles.blue;
       case Aspect.Charming:
-        if (sortedAspects.length === 2) {
-          switch (sortedAspects[1]) {
+        if (!sameAspect) {
+          switch (asArray[1]) {
             case Aspect.Brave:
               return styles.yellowRed;
             case Aspect.Cunning:
@@ -61,12 +64,12 @@ export default function BannerCardPart({ aspect }: Props) {
             case Aspect.Wise:
               return styles.blueYellow;
             default:
-              throw new Error(`Unknown card aspect combination: ${aspect}`);
+              throw new Error(`Unknown card aspect combination: ${aspectString}`);
           }
         }
         return styles.yellow;
       default:
-        throw new Error(`Unknown card aspect: ${aspect}`);
+        throw new Error(`Unknown card aspect: ${aspectString}`);
     }
   };
 

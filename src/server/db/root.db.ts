@@ -24,9 +24,28 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     const collection = this.firestoreAdmin.collection(this.collectionName);
     const batch = this.firestoreAdmin.batch();
     items.forEach((item) => {
-      batch.set(collection.doc(conformDocId(this.prefixId(this.getUnsafeDocId(item)))), item);
+      batch.set(
+        collection.doc(conformDocId(this.prefixId(this.getUnsafeDocId(item)))),
+        this.conformItemSet(item)
+      );
     });
     await batch.commit();
+  }
+
+  /**
+   * Can be used to adjust the item before sending it to the database.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected conformItemSet(item: T): any {
+    return item;
+  }
+
+  /**
+   * Can be used to adjust the item before retrieving it from the database.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected conformItemGet(item: any): T {
+    return item;
   }
 
   public async batchDelete(docIds: string[]): Promise<void> {
@@ -69,7 +88,8 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
       .collection(this.collectionName)
       .doc(conformDocId(this.prefixId((docId))))
       .get()
-      .then((doc) => (doc.exists ? (this.conformData(doc.data()) as T) : null));
+      .then((doc) => (doc.exists ?
+        (this.conformItemGet(this.conformData(doc.data()) as T)) : null));
   }
 
   public async delete(docId: string): Promise<void> {
@@ -87,7 +107,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     await this.firestoreAdmin
       .collection(this.collectionName)
       .doc(conformDocId(this.prefixId(this.getUnsafeDocId(item))))
-      .set(item);
+      .set(this.conformItemSet(item));
     return item;
   }
 
@@ -129,7 +149,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
       query = query.limit(params.limit);
     }
     const querySnapshot = await query.get();
-    return querySnapshot.docs.map((doc) => this.conformData(doc.data()) as T);
+    return querySnapshot.docs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as T));
   }
 
   protected conformData(data: DocumentData | undefined): Record<string, unknown> {

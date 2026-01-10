@@ -54,12 +54,14 @@ export function getExampleCard2(): VersionedDeckCard {
     tags: [Tag.Ability, Tag.Bling],
     effects: drawXCards(3),
     drawLimit: 5,
-    scrapCost: [Aspect.Cunning, Aspect.Charming],
+    scrapCost: [
+      Aspect.Cunning, [ Aspect.Charming, Aspect.Brave ],
+    ],
     flavorText: {
       onCard: { text: 'A really valuable card with mysterious powers that only the chosen can wield.', source: 'Ancient Lore' },
       extended: null,
     },
-    aspect: Aspect.Charming,
+    aspect: [ Aspect.Charming, Aspect.Cunning ],
     ...defaultVersion(artTestIds.illustrationArt2, artistTestIds.artist2),
   };
 }

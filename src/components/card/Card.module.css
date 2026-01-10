@@ -13,7 +13,16 @@
 .rarity,
 .frame,
 .illustration,
-.flavorTextLine {
+.flavorTextLine,
+.scrapCostTop,
+.scrapCostBottom,
+.scrapCostSingleAspectOverlay,
+.scrapCostDualAspectOverlayTop,
+.scrapCostDualAspectOverlayBottom,
+.aspectSingle,
+.aspectDualLeft,
+.aspectDualRight,
+.aspectDualOverlay {
   content: '';
   position: absolute;
   inset: 0;
@@ -375,4 +384,103 @@
   margin-bottom: 4px;
   width: 397px;
   height: 15px;
+}
+
+.scrapCostContainer {
+  position: absolute;
+  top: 105px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.scrapCostContainer:hover {
+  filter: brightness(1.5) saturate(0.75);
+}
+
+.scrapCost {
+  position: relative;
+  width: 45px;
+  aspect-ratio: 70 / 90;
+}
+
+.scrapCostTop {
+  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.scrapCostBottom {
+  transform: rotate(180deg);
+  filter: drop-shadow(-2px -2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.scrapCostDualAspectOverlayTop {
+  transform: translate(-12px, -6px) scale(0.85);
+}
+
+.scrapCostDualAspectOverlayBottom {
+  transform: translate(12px, 6px) scale(0.85);
+}
+
+.aspectContainer {
+  position: absolute;
+  bottom: 24.5px;
+  left: 24.5px;
+  --aspectHeight: 32.5px;
+  height: var(--aspectHeight);
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.aspectContainer:hover {
+  filter: brightness(1.5) saturate(0.75);
+}
+
+.aspectSingle,
+.aspectDualLeft,
+.aspectDualRight {
+  height: var(--aspectHeight);
+  aspect-ratio: 40 / 50;
+}
+
+.aspectSingle {
+  position: relative;
+}
+
+.aspectDual {
+  position: relative;
+  width: 74px;
+  height: 36px;
+}
+
+.aspectDualOverlay {
+  top: -2px;
+  left: 20px;
+  height: 36px;
+  aspect-ratio: 82 / 57;
+}
+
+.aspectDualRight {
+  left: 29.5px;
+}
+
+.tags {
+  position: absolute;
+  bottom: 24.5px;
+  left: 65px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.tags:hover {
+  filter: brightness(1.5);
+}
+
+.tagsWithTwoAspects {
+  left: 94px;
 }

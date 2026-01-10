@@ -7,6 +7,12 @@ export interface PlayerCard extends StoredRoot {
   cardVersion: number;
   individuals: {
     condition: PlayerCardCondition;
+    language: PlayerCardLanguage;
+    graded: {
+      company: GradingCompany;
+      grade: number;
+      gradeId: GradeID;
+    } | null;
     signedByIllustrator: boolean;
     signedByAuthor: boolean;
     notes: string;
@@ -34,6 +40,20 @@ export enum PlayerCardOwnership {
   LookingToSell = 'LTS',
   LookingToBuy = 'LTB',
   WishList = 'WL',
+}
+
+export enum PlayerCardLanguage {
+  English = 'EN',
+}
+
+export enum GradingCompany {
+  PSA = 'PSA',
+  BGS = 'BGS',
+  SGC = 'SGC',
+}
+
+export enum GradeID {
+  PSAGEMMT = 'PSA-10 GEM MT',
 }
 
 export function getPlayerCardId(userId: string, cardId: string, cardVersion: number): string {
