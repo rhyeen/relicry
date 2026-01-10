@@ -1,6 +1,40 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --auraGradient: linear-gradient(
+    90deg,
+    #10a470 0%,
+    #36ff94 30%,
+    #e7f9bd 55%,
+    #f9fcde 80%
+  );
+
+  --soloGradient: linear-gradient(
+    90deg,
+    #93bd2b 0%,
+    #68dd6a 40%,
+    #e1eb82 85%,
+    #f4f9c8 100%
+  );
+  --soloGradientLeft: linear-gradient(
+    115deg,
+    #768a41 0%,
+    #93bd2b 60%
+  );
+
+  --pvpGradient: linear-gradient(
+    90deg,
+    #4ebbee 0%,
+    #78bfee 20%,
+    #9cfdfa 65%,
+    #f4f9c8 100%
+  );
+  --pvpGradientLeft: linear-gradient(
+    115deg,
+    #3f8cca 0%,
+    #4ebbee 60%
+  );
 }
 
 @media (prefers-color-scheme: dark) {

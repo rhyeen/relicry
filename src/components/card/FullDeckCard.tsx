@@ -36,6 +36,7 @@ export default function FullDeckCard({
       <BannerCardPart aspect={_card.aspect} />
       <TagsCardPart tags={_card.tags} aspect={_card.aspect} />
       <AspectCardPart aspect={_card.aspect} />
+      <DetailsCardPart card={_card} />
       <div
         className={styles.frame}
         style={{
@@ -47,7 +48,6 @@ export default function FullDeckCard({
       <DrawLimitCardPart drawLimit={_card.drawLimit} />
       <ScrapCostCardPart scrapCost={_card.scrapCost} />
       <TitleCardPart title={_card.title} subTitle={_card.subTitle} />
-      <DetailsCardPart card={_card} />
       <QRCodeCardPart card={card} />
       <QRTextureCardPart />
     </section>

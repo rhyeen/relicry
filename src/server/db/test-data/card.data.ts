@@ -36,7 +36,7 @@ export function getExampleCard1(): VersionedDeckCard {
     title: 'Deck Card 1',
     rarity: Rarity.Common,
     tags: [Tag.Item, Tag.Weapon, Tag.Blade],
-    effects: dealXDamage(2),
+    effects: [dealXDamage(2)],
     drawLimit: 3,
     scrapCost: [],
     aspect: Aspect.Brave,
@@ -52,7 +52,13 @@ export function getExampleCard2(): VersionedDeckCard {
     subTitle: 'The Epic Card of Awesomeness',
     rarity: Rarity.Epic,
     tags: [Tag.Ability, Tag.Bling],
-    effects: drawXCards(3),
+    effects: [
+      {
+        ...drawXCards(3),
+        conditionals: [Conditional.Pvp],
+        aura: 3,
+      },
+    ],
     drawLimit: 5,
     scrapCost: [
       Aspect.Cunning, [ Aspect.Charming, Aspect.Brave ],
@@ -77,9 +83,9 @@ export function getExampleCard3(): VersionedFocusCard {
       {
         conditionals: [Conditional.Infinite],
         parts: [
-          { type: 'text', text: 'If you have ' } as CardEffectPartText,
+          { type: 'text', text: 'If you have' } as CardEffectPartText,
           { type: 'card', amount: 3, orMore: true } as CardEffectPartCard,
-          { type: 'text', text: ', ' } as CardEffectPartText,
+          { type: 'text', text: ',' } as CardEffectPartText,
           { type: 'flip' },
         ],
       },
@@ -95,33 +101,29 @@ export function getExampleCard3(): VersionedFocusCard {
     },
     awakened: {
       tags: [Tag.Focus, Tag.Favor],
-      effects: drawXCards(5),
+      effects: [drawXCards(5)],
     },
     aspect: Aspect.Cunning,
     ...defaultVersion(artTestIds.illustrationArt3, artistTestIds.artist3),
   };
 }
 
-function drawXCards(x: number): CardEffect[] {
-  return [
-    {
-      conditionals: [],
-      parts: [
-        { type: 'text', text: 'Draw ' } as CardEffectPartText,
-        { type: 'card', amount: x } as CardEffectPartCard,
-      ],
-    },
-  ];
+function drawXCards(x: number): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'Draw' } as CardEffectPartText,
+      { type: 'card', amount: x } as CardEffectPartCard,
+    ],
+  };
 }
 
-function dealXDamage(x: number): CardEffect[] {
-  return [
-    {
-      conditionals: [],
-      parts: [
-        { type: 'text', text: 'Deal ' } as CardEffectPartText,
-        { type: 'damage', amount: x } as CardEffectPartDamage,
-      ],
-    },
-  ];
+function dealXDamage(x: number): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'Deal' } as CardEffectPartText,
+      { type: 'damage', amount: x } as CardEffectPartDamage,
+    ],
+  };
 }

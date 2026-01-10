@@ -1,3 +1,9 @@
+.tagContainer {
+  height: 22px;
+  display: inline-flex;
+  position: relative;
+}
+
 .tag {
   text-transform: uppercase;
   font-family: var(--font-barlow-condensed);
@@ -7,28 +13,9 @@
   transform-origin: top left;
   color: black;
   line-height: 18px;
-  height: 22px;
+  height: 100%;
   padding: 1px 4px 0;
-}
-
-.bling {
-  background-color: #00d466;
-}
-
-.ability {
-  background-color: #b354f2;
-}
-
-.item {
-  background-color: #ffae3c;
-}
-
-.weapon {
-  background-color: #c59684;
-}
-
-.blade {
-  background-color: #ff5959;
+  display: inline-block;
 }
 
 .straightLeft {
@@ -37,6 +24,12 @@
   left: -10px;
   width: 10px;
   height: 100%;
+  user-select: none;
+}
+
+.straightLeftLong {
+  width: 15px;
+  left: -15px;
 }
 
 .tagTexture {
@@ -48,4 +41,38 @@
   display: block;
   mix-blend-mode: overlay;
   opacity: 0.75;
+  user-select: none;
+}
+
+.whiteText {
+  color: white;
+}
+
+.tagAuraNumberSpacer {
+  padding-left: 22px;
+}
+
+.tagAuraNumber {
+  position: absolute;
+  right: 15px;
+  bottom: -1px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 24px;
+  color: black;
+}
+
+.auraNumberIcon {
+  position: absolute;
+  width: 28px;
+  left: -8.5px;
+  top: -1px;
+  aspect-ratio: 40 / 36;
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.auraNumber {
+  position: relative;
 }

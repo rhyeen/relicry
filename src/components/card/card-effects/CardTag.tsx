@@ -1,5 +1,5 @@
 import { Tag } from '@/entities/Tag';
-import styles from './CardTag.module.css';
+import CardTagLike from './CardTagLike';
 
 type Props = {
   tag: Tag;
@@ -27,31 +27,50 @@ const tagLocaleEn = {
 export default function CardTag({
   tag, straightLeft = false,
 }: Props) {
+  const getBackgroundColor = () => {
+    switch (tag) {
+      case Tag.Focus:
+        return '#404040';
+      case Tag.Gambit:
+        return '#c7c7c7ff';
+      case Tag.Item:
+        return '#ffae3c';
+      case Tag.Ability:
+        return '#b354f2';
+      case Tag.Magic:
+        return '#61dcce';
+      case Tag.Scrap:
+        return '#877c9aff';
+      case Tag.Volant:
+        return '#995dfaff';
+      case Tag.Void:
+        return '#5b0070ff';
+      case Tag.Bling:
+        return '#00d466';
+      case Tag.Blade:
+        return '#ff5959';
+      case Tag.Brew:
+        return '#ff6fc3ff';
+      case Tag.Tool:
+        return '#3590ffff';
+      case Tag.Favor:
+        return '#ffbab3ff';
+      case Tag.Weapon:
+        return '#c59684';
+      case Tag.Armor:
+        return '#ffa764ff';
+      default:
+        throw new Error(`Unknown tag: ${tag}`);
+    }
+  };
+
   return (
-    <>
-      {straightLeft &&
-        <span className={`${styles.straightLeft} ${styles[`${tag.toLowerCase()}`]}`}>
-          <span
-            className={styles.tagTexture}
-            style={{
-              backgroundImage: `url(/assets/card/tag-texture.1.png)`,
-            }}
-          />
-        </span>
-      }
-      <span
-        className={`${styles.tag} ${styles[`${tag.toLowerCase()}`]}`}
-        data-tag={tag}
-        aria-label={`Tag: ${tagLocaleEn[tag]}`}
-      >
-        <span
-          className={styles.tagTexture}
-          style={{
-            backgroundImage: `url(/assets/card/tag-texture.1.png)`,
-          }}
-        />
-        {tagLocaleEn[tag]}
-      </span>
-    </>
+    <CardTagLike
+      dataId={tag}
+      locale={tagLocaleEn[tag]}
+      straightLeft={straightLeft}
+      backgroundColor={getBackgroundColor()}
+      straightLeftColor={getBackgroundColor()}
+    />
   );
 }

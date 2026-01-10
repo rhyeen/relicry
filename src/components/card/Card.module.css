@@ -285,6 +285,11 @@
 .titleContainer,
 .flavorTextContainer {
   padding: 0 15px;
+}
+
+.titleContainer,
+.flavorTextContainer,
+.effectsContainer {
   cursor: pointer;
   background: linear-gradient(
     110deg,
@@ -296,14 +301,15 @@
 }
 
 .titleContainer:hover,
-.flavorTextContainer:hover {
+.flavorTextContainer:hover,
+.effectsContainer:hover {
   --hoverGradientColor1: rgba(255, 255, 255, 0.2);
   --hoverGradientColor2: rgba(255, 255, 255, 0);
 }
 
 .details {
-  bottom: 60px;
-  height: 148px;
+  bottom: 63px;
+  height: 145px;
   justify-content: flex-start;
 }
 
@@ -436,6 +442,12 @@
 
 .aspectContainer:hover {
   filter: brightness(1.5) saturate(0.75);
+}
+
+.effectsContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .aspectSingle,
