@@ -41,3 +41,6 @@ firestore-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Remove the 800dpi folder
+public/800dpi
