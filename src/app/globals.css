@@ -35,6 +35,58 @@
     #3f8cca 0%,
     #4ebbee 60%
   );
+
+  --drawEndGradient: linear-gradient(
+    90deg,
+    #5961f9 0%,
+    #a17ef2 20%,
+    #f6befd 45%,
+    #fcedd9 80%
+  );
+  --drawEndGradientLeft: linear-gradient(
+    115deg,
+    #3f58ca 0%,
+    #5961f9 60%
+  );
+
+  --infiniteGradient: linear-gradient(
+    90deg,
+    #e832c3 0%,
+    #fb48fe 30%,
+    #fd9ed1 70%,
+    #fcedd9 100%
+  );
+  --infiniteGradientLeft: linear-gradient(
+    115deg,
+    #e232e8 0%,
+    #e832c3 60%
+  );
+
+  --reactGradient: linear-gradient(
+    90deg,
+    #71a101 0%,
+    #fab522 30%,
+    #f7f73a 70%,
+    #fcedd9 100%
+  );
+  --reactGradientLeft: linear-gradient(
+    115deg,
+    #2d440b 0%,
+    #71a101 60%
+  );
+
+  --turnEndGradient: linear-gradient(
+    90deg,
+    #ff6c6c 0%,
+    #ffb25a 30%,
+    #fae588 60%,
+    #fcedd9 90%
+  );
+  --turnEndGradientLeft: linear-gradient(
+    115deg,
+    #db0d60 0%,
+    #ff6c6c 60%
+  );
 }
 
 @media (prefers-color-scheme: dark) {

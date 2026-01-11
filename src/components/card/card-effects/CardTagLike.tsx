@@ -39,7 +39,8 @@ export default function CardTagLike({
         </span>
       }
       <span
-        className={`${styles.tag} ${whiteText ? styles.whiteText : ''}`} style={{ background: backgroundColor }}
+        className={`${styles.tag} ${whiteText ? styles.whiteText : ''} ${locale === '∞' ? styles.infinityTag : ''}`}
+        style={{ background: backgroundColor }}
         data-taglike={dataId}
         aria-label={locale}
       >

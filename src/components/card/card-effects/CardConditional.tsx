@@ -25,13 +25,13 @@ export default function CardConditional({
       case Conditional.Solo:
         return 'var(--soloGradient)';
       case Conditional.Infinite:
-        return '#ffae3c';
+        return 'var(--infiniteGradient)';
       case Conditional.TurnEnd:
-        return '#b354f2';
+        return 'var(--turnEndGradient)';
       case Conditional.DrawEnd:
-        return '#61dcce';
+        return 'var(--drawEndGradient)';
       case Conditional.React:
-        return '#877c9aff';
+        return 'var(--reactGradient)';
       default:
         throw new Error(`Unknown conditional: ${conditional}`);
     }
@@ -44,13 +44,13 @@ export default function CardConditional({
       case Conditional.Solo:
         return 'var(--soloGradientLeft)';
       case Conditional.Infinite:
-        return '#cc7a29';
+        return 'var(--infiniteGradientLeft)';
       case Conditional.TurnEnd:
-        return '#8e39c4';
+        return 'var(--turnEndGradientLeft)';
       case Conditional.DrawEnd:
-        return '#3ab6ad';
+        return 'var(--drawEndGradientLeft)';
       case Conditional.React:
-        return '#6b617d';
+        return 'var(--reactGradientLeft)';
       default:
         throw new Error(`Unknown conditional: ${conditional}`);
     }

@@ -6,7 +6,8 @@
   overflow: hidden;
   isolation: isolate; /* Important for blend/mask/overlay effects */
   background-color: black;
-  transform: scale(75%);
+  /* transform: scale(75%); */
+  transform: scale(417%);
 }
 
 .qrtexture,
@@ -447,7 +448,9 @@
 .effectsContainer {
   flex: 1;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 2px;
 }
 
 .aspectSingle,

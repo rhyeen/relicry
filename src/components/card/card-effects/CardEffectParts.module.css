@@ -9,13 +9,22 @@
   gap: 6px;
 }
 
-.cardPart {
+.cardPart,
+.damagePart,
+.flipPart,
+.scrappedPart,
+.quellPart,
+.aspectPart {
   position: relative;
-  width: 22px;
   display: inline-block;
 }
 
-.cardPartSymbol {
+.cardPartSymbol,
+.damagePartSymbol,
+.flipPartSymbol,
+.scrappedPartSymbol,
+.quellPartSymbol,
+.aspectPartSymbol {
   content: '';
   position: absolute;
   inset: 0;
@@ -24,17 +33,73 @@
   pointer-events: none;
 }
 
-.cardPartSymbol {
-  width: 22px;
-  aspect-ratio: 30 / 43;
-}
-
 .numberPart {
   position: relative;
-  color: black;
   font-weight: 600;
 }
 
+.cardPartSymbol {
+  aspect-ratio: 30 / 43;
+}
+
+.cardPart {
+  width: 22px;
+}
+
 .cardPart .numberPart {
+  color: black;
   padding-left: 5px;
+}
+
+.damagePartSymbol {
+  aspect-ratio: 36 / 36;
+  margin-top: 3px;
+}
+
+.damagePart {
+  width: 26px;
+}
+
+.damagePart .numberPart {
+  padding-left: 7px;
+}
+
+.quellPartSymbol {
+  aspect-ratio: 39 / 36;
+  margin-top: 3px;
+}
+
+.quellPart {
+  width: 28px;
+}
+
+.quellPart .numberPart {
+  padding-left: 9px;
+}
+
+.scrappedPartSymbol {
+  aspect-ratio: 36 / 48;
+  margin-top: -24px;
+}
+
+.scrappedPart {
+  width: 26px;
+}
+
+.flipPartSymbol {
+  aspect-ratio: 45 / 51;
+  margin-top: -28px;
+}
+
+.flipPart {
+  width: 33px;
+}
+
+.aspectPartSymbol {
+  aspect-ratio: 35 / 40;
+  margin-top: -22px;
+}
+
+.aspectPart {
+  width: 25px;
 }

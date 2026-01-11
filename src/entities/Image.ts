@@ -14,7 +14,9 @@ export const ImageSizeContext: {
   [ImageSize.Banner]: { w: 1920, h: 480, quality: 82 },
   [ImageSize.CardPreview]: { w: 300, h: 300, quality: 62 },
   [ImageSize.Card]: { w: 470, h: 660, quality: 82 },
-  [ImageSize.CardFull]: { w: 1536, h: 1536, quality: 100 },
+  // @NOTE: True 800dpi is 1960x2752, but that is only necessary for the vector aspects of cards.
+  // For illustrations, we stick to 300 dpi
+  [ImageSize.CardFull]: { w: 735, h: 1032, quality: 100 },
   [ImageSize.Custom]: { w: 0, h: 0, quality: 82 },
 };
 

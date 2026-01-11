@@ -48,6 +48,13 @@
   color: white;
 }
 
+.infinityTag {
+  line-height: 9px;
+  font-size: 45px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 400;
+}
+
 .tagAuraNumberSpacer {
   padding-left: 22px;
 }

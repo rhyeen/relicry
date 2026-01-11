@@ -9,3 +9,7 @@
   flex-direction: row;
   column-gap: 6px;
 }
+
+.largeAndCenter {
+  transform: translate(50%) scale(1.4);
+}

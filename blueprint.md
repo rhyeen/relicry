@@ -46,8 +46,11 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Getting Firebase storage images to work
 - [x] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
 - [x] Denormalizing data so when we get things like a Card, we also get Art/Artist.
-- [ ] 1/2 and 0 both needed on tags
-- [ ] See if we can recreate the Card printable card itself with CSS
+- [x] See if we can recreate the Card printable card itself with CSS
+- [ ] Get full rez version created for printing
+- [ ] 1 offcenter for tooltips
+- [ ] 1/2 and 0 both needed on tags + all tag colors checked
+- [ ] Create legendary banner
 - [ ] Apex needs to have different values based on number of players facing it
 - [ ] Get Apex design in place
 - [ ] Build out focus, gambit, quest, and quest token cards

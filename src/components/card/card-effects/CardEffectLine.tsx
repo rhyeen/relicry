@@ -13,9 +13,14 @@ type Props = {
 export default function CardEffectLine({
   effect, single = false, variableSize = false
 }: Props) {
+  const largeAndCenter = (
+    variableSize && single && !effect.aura && !effect.conditionals.length &&
+    cardEffectToString(effect).length < 15
+  );
+
   return (
     <div
-      className={`${styles.effectLine} ${single ? styles.single : ''} ${variableSize ? styles.variableSize : ''}`}
+      className={`${styles.effectLine} ${largeAndCenter ? styles.largeAndCenter : ''}`}
       aria-label={`Effect: ${cardEffectToString(effect)}`}
     >
       <div className={styles.effectConditionals}>

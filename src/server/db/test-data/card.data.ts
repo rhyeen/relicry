@@ -1,6 +1,6 @@
 import { Aspect } from '@/entities/Aspect';
 import { Version, VersionedDeckCard, VersionedFocusCard } from '@/entities/Card';
-import { CardEffectPartText, CardEffectPartDamage, CardEffectPartCard, CardEffect } from '@/entities/CardEffect';
+import { CardEffectPartText, CardEffectPartDamage, CardEffectPartCard, CardEffect, CardEffectPartQuell, CardEffectPart } from '@/entities/CardEffect';
 import { Conditional } from '@/entities/Conditional';
 import { Rarity } from '@/entities/Rarity';
 import { Tag } from '@/entities/Tag';
@@ -54,10 +54,11 @@ export function getExampleCard2(): VersionedDeckCard {
     tags: [Tag.Ability, Tag.Bling],
     effects: [
       {
-        ...drawXCards(3),
-        conditionals: [Conditional.Pvp],
-        aura: 3,
+        ...drawXCards(1, quellX(1, forEachAspect(Aspect.Brave).parts).parts),
+        conditionals: [Conditional.TurnEnd],
+        // aura: 3,
       },
+      ifXCardsPlayed(3, true, ifScrapped(dealXDamage(1, thenFlip().parts).parts).parts),
     ],
     drawLimit: 5,
     scrapCost: [
@@ -108,22 +109,81 @@ export function getExampleCard3(): VersionedFocusCard {
   };
 }
 
-function drawXCards(x: number): CardEffect {
+function drawXCards(x: number, additionalParts?: CardEffectPart[]): CardEffect {
   return {
     conditionals: [],
     parts: [
       { type: 'text', text: 'Draw' } as CardEffectPartText,
       { type: 'card', amount: x } as CardEffectPartCard,
+      ...(additionalParts ?? []),
     ],
   };
 }
 
-function dealXDamage(x: number): CardEffect {
+function ifScrapped(additionalParts: CardEffectPart[]): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'If this card is' } as CardEffectPartText,
+      { type: 'scrapped' },
+      ...additionalParts,
+    ],
+  };
+}
+
+function forEachAspect(aspect: Aspect, additionalParts?: CardEffectPart[]): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'for each' } as CardEffectPartText,
+      { type: 'aspect', aspect } as CardEffectPart,
+      ...(additionalParts ?? []),
+      { type: 'text', text: '.' } as CardEffectPartText,
+    ],
+  };
+}
+
+function ifXCardsPlayed(x: number, orMore: boolean, additionalParts: CardEffectPart[]): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'If played' } as CardEffectPartText,
+      { type: 'card', amount: x, orMore } as CardEffectPartCard,
+      ...additionalParts,
+    ],
+  };
+}
+
+function thenFlip(additionalParts?: CardEffectPart[]): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: ',' } as CardEffectPartText,
+      { type: 'flip' },
+      ...(additionalParts ?? []),
+      { type: 'text', text: '.' } as CardEffectPartText,
+    ],
+  };
+}
+
+function dealXDamage(x: number, additionalParts?: CardEffectPart[]): CardEffect {
   return {
     conditionals: [],
     parts: [
       { type: 'text', text: 'Deal' } as CardEffectPartText,
       { type: 'damage', amount: x } as CardEffectPartDamage,
+      ...(additionalParts ?? []),
+    ],
+  };
+}
+
+function quellX(x: number, additionalParts?: CardEffectPart[]): CardEffect {
+  return {
+    conditionals: [],
+    parts: [
+      { type: 'text', text: 'Quell' } as CardEffectPartText,
+      { type: 'quell', amount: x } as CardEffectPartQuell,
+      ...(additionalParts ?? []),
     ],
   };
 }
