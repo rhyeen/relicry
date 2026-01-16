@@ -1,11 +1,13 @@
+import { assetURL, CardContext } from '@/entities/CardContext';
 import styles from '../Card.module.css';
 import { FlavorText } from '@/entities/FlavorText';
 
 type Props = {
   flavorText?: FlavorText;
+  ctx: CardContext;
 }
 
-export default function FlavorTextCardPart({ flavorText }: Props) {
+export default function FlavorTextCardPart({ flavorText, ctx }: Props) {
   if (!flavorText || !flavorText.onCard) return null;
 
   let text = flavorText.onCard.text;
@@ -25,9 +27,9 @@ export default function FlavorTextCardPart({ flavorText }: Props) {
 
   const getFlavorLineImageUrl = () => {
     if (flavorText.extended) {
-      return '/assets/card/flavor-extended.2.png';
+      return assetURL(ctx, 'flavor-extended.2.png');
     } else {
-      return '/assets/card/flavor-normal.2.png';
+      return assetURL(ctx, 'flavor-normal.2.png');
     }
   }
 

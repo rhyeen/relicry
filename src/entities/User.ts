@@ -3,7 +3,7 @@ import { AdminRole } from './AdminRole';
 import { ImageSize, ImageStorage } from './Image';
 import { prefixId, StoredRoot } from './Root';
 
-export interface User extends StoredRoot {
+export type User = StoredRoot & {
   // u/a1b2c3d4e5
   id: string;
   firebaseUid: string;

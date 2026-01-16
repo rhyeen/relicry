@@ -1,6 +1,6 @@
 import { StoredRoot } from './Root';
 
-export interface Reward extends StoredRoot {
+export type Reward = StoredRoot & {
   eventId: string;
   level: number;
   // Either the reward is tied to a specific quest or scene

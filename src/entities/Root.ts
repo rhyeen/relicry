@@ -1,4 +1,4 @@
-export interface StoredRoot {
+export type StoredRoot = {
   [key: string]: unknown;
 }
 

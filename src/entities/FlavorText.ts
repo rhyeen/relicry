@@ -1,4 +1,4 @@
-export interface FlavorText {
+export type FlavorText = {
   extended: {
     artistId: string;
     artId: string;

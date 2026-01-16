@@ -7,8 +7,10 @@ import { getArt } from '@/server/cache/art.cache';
 import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
 import Card from '@/components/card/Card';
+import { CardSize } from '@/entities/CardContext';
 
 type Params = { version: string; card_id: string };
+type SearchParams = { size?: string | string[] };
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -29,27 +31,41 @@ export async function generateMetadata(
   };
 }
 
+function normalizeSize(sp?: SearchParams): CardSize | undefined {
+  const raw = sp?.size;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  if (!v) return undefined;
+  const allowed = new Set([CardSize.PrintSize, CardSize.WebSize]);
+  if (!allowed.has(v as CardSize)) return undefined;
+  return v as CardSize;
+}
+
 export default async function CardPage(
-  { params }: { params: Promise<Params> }
+  { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   return (
     <div>
       <h1>Card Details</h1>
       <Suspense fallback={<div>Loading card data...</div>}>
-        <CardPageData params={params} />
+        <CardPageData params={params} searchParams={searchParams} />
       </Suspense>
     </div>
   );
 }
 
 async function CardPageData(
-  { params }: { params: Promise<Params> }
+  { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
-  const { version, card_id } = await params;
+  const [{ version, card_id }, sp] = await Promise.all([params, searchParams]);
+  const size = normalizeSize(sp);
+
   const card = await getCard(card_id, version);
   if (!card) notFound();
-  const awakenedVersion: VersionedFocusCard | null = card.awakenedVersion ?
-    card.awakenedVersion as VersionedFocusCard : null;
+
+  const awakenedVersion: VersionedFocusCard | null = card.awakenedVersion
+    ? (card.awakenedVersion as VersionedFocusCard)
+    : null;
+
   const [
     illustrationArt,
     illustrationArtist,
@@ -70,24 +86,16 @@ async function CardPageData(
     awakenedVersion?.flavorText?.extended ? getArtist(awakenedVersion.flavorText.extended.artistId) : null,
   ]);
 
-  // console.log(
-  //   'Illustration Art:', illustrationArt,
-  //   'Illustration Artist:', illustrationArtist,
-  //   'Flavor Text Extended Art:', flavorTextExtendedArt,
-  //   'Flavor Text Extended Artist:', flavorTextExtendedArtist,
-  //   'Awakened Illustration Art:', awakenedIllustrationArt,
-  //   'Awakened Illustration Artist:', awakenedIllustrationArtist,
-  //   'Awakened Flavor Text Extended Art:', awakenedFlavorTextExtendedArt,
-  //   'Awakened Flavor Text Extended Artist:', awakenedFlavorTextExtendedArtist,
-  // );
-
   return (
     <section>
       <Card
         card={card}
         art={illustrationArt}
         artist={illustrationArtist}
-        type="full"
+        ctx={{
+          type: 'full',
+          size: size,
+        }}
       />
       <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
     </section>

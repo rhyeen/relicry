@@ -1,12 +1,14 @@
 import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
+import { CardContext } from '@/entities/CardContext';
 
 type Props = {
   aspect: Aspect | [Aspect, Aspect];
+  ctx: CardContext;
 }
 
-export default function BannerCardPart({ aspect }: Props) {
+export default function BannerCardPart({ aspect, ctx }: Props) {
   const getColorStyle = () => {
     const asArray = aspectAsArray(aspect);
     const aspectString = `${asArray[0]}/${asArray[1]}`;

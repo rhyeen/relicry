@@ -1,9 +1,11 @@
+import { CardContext } from '@/entities/CardContext';
 import CardTagLike from './CardTagLike';
 import { Conditional } from '@/entities/Conditional';
 
 type Props = {
   conditional: Conditional;
   straightLeft?: boolean;
+  ctx: CardContext;
 }
 
 const tagLocaleEn = {
@@ -16,7 +18,7 @@ const tagLocaleEn = {
 }
 
 export default function CardConditional({
-  conditional, straightLeft = false,
+  conditional, straightLeft = false, ctx,
 }: Props) {
   const getBackgroundColor = () => {
     switch (conditional) {
@@ -63,6 +65,7 @@ export default function CardConditional({
       straightLeftLong={straightLeft}
       backgroundColor={getBackgroundColor()}
       straightLeftColor={getStraightLeftColor()}
+      ctx={ctx}
     />
   );
 }

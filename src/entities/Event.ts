@@ -1,7 +1,7 @@
 import { ImageSize, ImageStorage } from './Image';
 import { prefixId, StoredRoot } from './Root';
 
-export interface Event extends StoredRoot {
+export type Event = StoredRoot & {
   // e/custom123; min-max after `e/` = 5-10 characters; case-insensitive alphanumeric
   id: string;
   title: string;

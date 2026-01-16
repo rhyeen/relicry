@@ -1,7 +1,7 @@
 import { ImageSize } from './Image';
 import { prefixId, StoredRoot } from './Root';
 
-export interface PromotedItem extends StoredRoot {
+export type PromotedItem = StoredRoot & {
   // pi/a1b2c3d4e5
   id: string;
   artId: string | null;

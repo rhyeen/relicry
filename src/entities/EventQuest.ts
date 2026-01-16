@@ -1,6 +1,6 @@
 import { prefixId, StoredRoot } from './Root';
 
-export interface EventQuest extends StoredRoot {
+export type EventQuest = StoredRoot & {
   eventId: string;
   questId: string;
   apexId: string;
@@ -22,7 +22,7 @@ export interface EventQuest extends StoredRoot {
   archivedAt: Date | null;
 }
 
-export interface QuestThread {
+export type QuestThread = {
   title: string;
   objective: string;
   imageId?: string;

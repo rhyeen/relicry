@@ -1,7 +1,7 @@
 import { prefixId, StoredRoot } from './Root';
 import type { SerializeDates } from '@/lib/serialization';
 
-export interface PlayerCard extends StoredRoot {
+export type PlayerCard = StoredRoot & {
   userId: string;
   cardId: string;
   cardVersion: number;

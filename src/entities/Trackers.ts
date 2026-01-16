@@ -1,6 +1,6 @@
 import { prefixId, StoredRoot } from './Root';
 
-export interface TrackEventQuest extends StoredRoot {
+export type TrackEventQuest = StoredRoot & {
   eventId: string;
   questId: string;
   // of the player

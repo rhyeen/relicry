@@ -2,7 +2,7 @@ import { CardEffect, defaultHideCardEffect, defineCardEffect } from './CardEffec
 import { FlavorText } from './FlavorText';
 import { prefixId, StoredRoot } from './Root';
 
-export interface RootApex {
+export type RootApex = {
   // ax/a1b2c3
   id: string;
   season: number;
@@ -10,13 +10,13 @@ export interface RootApex {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
-}
+};
 
-export interface RevealedApex extends RootApex, RootRevealedApex {
+export type RevealedApex = RootApex & RootRevealedApex & {
   type: 'revealed';
 }
 
-export interface HiddenApex extends RootApex, RootHiddenApex {
+export type HiddenApex = RootApex & RootHiddenApex & {
   type: 'hidden';
 }
 
@@ -24,14 +24,14 @@ export interface HiddenApex extends RootApex, RootHiddenApex {
 // DefinedApex is fixed with exact values for a specific apex encounter with
 // a player group. Whereas a RevealedApex might still have some variability
 // between encounters.
-export interface DefinedApex extends RootApex {
+export type DefinedApex = RootApex & {
   type: 'defined';
   revealed: RootRevealedApex;
   health: number;
   effects: CardEffect[];
 }
 
-export interface RootRevealedApex {
+export type RootRevealedApex = {
   title: string;
   health: number | {
     from: number;
@@ -45,7 +45,7 @@ export interface RootRevealedApex {
   effects: CardEffect[];
 }
 
-export interface RootHiddenApex {
+export type RootHiddenApex = {
   title?: string;
   health: {
     from: number;
@@ -62,7 +62,7 @@ export interface RootHiddenApex {
   effects: CardEffect[];
 }
 
-export interface StoredApex extends RootApex, StoredRoot {
+export type StoredApex = RootApex & StoredRoot & {
   revealed: RootRevealedApex;
   hidden: RootHiddenApex;
 }

@@ -34,14 +34,22 @@
 
 .tagTexture {
   position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
   mix-blend-mode: overlay;
   opacity: 0.75;
   user-select: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: top left;
+  pointer-events: none;
+}
+
+.straightLeft .tagTexture {
+  background-position: top right;
 }
 
 .whiteText {

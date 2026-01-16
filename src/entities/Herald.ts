@@ -3,7 +3,7 @@
 
 import { prefixId, StoredRoot } from './Root';
 
-export interface Herald extends StoredRoot {
+export type Herald = StoredRoot & {
   // hrd/a1b2c3d4e5
   id: string;
   userId: string;

@@ -7,11 +7,11 @@ import { Tag } from './Tag';
 
 export type VersionedCard = VersionedDeckCard | VersionedFocusCard | VersionedGambitCard;
 
-export interface VersionedGambitCard extends GambitCard, Version, StoredRoot {}
+export type VersionedGambitCard = GambitCard & Version & StoredRoot;
 
-export interface VersionedDeckCard extends DeckCard, Version, StoredRoot {}
+export type VersionedDeckCard = DeckCard & Version & StoredRoot;
 
-export interface VersionedFocusCard extends FocusCard, Version, StoredRoot {
+export type VersionedFocusCard = FocusCard & Version & StoredRoot & {
   awakenedVersion: {
     illustration?: {
       artId: string;
@@ -19,9 +19,9 @@ export interface VersionedFocusCard extends FocusCard, Version, StoredRoot {
     };
     flavorText?: FlavorText;
   }
-}
+};
 
-export interface Version {
+export type Version = {
   version: number;
   season: number;
   // @NOTE: When looking at the list of cards, this is the one that should be shown.
@@ -43,24 +43,24 @@ export interface Version {
   isSample: boolean;
 }
 
-export interface DeckCard extends Card {
+export type DeckCard = Card & {
   type: 'deck';
   drawLimit: number;
   scrapCost: (Aspect | [Aspect, Aspect])[];
   aspect: Aspect | [Aspect, Aspect];
 }
 
-export interface FocusCard extends Card {
+export type FocusCard = Card & {
   type: 'focus';
   aspect: Aspect | [Aspect, Aspect];
   awakened: RootCard;
 }
 
-export interface GambitCard extends Card {
+export type GambitCard = Card & {
   type: 'gambit';
 }
 
-export interface Card extends RootCard {
+export type Card = RootCard & {
   // c/a1b2
   id: string;
   type: 'deck' | 'focus' | 'gambit';
@@ -68,7 +68,7 @@ export interface Card extends RootCard {
   rarity: Rarity;
 }
 
-export interface RootCard {
+export type RootCard = {
   title?: string;
   tags: Tag[];
   effects: CardEffect[];

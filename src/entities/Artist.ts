@@ -1,6 +1,6 @@
 import { prefixId, StoredRoot } from './Root';
 
-export interface Artist extends StoredRoot {
+export type Artist = StoredRoot & {
   // @NOTE: We have a distinct Artist ID as an artist may be a team or need to be transfered
   // to a different user.
   // ast/a1b2c3d4e5
@@ -16,7 +16,7 @@ export interface Artist extends StoredRoot {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
-}
+};
 
 export enum ArtistTag {
   CardIllustrator = 'card_illustrator',

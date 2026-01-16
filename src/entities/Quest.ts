@@ -1,9 +1,9 @@
 import { Faction } from './Faction';
 import { prefixId, StoredRoot } from './Root';
 
-export interface VersionedQuest extends Quest, Version, StoredRoot {}
+export type VersionedQuest = Quest & Version & StoredRoot;
 
-export interface Version {
+export type Version = {
   season: number;
   archived?: {
     at: Date;
@@ -19,14 +19,14 @@ export interface Version {
   };
 }
 
-export interface Quest {
+export type Quest = {
   // q/a1b
   id: string;
   faction: Faction;
   level: number;
 }
 
-export interface QuestToken {
+export type QuestToken = {
   // t[1-9]/${questId, excluding the 'q/' prefix}
   id: string;
   questId: string;

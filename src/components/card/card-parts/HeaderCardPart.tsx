@@ -1,13 +1,15 @@
 import { getCardDocId, VersionedCard } from '@/entities/Card';
 import styles from '../Card.module.css';
 import { Artist } from '@/entities/Artist';
+import { CardContext } from '@/entities/CardContext';
 
 type Props = {
   artist: Artist | null;
   card: VersionedCard;
+  ctx: CardContext;
 }
 
-export default function HeaderCardPart({ artist, card }: Props) {
+export default function HeaderCardPart({ artist, card, ctx }: Props) {
   return (
     <div className={styles.header}>
       <div className={styles.headerLeft}>{artist ? artist.name : 'Unknown Artist'}</div>

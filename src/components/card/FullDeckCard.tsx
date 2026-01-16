@@ -15,41 +15,43 @@ import DetailsCardPart from './card-parts/DetailsCardPart';
 import ScrapCostCardPart from './card-parts/ScrapCostCardPart';
 import AspectCardPart from './card-parts/AspectCardPart';
 import TagsCardPart from './card-parts/TagsCardPart';
+import { assetURL, CardContext, CardSize } from '@/entities/CardContext';
 
 type Props = {
   card: VersionedCard;
   art: Art | null;
   artist: Artist | null;
+  ctx: CardContext;
 }
 
 export default function FullDeckCard({
-  card, art, artist
+  card, art, artist, ctx
 }: Props) {
   if (card.type !== 'deck') {
     throw new Error(`FullDeckCard can only render deck type cards, received: ${card.type}`);
   }
   const _card: VersionedDeckCard = card;
   return (
-    <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} />
-      <RarityCardPart rarity={_card.rarity} />
-      <BannerCardPart aspect={_card.aspect} />
-      <TagsCardPart tags={_card.tags} aspect={_card.aspect} />
-      <AspectCardPart aspect={_card.aspect} />
-      <DetailsCardPart card={_card} />
+    <section className={`${styles.fullCard} ${ctx.size === CardSize.PrintSize ? styles.printSize : ''}`}>
+      <IllustrationCardPart art={art} ctx={ctx} />
+      <RarityCardPart rarity={_card.rarity} ctx={ctx} />
+      <BannerCardPart aspect={_card.aspect} ctx={ctx} />
+      <TagsCardPart tags={_card.tags} aspect={_card.aspect} ctx={ctx} />
+      <AspectCardPart aspect={_card.aspect} ctx={ctx} />
+      <DetailsCardPart card={_card} ctx={ctx} />
       <div
         className={styles.frame}
         style={{
-          backgroundImage: `url(/assets/card/deck/frame.${ASSET_VERSION}.png)`,
+          backgroundImage: `url(${assetURL(ctx, `deck/frame.${ASSET_VERSION}.png`)})`,
         }}
         aria-hidden="true"
       />
-      <HeaderCardPart artist={artist} card={card} />
-      <DrawLimitCardPart drawLimit={_card.drawLimit} />
-      <ScrapCostCardPart scrapCost={_card.scrapCost} />
-      <TitleCardPart title={_card.title} subTitle={_card.subTitle} />
-      <QRCodeCardPart card={card} />
-      <QRTextureCardPart />
+      <HeaderCardPart artist={artist} card={card} ctx={ctx} />
+      <DrawLimitCardPart drawLimit={_card.drawLimit} ctx={ctx} />
+      <ScrapCostCardPart scrapCost={_card.scrapCost} ctx={ctx} />
+      <TitleCardPart title={_card.title} subTitle={_card.subTitle} ctx={ctx} />
+      <QRCodeCardPart card={card} ctx={ctx} />
+      <QRTextureCardPart ctx={ctx} />
     </section>
   );
 }

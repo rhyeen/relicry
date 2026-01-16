@@ -56,3 +56,9 @@ npm run emulators:stop
 If the stop script does not work, you may need to stop the emulators manually (e.g., with Ctrl+C in the terminal).
 
 ---
+
+## Generating Print-Version Images
+
+Only publication admins can do this.
+
+For instructions, see: https://docs.google.com/document/d/1v8Mc2iAXS1c6yIv_6QRK7YfnG8QFJWRvUOphmApTGOs/edit?tab=t.8d50ck9ouxp

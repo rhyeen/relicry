@@ -1,11 +1,13 @@
+import { CardContext } from '@/entities/CardContext';
 import styles from '../Card.module.css';
 
 type Props = {
   title: string;
   subTitle?: string;
+  ctx: CardContext;
 }
 
-export default function TitleCardPart({ title, subTitle }: Props) { 
+export default function TitleCardPart({ title, subTitle, ctx }: Props) { 
   return (
     <div className={styles.titleContainer}>
       <div aria-label='Title' className={styles.title}>{title}</div>

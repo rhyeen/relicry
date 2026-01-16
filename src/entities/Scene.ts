@@ -1,7 +1,7 @@
 import { Aspect } from './Aspect';
 import { prefixId, StoredRoot } from './Root';
 
-export interface Scene extends StoredRoot {
+export type Scene = StoredRoot & {
   // sc/a1b2c3d4e5
   id: string;
   title: string;
@@ -12,26 +12,26 @@ export interface Scene extends StoredRoot {
   archivedAt: Date | null;
 }
 
-export interface ScenePath {
+export type ScenePath = {
   title: string;
   description: string;
   paths: ScenePath[] | null;
   trial: SceneTrial | null;
 }
 
-export interface SceneSkillTrial extends SceneTrial {
+export type SceneSkillTrial = SceneTrial & {
   type: 'skill';
   anyOf: {
     allOf: SceneSkillTrialRequirement[];
   }[];
 }
 
-export interface SceneApexTrial extends SceneTrial {
+export type SceneApexTrial = SceneTrial & {
   type: 'apex';
   apexId: string;
 }
 
-export interface SceneTrial {
+export type SceneTrial = {
   type: 'skill' | 'apex';
   onSuccess: {
     path?: ScenePath;
@@ -41,12 +41,12 @@ export interface SceneTrial {
   onFailurePath?: ScenePath;
 }
 
-export interface SceneSkillTrialAspectRequirement {
+export type SceneSkillTrialAspectRequirement = {
   type: 'aspect';
   aspect: Aspect;
 }
 
-export interface SceneSkillTrialRequirement {
+export type SceneSkillTrialRequirement = {
   type: 'aspect' | 'card' | 'damage' | 'quell' | 'scrap';
   threshold: number;
   cardLimit?: number;

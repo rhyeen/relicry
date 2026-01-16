@@ -1,9 +1,11 @@
 import { Tag } from '@/entities/Tag';
 import CardTagLike from './CardTagLike';
+import { CardContext } from '@/entities/CardContext';
 
 type Props = {
   tag: Tag;
   straightLeft?: boolean;
+  ctx: CardContext;
 }
 
 const tagLocaleEn = {
@@ -25,7 +27,7 @@ const tagLocaleEn = {
 }
 
 export default function CardTag({
-  tag, straightLeft = false,
+  tag, straightLeft = false, ctx,
 }: Props) {
   const getBackgroundColor = () => {
     switch (tag) {
@@ -71,6 +73,7 @@ export default function CardTag({
       straightLeft={straightLeft}
       backgroundColor={getBackgroundColor()}
       straightLeftColor={getBackgroundColor()}
+      ctx={ctx}
     />
   );
 }

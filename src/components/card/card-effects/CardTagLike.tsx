@@ -1,3 +1,4 @@
+import { assetURL, CardContext } from '@/entities/CardContext';
 import styles from './CardTag.module.css';
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
   straightLeftColor?: string;
   whiteText?: boolean;
   auraNumber?: number;
+  ctx: CardContext;
 }
 
 export default function CardTagLike({
@@ -20,6 +22,7 @@ export default function CardTagLike({
   straightLeftColor,
   whiteText = false,
   auraNumber,
+  ctx,
 }: Props) {
   return (
     <span className={styles.tagContainer}>
@@ -32,7 +35,7 @@ export default function CardTagLike({
           <span
             className={styles.tagTexture}
             style={{
-              backgroundImage: `url(/assets/card/tag-texture.1.png)`,
+              backgroundImage: `url(${assetURL(ctx, 'tag-texture.1.png')})`,
             }}
             aria-hidden="true"
           />
@@ -47,7 +50,7 @@ export default function CardTagLike({
         <span
           className={styles.tagTexture}
           style={{
-            backgroundImage: `url(/assets/card/tag-texture.1.png)`,
+            backgroundImage: `url(${assetURL(ctx, 'tag-texture.1.png')})`,
           }}
           aria-hidden="true"
         />
@@ -61,7 +64,7 @@ export default function CardTagLike({
           <span
             className={styles.auraNumberIcon}
             style={{
-              backgroundImage: `url(/assets/card/aura.1.png)`,
+              backgroundImage: `url(${assetURL(ctx, 'aura.1.png')})`,
             }}
             aria-hidden="true"
           />

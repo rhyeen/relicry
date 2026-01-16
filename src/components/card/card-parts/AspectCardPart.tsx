@@ -1,12 +1,14 @@
 import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
+import { assetURL, CardContext } from '@/entities/CardContext';
 
 type Props = {
   aspect: Aspect | [Aspect, Aspect] | 'gambit';
+  ctx: CardContext;
 }
 
-export default function AspectCardPart({ aspect }: Props) {
+export default function AspectCardPart({ aspect, ctx }: Props) {
   let asArray: [Aspect, Aspect] | 'gambit';
   if (aspect === 'gambit') {
     asArray = 'gambit';
@@ -15,7 +17,7 @@ export default function AspectCardPart({ aspect }: Props) {
   }
 
   const getAspectSymbolImageUrl = (aspect: Aspect | 'gambit') => {
-    const startPath = '/assets/card/aspect/';
+    const startPath = assetURL(ctx, 'aspect/');
     const endPath = `.1.png`;
     switch (aspect) {
       case Aspect.Brave:
@@ -64,7 +66,7 @@ export default function AspectCardPart({ aspect }: Props) {
           <div
             className={styles.aspectDualOverlay}
             style={{
-              backgroundImage: `url(/assets/card/aspect/second-aspect.1.png)`,
+              backgroundImage: `url(${assetURL(ctx, 'aspect/second-aspect.1.png')})`,
             }}
           />
         </div>

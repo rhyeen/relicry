@@ -1,11 +1,13 @@
 import { getCardDocId, VersionedCard } from '@/entities/Card';
 import styles from '../Card.module.css';
+import { CardContext } from '@/entities/CardContext';
 
 type Props = {
   card: VersionedCard;
+  ctx: CardContext;
 }
 
-export default function QRCodeCardPart({ card }: Props) {
+export default function QRCodeCardPart({ card, ctx }: Props) {
   const cardPath = getCardDocId(card.id, card.version);  
   return (
     <div aria-label='QR Code' className={styles.qrcode}>

@@ -2,7 +2,7 @@ import { Aspect } from './Aspect';
 import { Conditional } from './Conditional';
 import { Tag } from './Tag';
 
-export interface CardEffect {
+export type CardEffect = {
   conditionals: Conditional[];
   aura?: number | {
     // @NOTE: These are only used for Apex.type === 'hidden'
@@ -12,38 +12,38 @@ export interface CardEffect {
   parts: CardEffectPart[];
 }
 
-export interface CardEffectPartText extends CardEffectPart {
+export type CardEffectPartText = CardEffectPart & {
   type: 'text';
   text: string;
 }
 
-export interface CardEffectPartDamage extends CardEffectPart {
+export type CardEffectPartDamage = CardEffectPart & {
   type: 'damage';
   amount: number;
 }
 
-export interface CardEffectPartQuell extends CardEffectPart {
+export type CardEffectPartQuell = CardEffectPart & {
   type: 'quell';
   amount: number;
 }
 
-export interface CardEffectPartCard extends CardEffectPart {
+export type CardEffectPartCard = CardEffectPart & {
   type: 'card';
   amount?: number;
   orMore?: true;
 }
 
-export interface CardEffectPartTag extends CardEffectPart {
+export type CardEffectPartTag = CardEffectPart & {
   type: 'tag';
   tag: Tag;
 }
 
-export interface CardEffectPartAspect extends CardEffectPart {
+export type CardEffectPartAspect = CardEffectPart & {
   type: 'aspect';
   aspect: Aspect;
 }
 
-export interface CardEffectPart {
+export type CardEffectPart = {
   type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect';
 }
 

@@ -1,11 +1,13 @@
+import { CardContext } from '@/entities/CardContext';
 import CardTagLike from './CardTagLike';
 
 type Props = {
   aura: number | { from: number; to: number};
+  ctx: CardContext;
 }
 
 export default function CardAura({
-  aura,
+  aura, ctx,
 }: Props) {
   return (
     <CardTagLike
@@ -13,6 +15,7 @@ export default function CardAura({
       locale="Aura"
       backgroundColor="var(--auraGradient)"
       auraNumber={typeof aura === 'number' ? aura : 0}
+      ctx={ctx}
     />
   );
 }

@@ -2,7 +2,7 @@ import "server-only";
 import admin from "firebase-admin";
 import { isEmulated } from './environment';
 
-interface FirebaseAdminAppParams {
+type FirebaseAdminAppParams = {
   projectId: string;
   clientEmail: string;
   storageBucket: string;

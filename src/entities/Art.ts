@@ -3,7 +3,7 @@ import { ImageSize, ImageStorage } from './Image';
 
 export type Art = IllustrationArt | WritingArt;
 
-export interface IllustrationArt extends RootArt, StoredRoot {
+export type IllustrationArt = RootArt & StoredRoot & {
   type: 'illustration';
   image: {
     [ImageSize.Card]?: ImageStorage;
@@ -12,12 +12,12 @@ export interface IllustrationArt extends RootArt, StoredRoot {
   };
 }
 
-export interface WritingArt extends RootArt, StoredRoot {
+export type WritingArt = RootArt & StoredRoot & {
   type: 'writing';
   markdown: string;
 }
 
-export interface RootArt {
+export type RootArt = {
   // art/a1b2c3d4e5
   id: string;
   type: 'illustration' | 'writing';
@@ -27,7 +27,7 @@ export interface RootArt {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
-}
+};
 
 export function getArtId(id: string): string {
   return prefixId('art', id);

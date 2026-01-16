@@ -1,6 +1,6 @@
 import { prefixId } from './Root';
 
-export interface RewardOption {
+export type RewardOption = {
   // ro/a1b2c3d4e5
   id: string;
   // @NOTE: We do it this way so that we can deprecate options without losing historical data

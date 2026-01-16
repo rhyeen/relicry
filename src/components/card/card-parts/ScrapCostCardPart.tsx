@@ -1,16 +1,18 @@
 import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
+import { assetURL, CardContext } from '@/entities/CardContext';
 
 type Props = {
   scrapCost: (Aspect | [Aspect, Aspect])[];
+  ctx: CardContext;
 }
 
-export default function ScrapCostCardPart({ scrapCost }: Props) {
+export default function ScrapCostCardPart({ scrapCost, ctx }: Props) {
   const spreadCosts = scrapCost.map((aspect) => aspectAsArray(aspect));
 
   const getAspectColorImageUrl = (aspect: Aspect) => {
-    const startPath = '/assets/card/scrap/scrap-';
+    const startPath = assetURL(ctx, 'scrap/scrap-');
     const endPath = `.1.png`;
     switch (aspect) {
       case Aspect.Brave:
@@ -27,7 +29,7 @@ export default function ScrapCostCardPart({ scrapCost }: Props) {
   };
 
   const getAspectSymbolImageUrl = (aspect: Aspect) => {
-    const startPath = '/assets/card/scrap/scrap-';
+    const startPath = assetURL(ctx, 'scrap/scrap-');
     const endPath = `.1.png`;
     switch (aspect) {
       case Aspect.Brave:
