@@ -4,30 +4,35 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "local": "npm run emulators:start",
+    "local": "concurrently -n NEXT,EMU \"npm run dev:next\" \"npm run emulators:start\"",
     "dev:next": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest",
     "emulators:start": "firebase emulators:start",
-    "force:kill": "kill -9 $(lsof -ti:5007,8087,9097,4000,9200,9300) || echo 'No processes to kill on specified ports'",
+    "force:kill": "kill -9 $(lsof -ti:3000,8087,9097,4000,9200,9300) || echo 'No processes to kill on specified ports'",
     "emulators:stop": "firebase emulators:stop || echo 'Stop the emulators manually if needed'"
   },
   "dependencies": {
+    "@base-ui/react": "^1.0.0",
     "firebase": "^12.7.0",
     "firebase-admin": "^13.6.0",
     "next": "^16.1.0",
+    "qrcode": "^1.5.4",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.1",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.2",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "^16.1.0",
     "firebase-tools": "^15.1.0",

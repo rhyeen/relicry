@@ -1,9 +1,9 @@
 // Heralds are vendors or others who handle quest threads or are
 // otherwise associated with events in some way, like card artists.
 
-import { LocaleMap } from './LocaleMap';
+import { prefixId, StoredRoot } from './Root';
 
-export interface Herald {
+export type Herald = StoredRoot & {
   // hrd/a1b2c3d4e5
   id: string;
   userId: string;
@@ -15,14 +15,14 @@ export interface Herald {
     // Same order as name
     profileImageUrl?: string;
     bannerImageUrl?: string;
-    summary?: LocaleMap;
+    summary?: string;
     promotedItemIds?: string[];
   };
   mapPin: {
     id: string;
     x: number;
     y: number;
-    note?: LocaleMap;
+    note?: string;
   };
   limitedTimeAtEvent?: {
     from: Date;
@@ -31,4 +31,8 @@ export interface Herald {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+}
+
+export function getHeraldId(id: string): string {
+  return prefixId('hrd', id);
 }

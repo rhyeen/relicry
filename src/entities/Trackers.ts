@@ -1,6 +1,6 @@
-export interface TrackEventQuest {
-  // teq/${userId}/${eventId}/${questId}
-  id: string;
+import { prefixId, StoredRoot } from './Root';
+
+export type TrackEventQuest = StoredRoot & {
   eventId: string;
   questId: string;
   // of the player
@@ -19,4 +19,8 @@ export interface TrackEventQuest {
     defeatedApex: boolean;
     deckVersion: string | null;
   }
+}
+
+export function getTrackEventQuestId(userId: string, eventId: string, questId: string): string {
+  return prefixId('teq', `${userId}/${eventId}/${questId}`);
 }

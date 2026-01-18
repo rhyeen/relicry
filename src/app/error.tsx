@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import styles from './error.module.css';
 
 export default function Error({
   error,
@@ -16,13 +15,12 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h2 className={styles.title}>Something went wrong!</h2>
-        <p className={styles.message}>{error.message}</p>
+    <div>
+      <div>
+        <h2>Something went wrong!</h2>
+        <p>{error.message}</p>
         <button
           onClick={() => reset()}
-          className={styles.button}
         >
           Try again
         </button>

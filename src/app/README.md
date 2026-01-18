@@ -30,23 +30,25 @@ Unless stated otherwise, do NOT retrieve or cache:
 * cardPathId(s) => Card.version + Card.id (Card.ts)
 * sceneId(s) => Scene.id (Scene.ts)
 
-Any `imageUrl` or `*ImageUrl` should be cached separately—according to best practices for caching images—assuming a LONG caching strategy for the image.
+Any `imageUrl*`, `imagePath*`, `*ImageUrl*`, `*ImagePath*` should be cached separately—according to best practices for caching images—assuming a LONG caching strategy for the image.
 
 When requesting the entity from Firestore, assume the id is the docId. Note that the format of the id is listed as a comment above the id itself.
 
-#### `/[card_version]/[id]`
+#### `/c/[id]/[card_version]`
 * **Entity**: VersionedGambitCard or VersionedDeckCard or VersionedFocusCard (Card.ts)
 * **Caching Strategy**: LONG
 * **Access Level**: PUBLIC
 
 `[card_version]` in the route path is the `version: number` property on `Version` (Card.ts).
 
-#### `/ax/[id]`
+#### `/ax/[id]/[apex_version]`
 * **Entity**: If access level is met, then the RevealedApex is shown (Apex.ts)l otherwise, the HiddenApex is shown.
 * **Caching Strategy**: NONE
 * **Access Level**: VARIABLE event+
 
 Note that the retrieved entity is the StoredApex (Apex.ts), which is used to determine return data.
+
+`[apex_version]` in the route path is the `version: number` property on `Apex` (Apex.ts).
 
 #### `/art/[id]`
 * **Entity**: IllustrationArt or WritingArt (Art.ts)
@@ -70,12 +72,12 @@ Note that the retrieved entity is the StoredApex (Apex.ts), which is used to det
 
 Also pull all EventMap (EventMap.ts) where EventMap.eventId === `[id]`.
 
-#### `/e/[id]/[reward_level]`
+#### `/e/[id]/r/[reward_level]`
 * **Entity**: Reward (Reward.ts)
 * **Caching Strategy**: MEDIUM
 * **Access Level**: PUBLIC
 
-`[reward_level]` in the route path is the `level: number` property on `Reward` (Reward.ts) prefixed with `r`.
+`[reward_level]` in the route path is the `level: number` property on `Reward` (Reward.ts).
 
 #### `/hrd/[id]`
 * **Entity**: Herald (Herald.ts)

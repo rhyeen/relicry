@@ -1,11 +1,20 @@
 import "server-only";
 import admin from "firebase-admin";
+import { isEmulated } from './environment';
 
-interface FirebaseAdminAppParams {
+type FirebaseAdminAppParams = {
   projectId: string;
   clientEmail: string;
   storageBucket: string;
   privateKey: string;
+}
+
+// IMPORTANT: set emulator env vars BEFORE initializeApp()
+// This has to be done because we are running within NextJS rather than Firebase Functions
+if (isEmulated) {
+  process.env.FIREBASE_AUTH_EMULATOR_HOST ||= 'localhost:9097';
+  process.env.FIRESTORE_EMULATOR_HOST ||= 'localhost:8087';
+  process.env.FIREBASE_STORAGE_EMULATOR_HOST ||= 'localhost:9197';
 }
 
 function formatPrivateKey(key: string) {
@@ -45,9 +54,9 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
 function initAdmin() {
   const params = {
     projectId: "relicry-prod",
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL as string,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL as string || '',
     storageBucket: "relicry-prod.firebasestorage.app",
-    privateKey: process.env.FIREBASE_PRIVATE_KEY as string,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY as string || '',
   };
 
   return initializeFirebaseAdminApp(params);

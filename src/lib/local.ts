@@ -1,0 +1,1 @@
+export const LOCAL_CACHE_TAG = 'local:all';

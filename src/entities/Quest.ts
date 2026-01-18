@@ -1,36 +1,44 @@
 import { Faction } from './Faction';
-import { LocaleMap } from './LocaleMap';
+import { prefixId, StoredRoot } from './Root';
 
-export interface VersionedQuest extends Quest, Version {}
+export type VersionedQuest = Quest & Version & StoredRoot;
 
-export interface Version {
+export type Version = {
   season: number;
   archived?: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
   revealed: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
   published?: {
     at: Date;
-    context: LocaleMap;
+    context?: string;
   };
 }
 
-export interface Quest {
+export type Quest = {
   // q/a1b
   id: string;
   faction: Faction;
   level: number;
 }
 
-export interface QuestToken {
+export type QuestToken = {
   // t[1-9]/${questId, excluding the 'q/' prefix}
   id: string;
   questId: string;
   version: number;
   // e.g. "Broken Sword"
-  token: LocaleMap;
+  token: string;
+}
+
+export function getQuestId(id: string): string {
+  return prefixId('q', id);
+}
+
+export function getQuestDocId(id: string, season: number): string {
+  return `${getQuestId(id)}/${season}`;
 }

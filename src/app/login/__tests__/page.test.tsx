@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import LoginPage from '../login/page';
+import LoginPage from '../page';
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -9,6 +9,6 @@ vi.mock('next/navigation', () => ({
 describe('Login page', () => {
   test('renders login button', () => {
     render(<LoginPage />);
-    expect(screen.getByText('Sign in with Google')).toBeInTheDocument();
+    expect(screen.getByText('Sign in with Google')).toBeDefined();
   });
 });
