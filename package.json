@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run dev:next",
     "local": "concurrently -n NEXT,EMU \"npm run dev:next\" \"npm run emulators:start\"",
     "dev:next": "next dev",
+    "print": "NEXT_PUBLIC_DISABLE_DEV_INDICATOR=1 npm run local:devbackend",
+    "local:devbackend": "NEXT_PUBLIC_NO_EMULATOR=1 npm run dev:next",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -15,7 +17,7 @@
     "emulators:stop": "firebase emulators:stop || echo 'Stop the emulators manually if needed'"
   },
   "dependencies": {
-    "@base-ui/react": "^1.0.0",
+    "@base-ui/react": "^1.1.0",
     "firebase": "^12.7.0",
     "firebase-admin": "^13.6.0",
     "next": "^16.1.0",

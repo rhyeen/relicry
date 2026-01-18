@@ -15,7 +15,7 @@ import DetailsCardPart from './card-parts/DetailsCardPart';
 import ScrapCostCardPart from './card-parts/ScrapCostCardPart';
 import AspectCardPart from './card-parts/AspectCardPart';
 import TagsCardPart from './card-parts/TagsCardPart';
-import { assetURL, CardContext, CardSize } from '@/entities/CardContext';
+import { assetURL, CardContext } from '@/entities/CardContext';
 
 type Props = {
   card: VersionedCard;
@@ -32,7 +32,7 @@ export default function FullDeckCard({
   }
   const _card: VersionedDeckCard = card;
   return (
-    <section className={`${styles.fullCard} ${ctx.size === CardSize.PrintSize ? styles.printSize : ''}`}>
+    <section className={styles.fullCard}>
       <IllustrationCardPart art={art} ctx={ctx} />
       <RarityCardPart rarity={_card.rarity} ctx={ctx} />
       <BannerCardPart aspect={_card.aspect} ctx={ctx} />

@@ -5,6 +5,8 @@ const MINUTE = 60 * SECOND;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
+const disableDevIndicator = process.env.NEXT_PUBLIC_DISABLE_DEV_INDICATOR === "1";
+
 const nextConfig: NextConfig = {
   // @NOTE: These are to tell Firebase App Hosting to set proper caching headers.
   async headers() {
@@ -20,6 +22,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  devIndicators: disableDevIndicator ? false : undefined,
   cacheComponents: true,
   cacheLife: {
     noChange: {

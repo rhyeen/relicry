@@ -87,6 +87,22 @@
     #db0d60 0%,
     #ff6c6c 60%
   );
+
+  /* Default Base UI Theme */
+  --color-blue: oklch(69% 50% 264deg);
+  --color-red: oklch(80% 55% 31deg);
+
+  --color-gray-50: oklch(17% 0.25% 264deg);
+  --color-gray-100: oklch(28% 0.75% 264deg / 65%);
+  --color-gray-200: oklch(29% 0.75% 264deg / 80%);
+  --color-gray-300: oklch(35% 0.75% 264deg / 80%);
+  --color-gray-400: oklch(47% 0.875% 264deg / 80%);
+  --color-gray-500: oklch(64% 1% 264deg / 80%);
+  --color-gray-600: oklch(82% 1% 264deg / 80%);
+  --color-gray-700: oklch(92% 1.125% 264deg / 80%);
+  --color-gray-800: oklch(93% 0.875% 264deg / 85%);
+  --color-gray-900: oklch(95% 0.5% 264deg / 90%);
+  --color-gray-950: oklch(94% 0.375% 264deg / 95%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,7 +143,7 @@ a {
   }
 }
 
-.goldButton {
-  background-color: #D3AF37;
-  box-shadow: 0 0 10px #D3AF37;
+.global-header.hide,
+.global-footer.hide {
+  display: none;
 }

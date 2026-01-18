@@ -7,7 +7,8 @@ import { getArt } from '@/server/cache/art.cache';
 import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
 import Card from '@/components/card/Card';
-import { CardSize } from '@/entities/CardContext';
+import { normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import { CardType } from '@/entities/CardContext';
 
 type Params = { version: string; card_id: string };
 type SearchParams = { size?: string | string[] };
@@ -31,15 +32,6 @@ export async function generateMetadata(
   };
 }
 
-function normalizeSize(sp?: SearchParams): CardSize | undefined {
-  const raw = sp?.size;
-  const v = Array.isArray(raw) ? raw[0] : raw;
-  if (!v) return undefined;
-  const allowed = new Set([CardSize.PrintSize, CardSize.WebSize]);
-  if (!allowed.has(v as CardSize)) return undefined;
-  return v as CardSize;
-}
-
 export default async function CardPage(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
@@ -57,7 +49,7 @@ async function CardPageData(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   const [{ version, card_id }, sp] = await Promise.all([params, searchParams]);
-  const size = normalizeSize(sp);
+  const size = normalizeSizeSP(sp);
 
   const card = await getCard(card_id, version);
   if (!card) notFound();
@@ -93,7 +85,7 @@ async function CardPageData(
         art={illustrationArt}
         artist={illustrationArtist}
         ctx={{
-          type: 'full',
+          type: CardType.Full,
           size: size,
         }}
       />

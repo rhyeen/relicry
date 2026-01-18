@@ -47,13 +47,16 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
 - [x] Denormalizing data so when we get things like a Card, we also get Art/Artist.
 - [x] See if we can recreate the Card printable card itself with CSS
-- [ ] Get full rez version created for printing
+- [x] Get full rez version created for printing
+- [ ] Build out UI to add/edit cards
+- [ ] Bulid out UI to upload images
+- [ ] Deploy to prod then test adding cards so we now have a DB
 - [ ] 1 offcenter for tooltips
 - [ ] 1/2 and 0 both needed on tags + all tag colors checked
 - [ ] Create legendary banner
+- [ ] Build out focus, gambit, quest, and quest token cards
 - [ ] Apex needs to have different values based on number of players facing it
 - [ ] Get Apex design in place
-- [ ] Build out focus, gambit, quest, and quest token cards
 - [ ] Incorporate caching model in all components, not just Card
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website.

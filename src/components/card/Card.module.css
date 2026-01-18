@@ -10,8 +10,22 @@
   transform-origin: top left;
 }
 
-.fullCard.printSize {
+.printSize .fullCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0;
+  margin: 100px;
   transform: scale(417%);
+}
+
+.cardContainer.printSize {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .qrtexture,

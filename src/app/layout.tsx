@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import styles from './layout.module.css';
 import ServiceWorkerRegister from '@/components/client/ServiceWorkerRegister';
+import GlobalParamsSetterSlot from '@/components/client/GlobalParamsSetter.slot';
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
@@ -45,10 +46,11 @@ export default function RootLayout({
       <body
         className={`${barlowCondensed.variable} ${breeSerif.variable} ${pirataOne.variable} ${unifrakturCook.variable} ${styles.body}`}
       >
-        <Header />
+        <div data-global-header className='global-header'><Header /></div>
         <ServiceWorkerRegister />
-        <main className={styles.main}>{children}</main>
-        <Footer />
+        <main data-global-main className={`${styles.main} global-main`}>{children}</main>
+        <div data-global-footer className='global-footer'><Footer /></div>
+        <GlobalParamsSetterSlot />
       </body>
     </html>
   );
