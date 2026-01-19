@@ -1,3 +1,8 @@
+.cardContainer {
+  width: calc(476px * 0.75);
+  height: calc(664px * 0.75);
+}
+
 .fullCard {
   position: relative;
   width: 476px;

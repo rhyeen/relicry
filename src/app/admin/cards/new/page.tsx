@@ -1,17 +1,22 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Fragment, Suspense, useMemo, useState } from "react";
 import { Aspect, orderAspects, orderComboAspects } from "@/entities/Aspect";
 import { orderRarities, Rarity } from "@/entities/Rarity";
 import { orderTags, Tag } from "@/entities/Tag";
 import { VersionedDeckCard } from '@/entities/Card';
 import DSForm from '@/components/ds/DSForm';
 import DSSection from '@/components/ds/DSSection';
-import DSField from '@/components/ds/DSField';
+import DSField, { fromDateOnlyString, toDateOnlyString } from '@/components/ds/DSField';
 import DSSelect from '@/components/ds/DSSelect';
 import DSSwitch from '@/components/ds/DSSwitch';
 import DSButton from '@/components/ds/DSButton';
 import DSToggleGroup from '@/components/ds/DSToggleGroup';
+import CardEffectLine from '@/components/card/card-effects/CardEffectLine';
+import { CardType } from '@/entities/CardContext';
+import { cardEffectToString, stringToCardEffect } from '@/entities/CardEffectAsString';
+import DSDialog from '@/components/ds/DSDialog';
+import Card from '@/components/card/Card';
 
 const CURRENT_SEASON = 1;
 
@@ -65,7 +70,7 @@ export default function NewCardAdminPage() {
 function NewCardAdminPageClient() {
   const rarityOptions = useMemo(() => orderRarities().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
   const aspectOptions = useMemo(() => [ ...orderAspects(), ...orderComboAspects()].map((value) => ({
-    label: Array.isArray(value) ? value.map(v => v.toLocaleUpperCase()).join(' + ') : value.toLocaleUpperCase(),
+    label: typeof value === 'string' ? value.toLocaleUpperCase() : value.map(v => v.toLocaleUpperCase()).join(' + '),
     value,
   })), []);
   const tagOptions = useMemo(() => orderTags().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
@@ -85,7 +90,10 @@ function NewCardAdminPageClient() {
     season: CURRENT_SEASON,
     isFeatured: true,
     illustration: { artId: '', artistId: '' },
-    flavorText: { extended: null, onCard: null },
+    flavorText: {
+      extended: { artistId: '', artId: '' },
+      onCard: { text: '', source: '' },
+    },
     subTitle: '',
     revealedAt: new Date(),
     revealedContext: '',
@@ -111,18 +119,29 @@ function NewCardAdminPageClient() {
       setSaveAttempted(true);
       return;
     }
-    const copiedCard = {
+    const copiedCard = getFinalCard();
+    return JSON.stringify(copiedCard, null, 2);
+  };
+
+  const getFinalCard = (): VersionedDeckCard => {
+    return {
       ...card,
-      flavorText: card.flavorText?.onCard ? { ...card.flavorText } : undefined,
+      flavorText: card.flavorText?.onCard?.text ? {
+        extended: card.flavorText.extended?.artId ? { ...card.flavorText.extended } : null,
+        onCard: card.flavorText.onCard.text.trim() ? {
+          text: card.flavorText.onCard.text.trim(),
+          source: card.flavorText.onCard.source?.trim() ? card.flavorText.onCard.source.trim() : undefined,
+        } : null,
+      } : undefined,
       title: card.title.trim(),
       subTitle: [Rarity.Epic, Rarity.Legendary].includes(card.rarity) && card.subTitle?.trim() ? card.subTitle : undefined,
       revealedContext: card.revealedContext?.trim() ? card.revealedContext : undefined,
-      publishedContext: card.publishedContext?.trim() ? card.publishedContext : undefined,
-      archivedContext: card.archivedContext?.trim() ? card.archivedContext : undefined,
-      aspect: card.aspect[0] === card.aspect[1] ? card.aspect[0] : [ ...card.aspect ],
+      publishedContext: card.publishedAt && card.publishedContext?.trim() ? card.publishedContext : undefined,
+      archivedContext: card.archivedAt && card.archivedContext?.trim() ? card.archivedContext : undefined,
       season: card.isSample ? card.season * -1 : card.season,
+      // Remove any trailing spaces from card effect parts
+      effects: card.effects.map(e => (stringToCardEffect(cardEffectToString(e)))),
     };
-    return JSON.stringify(copiedCard, null, 2);
   };
 
   return (
@@ -154,7 +173,10 @@ function NewCardAdminPageClient() {
           label="Aspect"
           options={aspectOptions}
           value={card.aspect}
-          onChange={aspect => setCard((c) => ({ ...c, aspect }))}
+          onChange={aspect => {
+            console.log(aspect);
+            setCard((c) => ({ ...c, aspect }));
+          }}
           required={!card.isSample}
         />
         <DSSelect
@@ -187,9 +209,32 @@ function NewCardAdminPageClient() {
             }}
           />
         )) }
-        <DSButton onClick={() => setCard(c => ({ ...c, scrapCost: [...c.scrapCost, Aspect.Brave] }))} label="+ Scrap Cost" />
-        
-        <CardEffects />
+        { card.scrapCost.length < 4 && <DSButton onClick={() => setCard(c => ({ ...c, scrapCost: [...c.scrapCost, Aspect.Brave] }))} label="+ Scrap Cost" /> }
+        { card.effects.map((effect, index) => (
+          <Fragment key={index}>
+            <DSField
+              label="Card Effect As Text"
+              value={cardEffectToString(effect, { permitEndingSpace: true })}
+              onChange={(value) => setCard(c => ({
+                ...c,
+                effects: c.effects.map((e, i) => i === index ? stringToCardEffect(value, { permitEndingSpace: true }) : e),
+              }))}
+            />
+            <CardEffectLine effect={effect} ctx={{ type: CardType.Preview }} />
+            <DSButton
+              key={index}
+              onClick={() => setCard(c => ({
+                ...c,
+                effects: c.effects.filter((_, i) => i !== index),
+              }))}
+              label="Remove"
+            />
+          </Fragment>
+        ))}
+        <DSButton onClick={() => setCard(c => ({ ...c, effects: [...c.effects, {
+          conditionals: [],
+          parts: [],
+        } ] }))} label="+ Card Effect" />
         <DSToggleGroup.Text
           label="Tags"
           options={tagOptions}
@@ -225,15 +270,100 @@ function NewCardAdminPageClient() {
           label="Version"
           value={card.version.toString()}
           onChange={(value) => update('version', parseInt(value))}
+          type="number"
           required
           error={saveAttempted ? FormErrors.getVersionError(card.version) : undefined}
         />
-        <IllustrationBinding />
-        <FlavorText />
-        <Published, Revealed, and Archived />
+        <DSField
+          label="Flavor Text"
+          value={card.flavorText?.onCard?.text || ''}
+          onChange={(value) => setCard(c => ({
+            ...c,
+            flavorText: {
+              ...c.flavorText,
+              extended: c.flavorText?.extended || { artistId: '', artId: '' },
+              onCard: { text: value },
+            },
+          }))}
+        />
+        <DSField
+          label="Flavor Text Source"
+          value={card.flavorText?.onCard?.source || ''}
+          onChange={(value) => setCard(c => ({
+            ...c,
+            flavorText: {
+              ...c.flavorText,
+              extended: c.flavorText?.extended || { artistId: '', artId: '' },
+              onCard: { source: value, text: c.flavorText?.onCard?.text || '' },
+            },
+          }))}
+        />
+        <DSField
+          label="Revealed At"
+          type="date"
+          value={toDateOnlyString(card.revealedAt)}
+          onChange={(value) => update('revealedAt', fromDateOnlyString(value) || new Date())}
+        />
+        <DSField
+          label="Revealed Context"
+          value={card.revealedContext || ''}
+          onChange={(value) => update('revealedContext', value)}
+        />
+        <DSSwitch
+          label="Published?"
+          checked={card.publishedAt !== null}
+          onChange={(value) => update('publishedAt', value ? new Date() : null)}
+        />
+        { card.publishedAt &&
+          <>
+            <DSField
+              label="Published At"
+              type="date"
+              value={toDateOnlyString(card.publishedAt)}
+              onChange={(value) => update('publishedAt', fromDateOnlyString(value) || new Date())}
+            />
+            <DSField
+              label="Published Context"
+              value={card.publishedContext || ''}
+              onChange={(value) => update('publishedContext', value)}
+            />
+          </>
+        }
+        <DSSwitch
+          label="Archived?"
+          checked={card.archivedAt !== null}
+          onChange={(value) => update('archivedAt', value ? new Date() : null)}
+        />
+        { card.archivedAt &&
+          <>
+            <DSField
+              label="Archived At"
+              type="date"
+              value={toDateOnlyString(card.archivedAt)}
+              onChange={(value) => update('archivedAt', fromDateOnlyString(value) || new Date())}
+            />
+            <DSField
+              label="Archived Context"
+              value={card.archivedContext || ''}
+              onChange={(value) => update('archivedContext', value)}
+            />
+          </>
+        }
         <DSForm.ButtonGroup>
           <DSButton onClick={onSave} label="Save" />
-          <DSButton onClick={onSave} label="Preview" />
+          <DSDialog
+            title="Card Preview"
+            trigger={<DSButton onClick={onSave} label="Preview" />}
+            content={
+              <Card
+                card={getFinalCard()}
+                ctx={{ type: CardType.Full }}
+                art={null}
+                artist={null}
+              />
+            }
+            actions={<DSDialog.Close />}
+          />
           <DSButton onClick={onSave} label="Cancel" />
         </DSForm.ButtonGroup>
       </DSForm>

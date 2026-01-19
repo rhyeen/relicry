@@ -1,9 +1,10 @@
 import CardAura from './CardAura';
 import CardConditional from './CardConditional';
 import styles from './CardEffectLine.module.css';
-import { CardEffect, cardEffectToString } from '@/entities/CardEffect';
+import { CardEffect } from '@/entities/CardEffect';
 import CardEffectParts from './CardEffectParts';
 import { CardContext } from '@/entities/CardContext';
+import { cardEffectToString } from '@/entities/CardEffectAsString';
 
 type Props = {
   effect: CardEffect;
