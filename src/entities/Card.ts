@@ -33,7 +33,7 @@ export type Version = {
   };
   flavorText?: FlavorText;
   subTitle?: string;
-  revealedAt: Date;
+  revealedAt: Date | null;
   revealedContext?: string;
   publishedAt: Date | null;
   publishedContext?: string;

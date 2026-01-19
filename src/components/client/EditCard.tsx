@@ -1,10 +1,10 @@
 "use client";
 
-import { Fragment, Suspense, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Aspect, orderAspects, orderComboAspects } from "@/entities/Aspect";
 import { orderRarities, Rarity } from "@/entities/Rarity";
 import { orderTags, Tag } from "@/entities/Tag";
-import { VersionedDeckCard } from '@/entities/Card';
+import { VersionedCard, VersionedDeckCard } from '@/entities/Card';
 import DSForm from '@/components/ds/DSForm';
 import DSSection from '@/components/ds/DSSection';
 import DSField, { fromDateOnlyString, toDateOnlyString } from '@/components/ds/DSField';
@@ -59,24 +59,21 @@ const FormErrors = {
   },
 };
 
-export default function NewCardAdminPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <NewCardAdminPageClient />
-    </Suspense>
-  );
+export function getDefaultNewCard(type: 'deck' | 'focus' | 'gambit'): VersionedCard {
+  switch (type) {
+    case 'deck':
+      return getDefaultNewDeckCard();
+    case 'focus':
+      throw new Error('Not implemented: getDefaultNewFocusCard');
+    case 'gambit':
+      throw new Error('Not implemented: getDefaultNewGambitCard');
+    default:
+      throw new Error(`Unknown card type: ${type}`);
+  }
 }
 
-function NewCardAdminPageClient() {
-  const rarityOptions = useMemo(() => orderRarities().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
-  const aspectOptions = useMemo(() => [ ...orderAspects(), ...orderComboAspects()].map((value) => ({
-    label: typeof value === 'string' ? value.toLocaleUpperCase() : value.map(v => v.toLocaleUpperCase()).join(' + '),
-    value,
-  })), []);
-  const tagOptions = useMemo(() => orderTags().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
-  const [saveAttempted, setSaveAttempted] = useState(false);
-
-  const [card, setCard] = useState<VersionedDeckCard>(() => ({
+export function getDefaultNewDeckCard(): VersionedDeckCard {
+  return {
     title: '',
     tags: [],
     effects: [],
@@ -102,9 +99,31 @@ function NewCardAdminPageClient() {
     archivedAt: null,
     archivedContext: '',
     isSample: true,
-  }));
+  };
+};
 
-  const update = <K extends keyof VersionedDeckCard>(key: K, value: VersionedDeckCard[K]) => {
+type EditCardProps = Readonly<{
+  card?: VersionedCard;
+  type: 'deck' | 'focus' | 'gambit';
+}>;
+
+export default function EditCard({ card: initCard, type }: EditCardProps) {
+  const rarityOptions = useMemo(() => orderRarities().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
+  const aspectOptions = useMemo(() => [ ...orderAspects(), ...orderComboAspects()].map((value) => ({
+    label: typeof value === 'string' ? value.toLocaleUpperCase() : value.map(v => v.toLocaleUpperCase()).join(' + '),
+    value,
+  })), []);
+  const tagOptions = useMemo(() => orderTags().map((value) => ({ label: value.toLocaleUpperCase(), value })), []);
+  const [saveAttempted, setSaveAttempted] = useState(false);
+
+  const [card, setCard] = useState<VersionedCard>(() => initCard ?? getDefaultNewCard(type));
+
+  useEffect(() => {
+    const nextCard = initCard ?? getDefaultNewCard(type);
+    setCard(prevCard => (prevCard !== nextCard ? nextCard : prevCard));
+  }, [initCard, type]);
+
+  const update = <K extends keyof VersionedCard>(key: K, value: VersionedCard[K]) => {
     setCard((c) => ({ ...c, [key]: value }));
   };
 
@@ -123,7 +142,7 @@ function NewCardAdminPageClient() {
     return JSON.stringify(copiedCard, null, 2);
   };
 
-  const getFinalCard = (): VersionedDeckCard => {
+  const getFinalCard = (): VersionedCard => {
     return {
       ...card,
       flavorText: card.flavorText?.onCard?.text ? {
@@ -169,23 +188,25 @@ function NewCardAdminPageClient() {
           checked={card.isFeatured}
           onChange={(value) => update('isFeatured', value)}
         />
-        <DSSelect
-          label="Aspect"
-          options={aspectOptions}
-          value={card.aspect}
-          onChange={aspect => {
-            console.log(aspect);
-            setCard((c) => ({ ...c, aspect }));
-          }}
-          required={!card.isSample}
-        />
+        {type === 'deck' && 
+          <DSSelect
+            label="Aspect"
+            options={aspectOptions}
+            value={card.aspect}
+            onChange={aspect => {
+              console.log(aspect);
+              setCard((c) => ({ ...c, aspect }) as VersionedDeckCard);
+            }}
+            required={!card.isSample}
+          />
+        }
         <DSSelect
           label="Draw Limit"
           options={[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ label: n.toString(), value: n }))}
           value={card.drawLimit}
           onChange={(value) => update('drawLimit', value)}
         />
-        { card.scrapCost.map((cost, index) => (
+        { type === 'deck' && (card as VersionedDeckCard).scrapCost.map((cost, index) => (
           <DSSelect
             key={index}
             label={`Scrap Cost #${index + 1}`}
@@ -198,18 +219,23 @@ function NewCardAdminPageClient() {
               if (value as unknown === 'REMOVE') {
                 setCard(c => ({
                   ...c,
-                  scrapCost: c.scrapCost.filter((_, i) => i !== index),
+                  scrapCost: (c as VersionedDeckCard).scrapCost.filter((_, i) => i !== index),
                 }));
               } else {
                 setCard(c => ({
                   ...c,
-                  scrapCost: c.scrapCost.map((cost, i) => i === index ? value : cost),
+                  scrapCost: (c as VersionedDeckCard).scrapCost.map((cost, i) => i === index ? value : cost),
                 }));
               }
             }}
           />
         )) }
-        { card.scrapCost.length < 4 && <DSButton onClick={() => setCard(c => ({ ...c, scrapCost: [...c.scrapCost, Aspect.Brave] }))} label="+ Scrap Cost" /> }
+        { type === 'deck' && (card as VersionedDeckCard).scrapCost.length < 4 &&
+          <DSButton
+            onClick={() => setCard(c => ({ ...c, scrapCost: [...(c as VersionedDeckCard).scrapCost, Aspect.Brave] }))}
+            label="+ Scrap Cost"
+          />
+        }
         { card.effects.map((effect, index) => (
           <Fragment key={index}>
             <DSField

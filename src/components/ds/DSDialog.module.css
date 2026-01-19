@@ -33,6 +33,18 @@
   }
 }
 
+.trigger {
+  /* remove all button styling */
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+}
+
 .backdrop {
   position: fixed;
   min-height: 100dvh;

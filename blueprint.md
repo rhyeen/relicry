@@ -49,6 +49,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] See if we can recreate the Card printable card itself with CSS
 - [x] Get full rez version created for printing
 - [ ] Build out UI to add/edit cards
+- [ ] While a card is still sample, its ID should be different and much longer. Update the 404 page for cards to make it clear to people trying to search for cards that haven't been released yet that it's a useless endeaver.
 - [ ] Bulid out UI to upload images
 - [ ] Deploy to prod then test adding cards so we now have a DB
 - [ ] 1 offcenter for tooltips
