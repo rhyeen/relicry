@@ -1,24 +1,26 @@
 import { Field, Select } from '@base-ui/react';
 import styles from "./DSSelect.module.css";
+import { Required } from './Required';
 
-type DSSelectRootProps = Readonly<{
+type DSSelectRootProps<T> = Readonly<{
   label: string;
-  options: DSSelectOption[];
-  onChange: (newValue: string | null) => void;
+  options: DSSelectOption<T>[];
+  onChange: (newValue: T) => void;
   placeholder?: string;
-  value?: string;
+  value?: T;
+  required?: boolean;
 }>;
 
-type DSSelectOption = Readonly<{
+type DSSelectOption<T> = Readonly<{
   label: string;
-  value: string;
+  value: T;
 }>;
 
-function DSSelectRoot({ label, options, placeholder, value, onChange }: DSSelectRootProps) {
+function DSSelectRoot<T>({ label, options, placeholder, value, onChange, required }: DSSelectRootProps<T>) {
   return (
     <Field.Root className={styles.root}>
-      <Field.Label className={styles.label}>{label}</Field.Label>
-      <Select.Root items={options} value={value} onValueChange={onChange}>
+      <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
+      <Select.Root items={options} value={value} onValueChange={v => v ? onChange(v) : undefined}>
         <Select.Trigger className={styles.trigger}>
           <Select.Value className={styles.value} placeholder={placeholder} />
           <Select.Icon className={styles.icon}>
@@ -31,8 +33,8 @@ function DSSelectRoot({ label, options, placeholder, value, onChange }: DSSelect
           <Select.Positioner className={styles.positioner} sideOffset={8}>
             <Select.Popup className={styles.popup}>
               <Select.List className={styles.list}>
-                {options.map((option) => (
-                  <Select.Item key={option.value} className={styles.item} value={option.value}>
+                {options.map((option, index) => (
+                  <Select.Item key={index} className={styles.item} value={option.value}>
                     <Select.ItemIndicator className={styles.itemIndicator}>
                       <svg className={styles.itemIndicatorIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

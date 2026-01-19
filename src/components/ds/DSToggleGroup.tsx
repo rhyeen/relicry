@@ -1,23 +1,32 @@
 import { Field, ToggleGroup } from '@base-ui/react';
 import styles from "./DSToggleGroup.module.css";
 import DSToggle from './DSToggle';
+import { Required } from './Required';
 
-type DSToggleGroupRootProps = Readonly<{
+type DSToggleGroupRootProps<T> = Readonly<{
   label?: string;
   ariaLabel?: string;
-  values?: string[];
-  onChange: (values: string[]) => void;
+  values?: T[];
+  onChange: (values: T[]) => void;
   children?: React.ReactNode;
   multiple?: boolean;
+  minimum?: number;
+  maximum?: number;
+  error?: string;
+  description?: string;
 }>;
 
-type DSToggleGroupTextProps = Readonly<{
+type DSToggleGroupTextProps<T> = Readonly<{
   label?: string;
   ariaLabel?: string;
-  values?: string[];
-  onChange: (values: string[]) => void;
+  values?: T[];
+  onChange: (values: T[]) => void;
   options: DSToggleGroupOptionProps[];
   multiple?: boolean;
+  minimum?: number;
+  maximum?: number;
+  error?: string;
+  description?: string;
 }>;
 
 type DSToggleGroupOptionProps = Readonly<{
@@ -25,7 +34,7 @@ type DSToggleGroupOptionProps = Readonly<{
   value: string;
 }>;
 
-function DSToggleGroupRoot({ ariaLabel, multiple, label, values, onChange, children }: DSToggleGroupRootProps) {
+function DSToggleGroupRoot<T>({ error, description, minimum, maximum, ariaLabel, multiple, label, values, onChange, children }: DSToggleGroupRootProps<T>) {
   const inner = () => (
     <ToggleGroup
       aria-label={ariaLabel || label}
@@ -41,8 +50,16 @@ function DSToggleGroupRoot({ ariaLabel, multiple, label, values, onChange, child
   if (label) {
     return (
       <Field.Root className={styles.root}>
-        <Field.Label className={styles.label}>{label}</Field.Label>
+        <Field.Label className={styles.label}><Required minimum={minimum} maximum={maximum}>{label}</Required></Field.Label>
         {inner()}
+        {!!error &&
+          <Field.Error className={styles.error}>
+            {error}
+          </Field.Error>
+        }
+        {!!description &&
+          <Field.Description className={styles.description}>{description}</Field.Description>
+        }
       </Field.Root>
     );
   } else {
@@ -50,9 +67,13 @@ function DSToggleGroupRoot({ ariaLabel, multiple, label, values, onChange, child
   }
 }
 
-function DSToggleGroupText({ ariaLabel, multiple, label, values, onChange, options }: DSToggleGroupTextProps) {
+function DSToggleGroupText<T>({ error, description, minimum, maximum, ariaLabel, multiple, label, values, onChange, options }: DSToggleGroupTextProps<T>) {
   return (
     <DSToggleGroupRoot
+      error={error}
+      description={description}
+      minimum={minimum}
+      maximum={maximum}
       ariaLabel={ariaLabel}
       label={label}
       values={values}

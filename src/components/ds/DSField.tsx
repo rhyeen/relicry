@@ -1,5 +1,6 @@
 import { Field } from '@base-ui/react';
 import styles from "./DSField.module.css";
+import { Required } from './Required';
 
 type DSFieldRootProps = Readonly<{
   label: string;
@@ -15,7 +16,7 @@ type DSFieldRootProps = Readonly<{
 function DSFieldRoot({ error, description, label, value, onChange, placeholder, readonly, required }: DSFieldRootProps) {
   return (
     <Field.Root className={styles.root}>
-      <Field.Label className={styles.label}>{label}</Field.Label>
+      <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
       <Field.Control
         className={styles.control}
         required={required}

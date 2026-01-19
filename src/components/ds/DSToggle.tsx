@@ -1,15 +1,17 @@
 import { Toggle } from '@base-ui/react';
 import styles from "./DSToggle.module.css";
 
-type DSToggleRootProps = Readonly<{
+type TLike = string | number | boolean;
+
+type DSToggleRootProps<T extends TLike> = Readonly<{
   ariaLabel: string;
   children: React.ReactNode;
   pressed?: boolean;
-  value?: string;
+  value?: T;
   onChange?: (pressed: boolean) => void;
 }>;
 
-type DSToggleCustomProps = Readonly<{
+type DSToggleCustomProps<T extends TLike> = Readonly<{
   ariaLabel: string;
   renderIfPressed: {
     buttonClassName?: string;
@@ -20,18 +22,18 @@ type DSToggleCustomProps = Readonly<{
     children: React.ReactNode;
   };
   pressed?: boolean;
-  value?: string;
+  value?: T;
   onChange?: (pressed: boolean) => void;
 }>;
 
-type DSToggleTextProps = Readonly<{
+type DSToggleTextProps<T extends TLike> = Readonly<{
   label: string;
   pressed?: boolean;
   onChange?: (pressed: boolean) => void;
-  value?: string;
+  value?: T;
 }>;
 
-function DSToggleRoot({ value, ariaLabel, children, pressed, onChange }: DSToggleRootProps) {
+function DSToggleRoot<T extends TLike>({ value, ariaLabel, children, pressed, onChange }: DSToggleRootProps<T>) {
   return (
     <DSToggleCustom
       value={value}
@@ -90,13 +92,13 @@ function DSToggleRoot({ value, ariaLabel, children, pressed, onChange }: DSToggl
   );
 }
 
-function DSToggleCustom({ value, ariaLabel, renderIfPressed, renderIfNotPressed, pressed, onChange }: DSToggleCustomProps) {
+function DSToggleCustom<T extends TLike>({ value, ariaLabel, renderIfPressed, renderIfNotPressed, pressed, onChange }: DSToggleCustomProps<T>) {
   return (
     <Toggle
       aria-label={ariaLabel}
       pressed={pressed}
       className={styles.toggle}
-      value={value}
+      value={`${value}`}
       render={(props, state) => {
         if (state.pressed) {
           return (
@@ -122,7 +124,7 @@ function DSToggleCustom({ value, ariaLabel, renderIfPressed, renderIfNotPressed,
   );
 }
 
-function DSToggleText({ value, label, pressed, onChange }: DSToggleTextProps) {
+function DSToggleText<T extends TLike>({ value, label, pressed, onChange }: DSToggleTextProps<T>) {
   return (
     <DSToggleRoot
       value={value}

@@ -55,7 +55,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [ ] 1/2 and 0 both needed on tags + all tag colors checked
 - [ ] Create legendary banner
 - [ ] Build out focus, gambit, quest, and quest token cards
-- [ ] Apex needs to have different values based on number of players facing it
+- [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
 - [ ] Incorporate caching model in all components, not just Card
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
