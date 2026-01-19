@@ -1,3 +1,4 @@
+import { generateId } from '@/lib/idGenerator';
 import { Aspect } from './Aspect';
 import { CardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
@@ -80,4 +81,12 @@ export function getCardId(id: string): string {
 
 export function getCardDocId(id: string, version: number): string {
   return `${getCardId(id)}/${version}`;
+}
+
+/**
+ * @param isSample If the card is a sample card, the ID is significantly longer
+ * to prevent web scrapers from attempting to discover unrevealed cards.
+ */
+export function generateCardId(isSample: boolean): string {
+  return getCardId(generateId(isSample ? 12 : 4));
 }

@@ -5,9 +5,11 @@ type DSSwitchRootProps = Readonly<{
   label: string;
   checked?: boolean;
   onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
-function DSSwitchRoot({ label, checked, onChange }: DSSwitchRootProps) {
+function DSSwitchRoot({ label, checked, onChange, disabled, loading }: DSSwitchRootProps) {
   return (
     <Field.Root className={styles.root}>
       <Field.Label className={styles.label}>
@@ -15,6 +17,8 @@ function DSSwitchRoot({ label, checked, onChange }: DSSwitchRootProps) {
           checked={checked}
           className={styles.switch}
           onCheckedChange={onChange}
+          disabled={disabled || loading}
+          data-loading={loading ? 'true' : undefined}
         >
           <Switch.Thumb className={styles.thumb} />
         </Switch.Root>

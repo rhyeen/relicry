@@ -5,9 +5,11 @@ type DSButtonRootProps = Readonly<{
   label: string;
   onClick: () => void;
   dialogTrigger?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
-function DSButtonRoot({ label, onClick, dialogTrigger }: DSButtonRootProps) {
+function DSButtonRoot({ label, onClick, dialogTrigger, disabled, loading }: DSButtonRootProps) {
   const isNative = !dialogTrigger;
   return (
     <Button
@@ -15,6 +17,8 @@ function DSButtonRoot({ label, onClick, dialogTrigger }: DSButtonRootProps) {
       onClick={onClick}
       nativeButton={isNative}
       render={isNative ? undefined : <div />}
+      disabled={disabled || loading}
+      data-loading={loading ? 'true' : undefined}
     >
       {label}
     </Button>

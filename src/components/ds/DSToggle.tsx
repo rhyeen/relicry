@@ -9,6 +9,8 @@ type DSToggleRootProps<T extends TLike> = Readonly<{
   pressed?: boolean;
   value?: T;
   onChange?: (pressed: boolean) => void;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
 type DSToggleCustomProps<T extends TLike> = Readonly<{
@@ -24,6 +26,8 @@ type DSToggleCustomProps<T extends TLike> = Readonly<{
   pressed?: boolean;
   value?: T;
   onChange?: (pressed: boolean) => void;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
 type DSToggleTextProps<T extends TLike> = Readonly<{
@@ -31,11 +35,15 @@ type DSToggleTextProps<T extends TLike> = Readonly<{
   pressed?: boolean;
   onChange?: (pressed: boolean) => void;
   value?: T;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
-function DSToggleRoot<T extends TLike>({ value, ariaLabel, children, pressed, onChange }: DSToggleRootProps<T>) {
+function DSToggleRoot<T extends TLike>({ disabled, loading, value, ariaLabel, children, pressed, onChange }: DSToggleRootProps<T>) {
   return (
     <DSToggleCustom
+      disabled={disabled}
+      loading={loading}
       value={value}
       ariaLabel={ariaLabel}
       renderIfPressed={{
@@ -92,13 +100,15 @@ function DSToggleRoot<T extends TLike>({ value, ariaLabel, children, pressed, on
   );
 }
 
-function DSToggleCustom<T extends TLike>({ value, ariaLabel, renderIfPressed, renderIfNotPressed, pressed, onChange }: DSToggleCustomProps<T>) {
+function DSToggleCustom<T extends TLike>({ disabled, loading, value, ariaLabel, renderIfPressed, renderIfNotPressed, pressed, onChange }: DSToggleCustomProps<T>) {
   return (
     <Toggle
       aria-label={ariaLabel}
       pressed={pressed}
       className={styles.toggle}
       value={`${value}`}
+      disabled={disabled || loading}
+      data-loading={loading ? 'true' : undefined}
       render={(props, state) => {
         if (state.pressed) {
           return (
@@ -124,9 +134,11 @@ function DSToggleCustom<T extends TLike>({ value, ariaLabel, renderIfPressed, re
   );
 }
 
-function DSToggleText<T extends TLike>({ value, label, pressed, onChange }: DSToggleTextProps<T>) {
+function DSToggleText<T extends TLike>({ disabled, loading, value, label, pressed, onChange }: DSToggleTextProps<T>) {
   return (
     <DSToggleRoot
+      disabled={disabled}
+      loading={loading}
       value={value}
       ariaLabel={label}
       pressed={pressed}

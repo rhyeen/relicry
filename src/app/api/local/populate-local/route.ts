@@ -1,8 +1,8 @@
 import 'server-only';
-import { NextResponse } from 'next/server';
 import { populateLocal } from '@/server/db/local.db';
+import { handleOkResponse } from '@/server/routeHelpers';
 
 export async function POST() {
   await populateLocal();
-  return NextResponse.json({ ok: true });
+  return handleOkResponse();
 }

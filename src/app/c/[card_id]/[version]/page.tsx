@@ -36,12 +36,12 @@ export default async function CardPage(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   return (
-    <div>
+    <>
       <h1>Card Details</h1>
       <Suspense fallback={<div>Loading card data...</div>}>
         <CardPageData params={params} searchParams={searchParams} />
       </Suspense>
-    </div>
+    </>
   );
 }
 

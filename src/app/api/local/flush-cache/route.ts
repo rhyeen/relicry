@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { isEmulated } from '@/lib/environment';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
+import { handleOkResponse } from '@/server/routeHelpers';
 
 export async function POST() {
   // Prevent cache flushes in production
@@ -11,5 +12,5 @@ export async function POST() {
   revalidateTag(LOCAL_CACHE_TAG, { expire: 0 });
   // Flush Route Cache for the root layout and everything underneath
   revalidatePath('/', 'layout');
-  return NextResponse.json({ ok: true });
+  return handleOkResponse();
 }

@@ -9,6 +9,8 @@ type DSSelectRootProps<T> = Readonly<{
   placeholder?: string;
   value?: T;
   required?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
 type DSSelectOption<T> = Readonly<{
@@ -16,12 +18,16 @@ type DSSelectOption<T> = Readonly<{
   value: T;
 }>;
 
-function DSSelectRoot<T>({ label, options, placeholder, value, onChange, required }: DSSelectRootProps<T>) {
+function DSSelectRoot<T>({ disabled, loading, label, options, placeholder, value, onChange, required }: DSSelectRootProps<T>) {
   return (
     <Field.Root className={styles.root}>
       <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
       <Select.Root items={options} value={value} onValueChange={v => v ? onChange(v) : undefined}>
-        <Select.Trigger className={styles.trigger}>
+        <Select.Trigger
+          className={styles.trigger}
+          disabled={disabled || loading}
+          data-loading={loading ? 'true' : undefined}
+        >
           <Select.Value className={styles.value} placeholder={placeholder} />
           <Select.Icon className={styles.icon}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

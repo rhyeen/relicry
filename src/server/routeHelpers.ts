@@ -42,6 +42,14 @@ export class NotFound extends NextResponseError {
   }
 }
 
+export function handleJsonResponse(data: object): NextResponse {
+  return NextResponse.json(data);
+}
+
+export function handleOkResponse(): NextResponse {
+  return NextResponse.json({ ok: true });
+}
+
 export function handleRouteError(e: unknown): NextResponse {
   if (!(e instanceof NextResponseError)) {
     console.error('Unhandled error:', e);

@@ -9,6 +9,11 @@ type Props = {
   ctx: CardContext;
 }
 
+function truncate(str: string, maxLength: number): string {
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength - 2) + '\u2026';
+}
+
 export default function HeaderCardPart({ artist, card, ctx }: Props) {
   return (
     <div className={styles.header}>
@@ -18,7 +23,7 @@ export default function HeaderCardPart({ artist, card, ctx }: Props) {
         <span> • </span>
         <span aria-label='Season'>S{card.season}</span>
         <span> • </span>
-        <span aria-label='Card ID'>{getCardDocId(card.id, card.version).toUpperCase()}</span>
+        <span aria-label='Card ID'>{truncate(getCardDocId(card.id, card.version).toUpperCase(), 7)}</span>
         <span aria-label='Copyright'> © Relicry</span>
       </div>
     </div>

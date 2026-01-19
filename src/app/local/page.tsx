@@ -18,7 +18,7 @@ export default function LocalPage() {
     setCacheCleared(false);
     setError(null);
     try {
-      const res = await fetch('/api/flush-cache', { method: 'POST' });
+      const res = await fetch('/api/local/flush-cache', { method: 'POST' });
       if (!res.ok) throw new Error(`Cache clear failed: ${res.status}`);
       setCacheCleared(true);
     } catch (e) {
@@ -33,7 +33,7 @@ export default function LocalPage() {
     setIsPopulated(false);
     setError(null);
     try {
-      const res = await fetch('/api/populate-local', { method: 'POST' });
+      const res = await fetch('/api/local/populate-local', { method: 'POST' });
       if (!res.ok) throw new Error(`Populate failed: ${res.status}`);
       setIsPopulated(true);
     } catch (e) {

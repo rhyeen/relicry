@@ -1,8 +1,7 @@
 import 'server-only';
 
-import { NextResponse } from 'next/server';
 import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { authenticateUser, handleRouteError, InvalidArgument, NotFound } from '@/server/routeHelpers';
+import { authenticateUser, handleJsonResponse, handleOkResponse, handleRouteError, InvalidArgument, NotFound } from '@/server/routeHelpers';
 import { PlayerCardDB } from '@/server/db/playerCard.db';
 
 export async function GET(req: Request) {
@@ -21,7 +20,7 @@ export async function GET(req: Request) {
     if (!entity) {
       throw new NotFound('PlayerCard');
     }
-    return NextResponse.json({ playerCard: entity });
+    return handleJsonResponse({ playerCard: entity });
   } catch (e) {
     return handleRouteError(e);
   }
@@ -43,6 +42,7 @@ export async function POST(req: Request) {
       throw new InvalidArgument(['userId'], 'same as that of authenticated user');
     }
     await new PlayerCardDB(firestoreAdmin).set(body);
+    return handleOkResponse();
   } catch (e) {
     return handleRouteError(e);
   }

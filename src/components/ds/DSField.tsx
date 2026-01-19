@@ -30,9 +30,11 @@ type DSFieldRootProps = Readonly<{
   required?: boolean;
   description?: string;
   error?: string;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
-function DSFieldRoot({ error, type, description, label, value, onChange, placeholder, readonly, required }: DSFieldRootProps) {
+function DSFieldRoot({ disabled, loading, error, type, description, label, value, onChange, placeholder, readonly, required }: DSFieldRootProps) {
   return (
     <Field.Root className={styles.root}>
       <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
@@ -44,6 +46,8 @@ function DSFieldRoot({ error, type, description, label, value, onChange, placeho
         value={value}
         onChange={(e) => onChange(e.target.value)}
         type={type}
+        disabled={disabled || loading}
+        data-loading={loading ? 'true' : undefined}
       />
       {!!error &&
         <Field.Error className={styles.error}>

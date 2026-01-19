@@ -27,6 +27,8 @@ type DSToggleGroupTextProps<T> = Readonly<{
   maximum?: number;
   error?: string;
   description?: string;
+  disabled?: boolean;
+  loading?: boolean;
 }>;
 
 type DSToggleGroupOptionProps = Readonly<{
@@ -67,7 +69,7 @@ function DSToggleGroupRoot<T>({ error, description, minimum, maximum, ariaLabel,
   }
 }
 
-function DSToggleGroupText<T>({ error, description, minimum, maximum, ariaLabel, multiple, label, values, onChange, options }: DSToggleGroupTextProps<T>) {
+function DSToggleGroupText<T>({ disabled, loading, error, description, minimum, maximum, ariaLabel, multiple, label, values, onChange, options }: DSToggleGroupTextProps<T>) {
   return (
     <DSToggleGroupRoot
       error={error}
@@ -85,6 +87,8 @@ function DSToggleGroupText<T>({ error, description, minimum, maximum, ariaLabel,
           label={option.label}
           key={option.value}
           value={option.value}
+          disabled={disabled}
+          loading={loading}
         />
       ))}
     </DSToggleGroupRoot>

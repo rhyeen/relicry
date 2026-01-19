@@ -1,5 +1,8 @@
 import { randomFillSync } from 'crypto';
 
+/**
+ * For collision probabilty, see https://devina.io/collision-calculator
+ */
 export function generateId(n: number): string {
   if (!Number.isFinite(n) || n <= 0) throw new Error(`Invalid length: ${n}`);
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';

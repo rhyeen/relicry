@@ -26,7 +26,9 @@ function DSDialogRoot({ trigger, open, onOpenChange, title, description, content
     <Dialog.Root open={open} onOpenChange={onOpenChange} disablePointerDismissal={disablePointerDismissal}>
       {trigger && <Dialog.Trigger className={styles.trigger}>{trigger}</Dialog.Trigger>}
       <Dialog.Portal>
-        <Dialog.Backdrop className={styles.backdrop} />
+        <Dialog.Backdrop
+          className={styles.backdrop}
+        />
         <Dialog.Popup className={styles.popup}>
           <Dialog.Title className={styles.title}>{title}</Dialog.Title>
           <Dialog.Description className={styles.description}>

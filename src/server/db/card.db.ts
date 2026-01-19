@@ -1,6 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
+import { generateCardId, getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
 
 export class CardDB extends RootDB<VersionedCard> {
   constructor(
@@ -68,6 +68,7 @@ export class CardDB extends RootDB<VersionedCard> {
   protected conformItemSet(item: VersionedCard): any {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let _item: any = item;
+    // @NOTE: Firestore doesn't support nested arrays, so we need to convert [Aspect, Aspect] to "Aspect/Aspect"
     if (_item.scrapCost) {
       const scrapCost = (_item.scrapCost as (string | [string, string])[]).map((aspect) => {
         if (Array.isArray(aspect)) {
@@ -86,5 +87,13 @@ export class CardDB extends RootDB<VersionedCard> {
 
   protected getUnsafeDocId(item: VersionedCard): string {
     return getCardDocId(item.id, item.version);
+  }
+
+  /**
+   * @param isSample If the card is a sample card, the ID is significantly longer
+   * to prevent web scrapers from attempting to discover unrevealed cards.
+   */
+  public async generateId(isSample: boolean): Promise<string> {
+    return this.getUniqueId(() => generateCardId(isSample));
   }
 }

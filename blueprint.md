@@ -48,13 +48,14 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Denormalizing data so when we get things like a Card, we also get Art/Artist.
 - [x] See if we can recreate the Card printable card itself with CSS
 - [x] Get full rez version created for printing
-- [ ] Build out UI to add/edit cards
-- [ ] While a card is still sample, its ID should be different and much longer. Update the 404 page for cards to make it clear to people trying to search for cards that haven't been released yet that it's a useless endeaver.
+- [x] Build out UI to add/edit cards
+- [x] While a card is still sample, its ID should be different and much longer. Update the 404 page for cards to make it clear to people trying to search for cards that haven't been released yet that it's a useless endeaver.
 - [ ] Bulid out UI to upload images
 - [ ] Deploy to prod then test adding cards so we now have a DB
 - [ ] 1 offcenter for tooltips
 - [ ] 1/2 and 0 both needed on tags + all tag colors checked
 - [ ] Create legendary banner
+- [ ] Designate a sample card as such
 - [ ] Build out focus, gambit, quest, and quest token cards
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
