@@ -8,7 +8,7 @@ type Props = {
   ctx: CardContext;
 }
 
-export default function BannerCardPart({ aspect, ctx }: Props) {
+export default function BannerCardPart({ aspect }: Props) {
   const getColorStyle = () => {
     const asArray = aspectAsArray(aspect);
     const aspectString = `${asArray[0]}/${asArray[1]}`;

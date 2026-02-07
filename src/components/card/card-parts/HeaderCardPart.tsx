@@ -14,7 +14,7 @@ function truncate(str: string, maxLength: number): string {
   return str.slice(0, maxLength - 2) + '\u2026';
 }
 
-export default function HeaderCardPart({ artist, card, ctx }: Props) {
+export default function HeaderCardPart({ artist, card }: Props) {
   return (
     <div className={styles.header}>
       <div className={styles.headerLeft}>{artist ? artist.name : 'Unknown Artist'}</div>

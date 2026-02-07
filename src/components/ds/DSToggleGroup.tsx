@@ -1,7 +1,7 @@
-import { Field, ToggleGroup } from '@base-ui/react';
+import { ToggleGroup } from '@base-ui/react';
 import styles from "./DSToggleGroup.module.css";
 import DSToggle from './DSToggle';
-import { Required } from './Required';
+import DSField from './DSField';
 
 type DSToggleGroupRootProps<T> = Readonly<{
   label?: string;
@@ -51,18 +51,12 @@ function DSToggleGroupRoot<T>({ error, description, minimum, maximum, ariaLabel,
 
   if (label) {
     return (
-      <Field.Root className={styles.root}>
-        <Field.Label className={styles.label}><Required minimum={minimum} maximum={maximum}>{label}</Required></Field.Label>
+      <DSField.Root>
+        <DSField.Label minimum={minimum} maximum={maximum} label={label} />
         {inner()}
-        {!!error &&
-          <Field.Error className={styles.error}>
-            {error}
-          </Field.Error>
-        }
-        {!!description &&
-          <Field.Description className={styles.description}>{description}</Field.Description>
-        }
-      </Field.Root>
+        <DSField.Error error={error} />
+        <DSField.Description description={description} />
+      </DSField.Root>
     );
   } else {
     return inner();

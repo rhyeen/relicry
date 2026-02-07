@@ -6,7 +6,7 @@ type Props = {
   ctx: CardContext;
 }
 
-export default function DrawLimitCardPart({ drawLimit, ctx }: Props) { 
+export default function DrawLimitCardPart({ drawLimit }: Props) { 
   return (
     <div aria-label='Draw Limit' className={styles.drawLimit}>{drawLimit}</div>
   );

@@ -1,6 +1,6 @@
-import { Field, Select } from '@base-ui/react';
+import { Select } from '@base-ui/react';
 import styles from "./DSSelect.module.css";
-import { Required } from './Required';
+import DSField from './DSField';
 
 type DSSelectRootProps<T> = Readonly<{
   label: string;
@@ -20,8 +20,8 @@ type DSSelectOption<T> = Readonly<{
 
 function DSSelectRoot<T>({ disabled, loading, label, options, placeholder, value, onChange, required }: DSSelectRootProps<T>) {
   return (
-    <Field.Root className={styles.root}>
-      <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
+    <DSField.Root>
+      <DSField.Label required={required} label={label} />
       <Select.Root items={options} value={value} onValueChange={v => v ? onChange(v) : undefined}>
         <Select.Trigger
           className={styles.trigger}
@@ -54,7 +54,7 @@ function DSSelectRoot<T>({ disabled, loading, label, options, placeholder, value
           </Select.Positioner>
         </Select.Portal>
       </Select.Root>
-    </Field.Root>
+    </DSField.Root>
   );
 }
 

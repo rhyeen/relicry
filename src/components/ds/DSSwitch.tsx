@@ -1,5 +1,6 @@
-import { Field, Switch } from '@base-ui/react';
+import { Switch } from '@base-ui/react';
 import styles from "./DSSwitch.module.css";
+import DSField from './DSField';
 
 type DSSwitchRootProps = Readonly<{
   label: string;
@@ -11,20 +12,22 @@ type DSSwitchRootProps = Readonly<{
 
 function DSSwitchRoot({ label, checked, onChange, disabled, loading }: DSSwitchRootProps) {
   return (
-    <Field.Root className={styles.root}>
-      <Field.Label className={styles.label}>
-        <Switch.Root
-          checked={checked}
-          className={styles.switch}
-          onCheckedChange={onChange}
-          disabled={disabled || loading}
-          data-loading={loading ? 'true' : undefined}
-        >
-          <Switch.Thumb className={styles.thumb} />
-        </Switch.Root>
-        {label}
-      </Field.Label>
-    </Field.Root>
+    <DSField.Root>
+      <DSField.Label label={
+        <>
+          <Switch.Root
+            checked={checked}
+            className={styles.switch}
+            onCheckedChange={onChange}
+            disabled={disabled || loading}
+            data-loading={loading ? 'true' : undefined}
+          >
+            <Switch.Thumb className={styles.thumb} />
+          </Switch.Root>
+          {label}
+        </>
+      } inline />
+    </DSField.Root>
   );
 }
 

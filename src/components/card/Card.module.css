@@ -15,6 +15,33 @@
   transform-origin: top left;
 }
 
+.foilOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.15;
+  background: linear-gradient(-110deg,
+  #000000 10%,
+  #ff0000 20%,
+  #ffff00 33%,
+  #00ff00 45%,
+  #00ffff 66%,
+  #0000ff 90%,
+  #000000 100%
+  ) 0 0 / 400% 100%;
+  animation: foilShineAnimation 8s ease-in-out infinite;
+}
+
+@keyframes foilShineAnimation {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
 .printSize .fullCard {
   position: absolute;
   top: 0;

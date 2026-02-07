@@ -125,7 +125,6 @@ function DSToggleCustom<T extends TLike>({ disabled, loading, value, ariaLabel, 
         }
       }}
       onPressedChange={(newPressed) => {
-        console.log("DSToggle onPressedChange:", newPressed);
         if (onChange) {
           onChange(newPressed);
         }

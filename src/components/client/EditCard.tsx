@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { Aspect, orderAspects, orderComboAspects } from "@/entities/Aspect";
 import { orderRarities, Rarity } from "@/entities/Rarity";
 import { orderTags, Tag } from "@/entities/Tag";
-import { getCardDocId, getCardId, VersionedCard, VersionedDeckCard } from "@/entities/Card";
+import { getCardDocId, VersionedCard, VersionedDeckCard } from "@/entities/Card";
 import DSForm from "@/components/ds/DSForm";
 import DSSection from "@/components/ds/DSSection";
 import DSField, { fromDateOnlyString, toDateOnlyString } from "@/components/ds/DSField";
@@ -247,9 +247,9 @@ function EditCardInner({
     <DSSection>
       <DSLoadingOverlay loading={loading} error={saveError} dismissError={setSaveError} />
       <DSForm>
-        <DSForm.Title>New Deck Card (Admin)</DSForm.Title>
+        <DSForm.Title>Edit Deck Card</DSForm.Title>
         <DSForm.Description>
-          Create a new deck card version. Leaving it as a sample card will allow it to be created without validation.
+          Edit or create a deck card version. Leaving it as a sample card will allow it to be created without validation.
         </DSForm.Description>
 
         <DSField
@@ -277,12 +277,8 @@ function EditCardInner({
             label="Aspect"
             options={aspectOptions}
             value={card.aspect}
-            onChange={(aspect) => {
-              console.log(aspect);
-              setCard((c) => ({ ...c, aspect }) as VersionedDeckCard);
-            }}
+            onChange={(aspect) => setCard((c) => ({ ...c, aspect }) as VersionedDeckCard)}
             required={!card.isSample}
-
           />
         )}
 

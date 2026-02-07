@@ -1,5 +1,6 @@
 import { prefixId, StoredRoot } from './Root';
 import { ImageSize, ImageStorage } from './Image';
+import { generateId } from '@/lib/idGenerator';
 
 export type Art = IllustrationArt | WritingArt;
 
@@ -31,4 +32,8 @@ export type RootArt = {
 
 export function getArtId(id: string): string {
   return prefixId('art', id);
+}
+
+export function generateArtId(): string {
+  return getArtId(generateId(10));
 }

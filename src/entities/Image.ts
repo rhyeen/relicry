@@ -41,3 +41,10 @@ export function getImageHeight(size: ImageSize | { width: number; height: number
   }
   return ImageSizeContext[size].h;
 }
+
+export function getImageQuality(size: ImageSize | { width: number; height: number }): number {
+  if (typeof size === 'object') {
+    return 82;
+  }
+  return ImageSizeContext[size].quality;
+}

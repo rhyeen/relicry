@@ -7,7 +7,7 @@ type Props = {
   ctx: CardContext;
 }
 
-export default function QRCodeCardPart({ card, ctx }: Props) {
+export default function QRCodeCardPart({ card }: Props) {
   const cardPath = getCardDocId(card.id, card.version);  
   return (
     <div aria-label='QR Code' className={styles.qrcode}>

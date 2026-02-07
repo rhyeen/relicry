@@ -61,12 +61,12 @@ async function CardPageData(
   const [
     illustrationArt,
     illustrationArtist,
-    flavorTextExtendedArt,
-    flavorTextExtendedArtist,
-    awakenedIllustrationArt,
-    awakenedIllustrationArtist,
-    awakenedFlavorTextExtendedArt,
-    awakenedFlavorTextExtendedArtist,
+    // flavorTextExtendedArt,
+    // flavorTextExtendedArtist,
+    // awakenedIllustrationArt,
+    // awakenedIllustrationArtist,
+    // awakenedFlavorTextExtendedArt,
+    // awakenedFlavorTextExtendedArtist,
   ] = await Promise.all([
     getArt(card.illustration.artId),
     getArtist(card.illustration.artistId),

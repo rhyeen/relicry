@@ -11,7 +11,7 @@ export class NextResponseError extends Error {
     super(message);
     this.status = status;
     if (log) {
-      console.log(message + ': ' + log);
+      console.info(message + ': ' + log);
     }
   }
 }

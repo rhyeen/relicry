@@ -7,7 +7,7 @@ type Props = {
   ctx: CardContext;
 }
 
-export default function TitleCardPart({ title, subTitle, ctx }: Props) { 
+export default function TitleCardPart({ title, subTitle }: Props) { 
   return (
     <div className={styles.titleContainer}>
       <div aria-label='Title' className={styles.title}>{title}</div>

@@ -16,6 +16,7 @@ import ScrapCostCardPart from './card-parts/ScrapCostCardPart';
 import AspectCardPart from './card-parts/AspectCardPart';
 import TagsCardPart from './card-parts/TagsCardPart';
 import { assetURL, CardContext } from '@/entities/CardContext';
+import FoilShineOverlay from './card-parts/FoilShineOverlay';
 
 type Props = {
   card: VersionedCard;
@@ -52,6 +53,7 @@ export default function FullDeckCard({
       <TitleCardPart title={_card.title} subTitle={_card.subTitle} ctx={ctx} />
       <QRCodeCardPart card={card} ctx={ctx} />
       <QRTextureCardPart ctx={ctx} />
+      { card.version === 2 && <FoilShineOverlay /> }
     </section>
   );
 }

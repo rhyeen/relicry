@@ -1,6 +1,5 @@
 import { Field } from '@base-ui/react';
 import styles from "./DSField.module.css";
-import { Required } from './Required';
 
 export function toDateOnlyString(d: Date): string {
   const y = d.getFullYear();
@@ -36,8 +35,8 @@ type DSFieldRootProps = Readonly<{
 
 function DSFieldRoot({ disabled, loading, error, type, description, label, value, onChange, placeholder, readonly, required }: DSFieldRootProps) {
   return (
-    <Field.Root className={styles.root}>
-      <Field.Label className={styles.label}><Required required={required}>{label}</Required></Field.Label>
+    <Root>
+      <Label required={required} label={label} />
       <Field.Control
         className={styles.control}
         required={required}
@@ -49,18 +48,88 @@ function DSFieldRoot({ disabled, loading, error, type, description, label, value
         disabled={disabled || loading}
         data-loading={loading ? 'true' : undefined}
       />
-      {!!error &&
-        <Field.Error className={styles.error}>
-          {error}
-        </Field.Error>
-      }
-      {!!description &&
-        <Field.Description className={styles.description}>{description}</Field.Description>
-      }
-    </Field.Root>
+      <Error error={error} />
+      <Description description={description} />
+    </Root>
   );
 }
 
-const DSField = Object.assign(DSFieldRoot, {});
+type RootProps = Readonly<{
+  children: React.ReactNode;
+}>;
+
+function Root({ children }: RootProps) {
+  return (
+    <Field.Root className={styles.root}>{children}</Field.Root>
+  );
+}
+
+type RequiredProps = {
+  required?: boolean;
+  minimum?: number;
+  maximum?: number;
+  children: React.ReactNode;
+};
+
+function Required({ required, children, minimum, maximum }: RequiredProps) {
+  if (!required) return children;
+  const getMarker = () => {
+    if (!minimum) {
+      if (maximum) return ` (max ${maximum})`;
+      return required ? ' *' : '';
+    } else {
+      if (maximum) return ` (${minimum}-${maximum})`;
+      return ` (${minimum}+)`;
+    }
+  };
+  return (
+    <>{children}<span>{getMarker()}</span></>
+  );
+}
+
+type LabelProps = Readonly<{
+  label: string | React.ReactNode;
+  required?: boolean;
+  minimum?: number;
+  maximum?: number;
+  inline?: boolean;
+}>;
+
+function Label({ label, required, minimum, maximum, inline }: LabelProps) {
+  return (
+    <Field.Label className={styles.label} data-inline={inline ? 'true' : undefined}>
+      <Required required={required} minimum={minimum} maximum={maximum}>{label}</Required>
+    </Field.Label>
+  );
+}
+
+type ErrorProps = Readonly<{
+  error?: string;
+}>;
+
+function Error({ error }: ErrorProps) {
+  return (
+    <Field.Error className={styles.error} match={!!error}>{error}</Field.Error>
+  );
+}
+
+type DescriptionProps = Readonly<{
+  description?: string;
+}>;
+
+function Description({ description }: DescriptionProps) {
+  if (!description) return null;
+  return (
+    <Field.Description className={styles.description}>{description}</Field.Description>
+  );
+}
+
+const DSField = Object.assign(DSFieldRoot, {
+  Root,
+  Required,
+  Label,
+  Error,
+  Description,
+});
 
 export default DSField;

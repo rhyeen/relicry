@@ -1,3 +1,4 @@
+import { generateId } from '@/lib/idGenerator';
 import { prefixId, StoredRoot } from './Root';
 
 export type Artist = StoredRoot & {
@@ -27,4 +28,8 @@ export enum ArtistTag {
 
 export function getArtistId(id: string): string {
   return prefixId('ast', id);
+}
+
+export function generateArtistId(): string {
+  return getArtistId(generateId(10));
 }

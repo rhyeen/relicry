@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
   // So the code is smaller
   const url = new URL(path, origin).toString().toUpperCase();
   if (cacheBuster) {
-    console.log(`Cache buster present: ${cacheBuster}`);
-    console.log(`Generating QR code for URL: ${url}`);
+    console.info(`Cache buster present: ${cacheBuster}`);
+    console.info(`Generating QR code for URL: ${url}`);
   }
   const svg = await QRCode.toString(url, {
     type: 'svg',

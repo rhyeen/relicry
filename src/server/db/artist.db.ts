@@ -1,6 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { Artist, getArtistId } from '@/entities/Artist';
+import { Artist, generateArtistId, getArtistId } from '@/entities/Artist';
 
 export class ArtistDB extends RootDB<Artist> {
   constructor(
@@ -19,5 +19,9 @@ export class ArtistDB extends RootDB<Artist> {
 
   protected getUnsafeDocId(item: Artist): string {
     return item.id
+  }
+
+  public async generateId(): Promise<string> {
+    return this.getUniqueId(generateArtistId);
   }
 }
