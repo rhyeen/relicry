@@ -11,7 +11,7 @@ function defaultEventMap(eventId: string, id: string): EventMap {
   return {
     eventId,
     id,
-    imageUrl: 'https://fastly.picsum.photos/id/966/3000/2000.jpg?hmac=SULeTH8M0X8yHP3uQw-NbLdUOz35wavh6fVUB26b7Cg',
+    imagePath: 'https://fastly.picsum.photos/id/966/3000/2000.jpg?hmac=SULeTH8M0X8yHP3uQw-NbLdUOz35wavh6fVUB26b7Cg',
     imageWidthPx: 3000,
     imageHeightPx: 2000,
     createdAt: new Date(),

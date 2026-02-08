@@ -1,4 +1,4 @@
-import { PlayerCard, PlayerCardCondition, PlayerCardOwnership } from '@/entities/PlayerCard';
+import { PlayerCard, PlayerCardCondition, PlayerCardLanguage, PlayerCardOwnership } from '@/entities/PlayerCard';
 import { eventTestIds } from './event.data';
 import { userTestIds } from './user.data';
 import { cardTestIds } from './card.data';
@@ -16,6 +16,8 @@ function defaultPlayerCard(
     individuals: [
       {
         condition,
+        language: PlayerCardLanguage.English,
+        graded: null,
         signedByIllustrator: false,
         signedByAuthor: false,
         notes: '',

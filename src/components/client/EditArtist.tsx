@@ -123,6 +123,10 @@ function EditArtistInner({
       setLoading(false);
     }
   };
+
+  const onCancel = () => {
+    router.back();
+  };
   
   return (
     <DSSection>
@@ -175,7 +179,7 @@ function EditArtistInner({
 
         <DSForm.ButtonGroup>
           <DSButton onClick={onSave} label="Save" loading={loading} disabled={!authUser.ready} />
-          <DSButton onClick={onSave} label="Cancel" loading={loading} />
+          <DSButton onClick={onCancel} label="Cancel" loading={loading} />
         </DSForm.ButtonGroup>
       </DSForm>
     </DSSection>

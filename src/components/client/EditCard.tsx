@@ -17,12 +17,15 @@ import { CardType } from "@/entities/CardContext";
 import { cardEffectToString, stringToCardEffect } from "@/entities/CardEffectAsString";
 import DSDialog from "@/components/ds/DSDialog";
 import Card from "@/components/card/Card";
+import SelectArt from "@/components/SelectArt";
 import { useUser } from '@/lib/client/useUser';
 import { AdminRole, hasRole } from '@/entities/AdminRole';
 import PermissionDenied from '@/app/permission-denied';
 import DSLoadingOverlay from '../ds/DSLoadingOverlay';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { useRouter } from 'next/navigation';
+import { Art } from '@/entities/Art';
+import { Artist } from '@/entities/Artist';
 
 const CURRENT_SEASON = 1;
 
@@ -165,9 +168,41 @@ function EditCardInner({
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [card, setCard] = useState<VersionedCard>(() => initCard ?? getDefaultNewCard(type));
+  const [previewArt, setPreviewArt] = useState<Art | null>(null);
+  const [previewArtist, setPreviewArtist] = useState<Artist | null>(null);
 
   const update = <K extends keyof VersionedCard>(key: K, value: VersionedCard[K]) => {
     setCard((c) => ({ ...c, [key]: value }));
+  };
+
+  const loadPreviewParts = async () => {
+    if (!card.illustration?.artId && !card.illustration?.artistId) return;
+    setLoading(true);
+    try {
+      const token = await authUser.user?.getIdToken();
+      const [artRes, artistRes] = await Promise.all([
+        fetch(`/api/${card.illustration.artId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        }),
+        fetch(`/api/${card.illustration.artistId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        }),
+      ]);
+      const artJson = await artRes.json().catch(() => ({}));
+      const artistJson = await artistRes.json().catch(() => ({}));
+      if (!artRes.ok) {
+        throw new Error(artJson?.error || artJson?.details || `Failed to load art (${artRes.status})`);
+      }
+      if (!artistRes.ok) {
+        throw new Error(artistJson?.error || artistJson?.details || `Failed to load artist (${artistRes.status})`);
+      }
+      setPreviewArt(artJson.art as Art);
+      setPreviewArtist(artistJson.artist as Artist);
+    } catch (err: unknown) {
+      console.error("Failed to load preview art or artist:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getFinalCard = (): VersionedCard => {
@@ -395,6 +430,20 @@ function EditCardInner({
           error={saveAttempted ? FormErrors.getTitleError(card.title) : undefined}
         />
 
+        <SelectArt
+          selectedArtId={card.illustration?.artId}
+          onSelect={(art) =>
+            setCard((c) => ({
+              ...c,
+              illustration: {
+                artId: art.id,
+                artistId: art.artistId,
+              },
+            }))
+          }
+          type="illustration"
+        />
+
         {[Rarity.Epic, Rarity.Legendary].includes(card.rarity) && (
           <DSField
             label="SubTitle"
@@ -525,9 +574,24 @@ function EditCardInner({
 
           <DSDialog
             title="Card Preview"
-            trigger={<DSButton onClick={onSave} label="Preview" dialogTrigger loading={loading} />}
-            content={<Card card={getFinalCard()} ctx={{ type: CardType.Full }} art={null} artist={null} />}
+            trigger={
+              <DSButton
+                onClick={loadPreviewParts}
+                label="Preview"
+                dialogTrigger
+                loading={loading}
+              />
+            }
+            content={
+              <Card
+                card={getFinalCard()}
+                ctx={{ type: CardType.Full }}
+                art={previewArt}
+                artist={previewArtist}
+              />
+            }
             actions={<DSDialog.Close />}
+            loading={loading}
           />
 
           <DSButton onClick={onSave} label="Cancel" loading={loading} />

@@ -5,6 +5,22 @@ import { invalidateArtistSoon } from '@/server/cache/artist.cache';
 import { ArtistDB } from '@/server/db/artist.db';
 import { authenticateUser, handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
 
+export async function GET(req: Request) {
+  try {
+    await authenticateUser(req, {
+      adminRole: AdminRole.SuperAdmin,
+    });
+    const db = new ArtistDB(firestoreAdmin);
+    const artists = await db.getBy({
+      where: [],
+      sortBy: { field: 'name', direction: 'asc' },
+    });
+    return handleJsonResponse({ artists });
+  } catch (e) {
+    return handleRouteError(e);
+  }
+}
+
 export async function POST(req: Request) {
   try {
     await authenticateUser(req, {

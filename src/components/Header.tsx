@@ -10,8 +10,11 @@ export default function Header() {
           Relicry
         </Link>
         <nav className={styles.nav}>
-          <Link href="/events" className={styles.navLink}>
-            Events
+          <Link href="/cards" className={styles.navLink}>
+            Cards
+          </Link>
+          <Link href="/art" className={styles.navLink}>
+            Art
           </Link>
         </nav>
       </div>

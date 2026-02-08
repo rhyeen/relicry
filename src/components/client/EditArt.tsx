@@ -16,9 +16,18 @@ import DSSection from '../ds/DSSection';
 import DSSwitch from '../ds/DSSwitch';
 import DSSelect from '../ds/DSSelect';
 import ImageUploader from './ImageUploader/ImageUploader';
+import SelectArtist from '@/components/SelectArtist';
 import { ImageStorageDraft } from './ImageUploader/ImageUploadDragDrop';
 
 const FormErrors = {
+  getArtistError: (art: Art, setSaveError: (error: string | null) => void): string | undefined => {
+    if (!art.artistId?.trim()) {
+      const error = "Artist is required.";
+      setSaveError(error);
+      return error;
+    }
+    return undefined;
+  },
   getImageError: (art: Art, setSaveError: (error: string | null) => void): string | undefined => {
     if (art.type !== 'illustration') return undefined;
     let error: string | undefined;
@@ -123,6 +132,7 @@ function EditArtInner({
   const getFinalArt = (): Art => {
     const rootArt: RootArt = {
       ...art,
+      artistId: art.artistId.trim(),
       title: art.title?.trim(),
       description: art.description?.trim(),
     };
@@ -176,7 +186,7 @@ function EditArtInner({
     }
 
     fd.append("keys", JSON.stringify(keysUploaded));
-    const res = await fetch("/api/admin/image/upload", {
+    const res = await fetch("/api/images/upload", {
       method: "POST",
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -204,6 +214,7 @@ function EditArtInner({
   const onSave = async () => {
     if (!authUser.ready || !authUser.user || loading) return;
     const hasErrors = (
+      !!FormErrors.getArtistError(art, setSaveError) ||
       !!FormErrors.getImageError(art, setSaveError)
     );
 
@@ -222,7 +233,7 @@ function EditArtInner({
         const imageUpdates = await uploadImage(copiedArt.image!);
         copiedArt.image = imageUpdates;
       }
-      const res = await fetch('/api/admin/arts', {
+      const res = await fetch('/api/admin/art', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -272,6 +283,14 @@ function EditArtInner({
           label="Description"
           value={art.description || ''}
           onChange={(value) => setArt(a => ({ ...a, description: value }))}
+        />
+
+        <SelectArtist
+          selectedArtistId={art.artistId}
+          onSelect={(artist) => {
+            setArt((a) => ({ ...a, artistId: artist.id }));
+            setSaveError(null);
+          }}
         />
 
         <DSSelect

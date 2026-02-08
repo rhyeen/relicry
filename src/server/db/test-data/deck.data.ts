@@ -17,6 +17,7 @@ function defaultDeck(id: string, name: string, userId: string): VersionedDeck {
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: null,
+    isLatest: true,
   };
 }
 

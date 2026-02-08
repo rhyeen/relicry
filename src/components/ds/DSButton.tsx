@@ -3,20 +3,22 @@ import styles from "./DSButton.module.css";
 
 type DSButtonRootProps = Readonly<{
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
   dialogTrigger?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  href?: string;
 }>;
 
-function DSButtonRoot({ label, onClick, dialogTrigger, disabled, loading }: DSButtonRootProps) {
+function DSButtonRoot({ href, label, onClick, dialogTrigger, disabled, loading }: DSButtonRootProps) {
   const isNative = !dialogTrigger;
+  const isLink = !!href;
   return (
     <Button
       className={styles.button}
       onClick={onClick}
       nativeButton={isNative}
-      render={isNative ? undefined : <div />}
+      render={isLink ? <a href={href} /> : isNative ? undefined : <div />}
       disabled={disabled || loading}
       data-loading={loading ? 'true' : undefined}
     >

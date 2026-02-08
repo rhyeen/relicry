@@ -1,5 +1,6 @@
 import { Dialog } from '@base-ui/react';
 import styles from "./DSDialog.module.css";
+import DSLoadingOverlay from './DSLoadingOverlay';
 
 type DSDialogRootProps = Readonly<{
   trigger?: React.ReactNode;
@@ -10,6 +11,7 @@ type DSDialogRootProps = Readonly<{
   content?: React.ReactNode;
   actions?: React.ReactNode;
   disablePointerDismissal?: boolean;
+  loading?: boolean;
 }>;
 
 type DSDialogCloseProps = Readonly<{
@@ -21,7 +23,7 @@ function Close({ text, onClick }: DSDialogCloseProps) {
   return <Dialog.Close className={styles.close} onClick={onClick}>{text || 'Close'}</Dialog.Close>;
 }
 
-function DSDialogRoot({ trigger, open, onOpenChange, title, description, content, actions, disablePointerDismissal }: DSDialogRootProps) {
+function DSDialogRoot({ loading, trigger, open, onOpenChange, title, description, content, actions, disablePointerDismissal }: DSDialogRootProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange} disablePointerDismissal={disablePointerDismissal}>
       {trigger && <Dialog.Trigger className={styles.trigger}>{trigger}</Dialog.Trigger>}
@@ -34,6 +36,7 @@ function DSDialogRoot({ trigger, open, onOpenChange, title, description, content
           <Dialog.Description className={styles.description}>
             {description}
           </Dialog.Description>
+          <DSLoadingOverlay loading={loading} error={null} />
           <div className={styles.content}>
             {content}
           </div>

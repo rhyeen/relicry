@@ -47,12 +47,20 @@ export default function StoredImage({
   className,
   eager = false,
 }: Props) {
-  // If url exists, use it immediately (no SDK call, no hydration wait).
-  const initialSrc = image.url ?? (image.path ? urlCache.get(image.path) : undefined) ?? null;
+  const getNow = () => image.url ?? (image.path ? urlCache.get(image.path) : undefined) ?? null;
+
+  const initialSrc = getNow(); 
   const [src, setSrc] = useState<string | null>(initialSrc);
 
   useEffect(() => {
     let alive = true;
+
+    // If url exists, use it immediately (no SDK call, no hydration wait).
+    const initialSrc = getNow();
+    if (initialSrc) {
+      setSrc(initialSrc);
+      return;
+    }
 
     if (!src && image.path) {
       resolveUrlFromPath(image.path)
@@ -81,7 +89,7 @@ export default function StoredImage({
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "low"}
       style={{
-        backgroundColor: "#ff0000",
+        backgroundColor: "none",
         display: "block",
       }}
     />

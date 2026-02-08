@@ -7,11 +7,12 @@ type Props = {
   ctx: CardContext;
 }
 
-const DEBUG = true;
+const DEBUG_ALWAYS_SHOW_EXAMPLE = false;
 
 export default function IllustrationCardPart({ art, ctx }: Props) {
   let backgroundImage = assetURL(ctx, 'example-illustration.ai.webp');
-  if (!DEBUG && (art && art.image && (art as IllustrationArt).image.card?.url)) {
+  console.log(art ? (art as IllustrationArt).image.card : 'no art');
+  if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (art && art.image && (art as IllustrationArt).image.card?.url)) {
     backgroundImage = (art as IllustrationArt).image.card?.url || '';
   }
 
