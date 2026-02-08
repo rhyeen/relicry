@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { PlayerCard } from '@/entities/PlayerCard';
@@ -19,7 +19,7 @@ export async function getPlayerCards(userId: string): Promise<PlayerCard[]> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(playerCardTags.data(userId));
 
-  return new PlayerCardDB(firestoreAdmin).getByUserId(userId);
+  return new PlayerCardDB(getFirestoreAdmin()).getByUserId(userId);
 }
 
 export async function invalidatePlayerCardsNow(userId: string): Promise<void> {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { VersionedDeck } from '@/entities/Deck';
@@ -19,7 +19,7 @@ export async function getDeck(id: string): Promise<VersionedDeck | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(deckTags.data(id));
 
-  return new DeckDB(firestoreAdmin).getLatest(id);
+  return new DeckDB(getFirestoreAdmin()).getLatest(id);
 }
 
 export async function invalidateDeckNow(id: string): Promise<void> {

@@ -1,6 +1,6 @@
 import { AdminRole, hasRole } from '@/entities/AdminRole';
 import { User } from '@/entities/User';
-import { appAdmin, firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getAppAdmin, getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { UserDB } from './db/user.db';
 import { NextResponse } from 'next/server';
 import assert from 'assert';
@@ -140,7 +140,7 @@ export async function authenticate(
     return returnData;
   }
   if (additionalReturn.user || requirements.adminRole) {
-    const db = new UserDB(firestoreAdmin);
+    const db = new UserDB(getFirestoreAdmin());
     let user: User | null = await db.getByFirebaseUid(firebaseData.uid);
     if (!user) {
       // Create the user
@@ -180,7 +180,7 @@ async function getFirebaseData(req: Request): Promise<{
     email: null,
   };
   const idToken = m[1]!;
-  const decoded = await appAdmin.auth().verifyIdToken(idToken);
+  const decoded = await getAppAdmin().auth().verifyIdToken(idToken);
   return {
     uid: decoded.uid || null,
     emailVerified: decoded.email_verified || false,

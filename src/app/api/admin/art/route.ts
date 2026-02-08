@@ -1,6 +1,6 @@
 import { AdminRole } from '@/entities/AdminRole';
 import { Art } from '@/entities/Art';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { invalidateArtSoon } from '@/server/cache/art.cache';
 import { ArtDB } from '@/server/db/art.db';
 import { authenticateUser, BadRequest, handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     if (type && type !== 'illustration' && type !== 'writing') {
       throw new BadRequest(`Invalid art type: ${type}`);
     }
-    const db = new ArtDB(firestoreAdmin);
+    const db = new ArtDB(getFirestoreAdmin());
     const arts = await db.getBy({
       where: type ? [{ field: 'type', op: '==', value: type }] : [],
       sortBy: { field: 'createdAt', direction: 'desc' },
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     });
     const body = await req.json();
     const art = body.art as Art;
-    const db = new ArtDB(firestoreAdmin);
+    const db = new ArtDB(getFirestoreAdmin());
     if (!art.id) {
       art.id = await db.generateId();
     }

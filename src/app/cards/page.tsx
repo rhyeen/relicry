@@ -1,6 +1,6 @@
 import { Art } from '@/entities/Art';
 import { getCardDocId, VersionedCard } from '@/entities/Card';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import CardPreviewItem from '@/components/CardPreviewItem';
 import { getArt } from '@/server/cache/art.cache';
@@ -18,7 +18,7 @@ async function getCards(): Promise<VersionedCard[]> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(`cards:list:${index}`);
 
-  const { entities } = await new CardDB(firestoreAdmin).getAllFeatured(index);
+  const { entities } = await new CardDB(getFirestoreAdmin()).getAllFeatured(index);
   // @NOTE: This is likely either due to a bug or emulated local environment is not populated yet.
   if (!entities.length) {
     updateTag(`cards:list:${index}`);

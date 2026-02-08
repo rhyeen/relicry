@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Quest } from '@/entities/Quest';
@@ -19,7 +19,7 @@ export async function getQuest(id: string): Promise<Quest | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(questTags.data(id));
 
-  return new QuestDB(firestoreAdmin).getLatest(id);
+  return new QuestDB(getFirestoreAdmin()).getLatest(id);
 }
 
 export async function invalidateQuestNow(id: string): Promise<void> {

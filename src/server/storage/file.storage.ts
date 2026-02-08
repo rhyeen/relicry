@@ -1,6 +1,6 @@
 import "server-only";
 
-import { storageAdmin } from "@/lib/firebaseAdmin";
+import { getStorageAdmin } from "@/lib/firebaseAdmin";
 import type { storage } from "firebase-admin";
 import { randomUUID } from "crypto";
 import { isEmulated } from "@/lib/environment";
@@ -12,7 +12,7 @@ export class FileStorage {
   protected bucket: BucketLike;
 
   constructor(bucket?: BucketLike) {
-    this.bucket = bucket || storageAdmin.bucket();
+    this.bucket = bucket || getStorageAdmin().bucket();
   }
 
   public get Bucket(): BucketLike {

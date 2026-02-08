@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Herald } from '@/entities/Herald';
@@ -19,7 +19,7 @@ export async function getHerald(id: string): Promise<Herald | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(heraldTags.data(id));
 
-  return new HeraldDB(firestoreAdmin).getFromParts(id);
+  return new HeraldDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidateHeraldNow(id: string): Promise<void> {

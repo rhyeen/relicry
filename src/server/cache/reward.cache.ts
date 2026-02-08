@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Reward } from '@/entities/Reward';
@@ -20,7 +20,7 @@ export async function getReward(eventId: string, level: number | string): Promis
   cacheTag(rewardTags.data(eventId, level));
 
   const _level = typeof level === 'string' ? parseInt(level, 10) : level;
-  return new RewardDB(firestoreAdmin).getFromParts(eventId, _level);
+  return new RewardDB(getFirestoreAdmin()).getFromParts(eventId, _level);
 }
 
 export async function invalidateRewardNow(eventId: string, level: number | string): Promise<void> {

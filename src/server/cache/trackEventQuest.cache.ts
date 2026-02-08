@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { TrackEventQuest } from '@/entities/Trackers';
@@ -23,7 +23,7 @@ export async function getTrackEventQuest(
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(trackEventQuestTags.data(userId, eventId, questId));
 
-  return new TrackQuestEventDB(firestoreAdmin).getFromParts(userId, eventId, questId);
+  return new TrackQuestEventDB(getFirestoreAdmin()).getFromParts(userId, eventId, questId);
 }
 
 export async function invalidateTrackEventQuestNow(

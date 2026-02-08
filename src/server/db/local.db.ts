@@ -1,5 +1,5 @@
 import "server-only";
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { isEmulated } from '@/lib/environment';
 import { getExampleCard1, getExampleCard2, getExampleCard3 } from './test-data/card.data';
 import { getExampleArt1, getExampleArt2, getExampleArt3, getExampleArt4 } from './test-data/art.data';
@@ -60,7 +60,7 @@ export const populateLocal = async () => {
 };
 
 const populateLocalCards = async () => {
-  await new CardDB(firestoreAdmin).batchSet([
+  await new CardDB(getFirestoreAdmin()).batchSet([
     getExampleCard1(),
     getExampleCard2(),
     getExampleCard3(),
@@ -74,7 +74,7 @@ const populateLocalArt = async () => {
     seedImage({ id: 'art3', color: '#b133ffff' }),
   ]);
   
-  await new ArtDB(firestoreAdmin).batchSet([
+  await new ArtDB(getFirestoreAdmin()).batchSet([
     getExampleArt1(images[0]),
     getExampleArt2(images[1]),
     getExampleArt3(images[2]),
@@ -83,7 +83,7 @@ const populateLocalArt = async () => {
 }
 
 const populateLocalArtists = async () => {
-  await new ArtistDB(firestoreAdmin).batchSet([
+  await new ArtistDB(getFirestoreAdmin()).batchSet([
     getExampleArtist1(),
     getExampleArtist2(),
     getExampleArtist3(),
@@ -91,7 +91,7 @@ const populateLocalArtists = async () => {
 }
 
 const populateLocalUsers = async () => {
-  await new UserDB(firestoreAdmin).batchSet([
+  await new UserDB(getFirestoreAdmin()).batchSet([
     getExampleUser1(),
     getExampleUser2(),
     getExampleUser3(),
@@ -99,7 +99,7 @@ const populateLocalUsers = async () => {
 }
 
 const populateLocalApexes = async () => {
-  await new ApexDB(firestoreAdmin).batchSet([
+  await new ApexDB(getFirestoreAdmin()).batchSet([
     getExampleApex1(),
     getExampleApex2(),
     getExampleApex3(),
@@ -107,7 +107,7 @@ const populateLocalApexes = async () => {
 }
 
 const populateLocalDecks = async () => {
-  await new DeckDB(firestoreAdmin).batchSet([
+  await new DeckDB(getFirestoreAdmin()).batchSet([
     getExampleDeck1(),
     getExampleDeck2(),
     getExampleDeck3(),
@@ -115,7 +115,7 @@ const populateLocalDecks = async () => {
 }
 
 const populateLocalEvents = async () => {
-  await new EventDB(firestoreAdmin).batchSet([
+  await new EventDB(getFirestoreAdmin()).batchSet([
     getExampleEvent1(),
     getExampleEvent2(),
     getExampleEvent3(),
@@ -123,7 +123,7 @@ const populateLocalEvents = async () => {
 }
 
 const populateLocalRewards = async () => {
-  await new RewardDB(firestoreAdmin).batchSet([
+  await new RewardDB(getFirestoreAdmin()).batchSet([
     getExampleReward1(),
     getExampleReward2(),
     getExampleReward3(),
@@ -131,7 +131,7 @@ const populateLocalRewards = async () => {
 }
 
 const populateLocalEventMaps = async () => {
-  await new EventMapDB(firestoreAdmin).batchSet([
+  await new EventMapDB(getFirestoreAdmin()).batchSet([
     getExampleEventMap1(),
     getExampleEventMap2(),
     getExampleEventMap3(),
@@ -139,7 +139,7 @@ const populateLocalEventMaps = async () => {
 }
 
 const populateLocalHeralds = async () => {
-  await new HeraldDB(firestoreAdmin).batchSet([
+  await new HeraldDB(getFirestoreAdmin()).batchSet([
     getExampleHerald1(),
     getExampleHerald2(),
     getExampleHerald3(),
@@ -147,7 +147,7 @@ const populateLocalHeralds = async () => {
 }
 
 const populateLocalPromotedItems = async () => {
-  await new PromotedItemDB(firestoreAdmin).batchSet([
+  await new PromotedItemDB(getFirestoreAdmin()).batchSet([
     getExamplePromotedItem1(),
     getExamplePromotedItem2(),
     getExamplePromotedItem3(),
@@ -155,7 +155,7 @@ const populateLocalPromotedItems = async () => {
 }
 
 const populateLocalQuests = async () => {
-  await new QuestDB(firestoreAdmin).batchSet([
+  await new QuestDB(getFirestoreAdmin()).batchSet([
     getExampleQuest1(),
     getExampleQuest2(),
     getExampleQuest3(),
@@ -163,7 +163,7 @@ const populateLocalQuests = async () => {
 }
 
 const populateLocalEventQuests = async () => {
-  await new EventQuestDB(firestoreAdmin).batchSet([
+  await new EventQuestDB(getFirestoreAdmin()).batchSet([
     getExampleEventQuest1(),
     getExampleEventQuest2(),
     getExampleEventQuest3(),
@@ -171,7 +171,7 @@ const populateLocalEventQuests = async () => {
 }
 
 const populateLocalScenes = async () => {
-  await new SceneDB(firestoreAdmin).batchSet([
+  await new SceneDB(getFirestoreAdmin()).batchSet([
     getExampleScene1(),
     getExampleScene2(),
     getExampleScene3(),
@@ -179,7 +179,7 @@ const populateLocalScenes = async () => {
 }
 
 const populateLocalTrackEventQuests = async () => {
-  await new TrackQuestEventDB(firestoreAdmin).batchSet([
+  await new TrackQuestEventDB(getFirestoreAdmin()).batchSet([
     getExampleTrackEventQuest1(),
     getExampleTrackEventQuest2(),
     getExampleTrackEventQuest3(),
@@ -187,7 +187,7 @@ const populateLocalTrackEventQuests = async () => {
 }
 
 const populateLocalPlayerCards = async () => {
-  await new PlayerCardDB(firestoreAdmin).batchSet([
+  await new PlayerCardDB(getFirestoreAdmin()).batchSet([
     getExamplePlayerCard1(),
     getExamplePlayerCard2(),
     getExamplePlayerCard3(),

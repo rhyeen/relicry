@@ -9,12 +9,14 @@ type FirebaseAdminAppParams = {
   privateKey: string;
 }
 
-// IMPORTANT: set emulator env vars BEFORE initializeApp()
-// This has to be done because we are running within NextJS rather than Firebase Functions
-if (isEmulated) {
-  process.env.FIREBASE_AUTH_EMULATOR_HOST ||= 'localhost:9097';
-  process.env.FIRESTORE_EMULATOR_HOST ||= 'localhost:8087';
-  process.env.FIREBASE_STORAGE_EMULATOR_HOST ||= 'localhost:9197';
+function ensureEmulatorEnv() {
+  // IMPORTANT: set emulator env vars BEFORE initializeApp()
+  // This has to be done because we are running within NextJS rather than Firebase Functions
+  if (isEmulated) {
+    process.env.FIREBASE_AUTH_EMULATOR_HOST ||= 'localhost:9097';
+    process.env.FIRESTORE_EMULATOR_HOST ||= 'localhost:8087';
+    process.env.FIREBASE_STORAGE_EMULATOR_HOST ||= 'localhost:9197';
+  }
 }
 
 function formatPrivateKey(key: string) {
@@ -28,6 +30,7 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
   const privateKey = formatPrivateKey(params.privateKey);
 
   if (!firebaseAdminApp) {
+    ensureEmulatorEnv();
     const cert = admin.credential.cert({
       projectId: params.projectId,
       clientEmail: params.clientEmail,
@@ -62,9 +65,17 @@ function initAdmin() {
   return initializeFirebaseAdminApp(params);
 }
 
-// Export the initialized app and Firebase services
-const appAdmin = initAdmin();
-const firestoreAdmin = appAdmin.firestore();
-const storageAdmin = appAdmin.storage();
+export function getAppAdmin(): admin.app.App {
+  if (!firebaseAdminApp) {
+    initAdmin();
+  }
+  return firebaseAdminApp!;
+}
 
-export { appAdmin, firestoreAdmin, storageAdmin };
+export function getFirestoreAdmin(): FirebaseFirestore.Firestore {
+  return getAppAdmin().firestore();
+}
+
+export function getStorageAdmin(): admin.storage.Storage {
+  return getAppAdmin().storage();
+}

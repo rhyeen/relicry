@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { authenticateUser, handleJsonResponse, handleOkResponse, handleRouteError, InvalidArgument, NotFound } from '@/server/routeHelpers';
 import { PlayerCardDB } from '@/server/db/playerCard.db';
 
@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     if (!Number.isFinite(cardVersion)) {
       throw new InvalidArgument(['cardVersion'], 'number');
     }
-    const entity = await new PlayerCardDB(firestoreAdmin).getFromParts(userId, cardId, cardVersion);
+    const entity = await new PlayerCardDB(getFirestoreAdmin()).getFromParts(userId, cardId, cardVersion);
     if (!entity) {
       throw new NotFound('PlayerCard');
     }
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     if (userId !== body.userId) {
       throw new InvalidArgument(['userId'], 'same as that of authenticated user');
     }
-    await new PlayerCardDB(firestoreAdmin).set(body);
+    await new PlayerCardDB(getFirestoreAdmin()).set(body);
     return handleOkResponse();
   } catch (e) {
     return handleRouteError(e);

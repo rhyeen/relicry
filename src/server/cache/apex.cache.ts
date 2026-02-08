@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { StoredApex } from '@/entities/Apex';
@@ -20,7 +20,7 @@ export async function getApex(id: string, version: number | string): Promise<Sto
   cacheTag(apexTags.data(id, version));
 
   const _version = typeof version === 'string' ? parseInt(version, 10) : version;
-  return new ApexDB(firestoreAdmin).getFromParts(id, _version);
+  return new ApexDB(getFirestoreAdmin()).getFromParts(id, _version);
 }
 
 export async function invalidateApexNow(id: string, version: number | string): Promise<void> {

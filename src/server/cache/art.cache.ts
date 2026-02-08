@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Art } from '@/entities/Art';
@@ -19,7 +19,7 @@ export async function getArt(id: string): Promise<Art | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(artTags.data(id));
 
-  return new ArtDB(firestoreAdmin).getFromParts(id);
+  return new ArtDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidateArtNow(id: string): Promise<void> {

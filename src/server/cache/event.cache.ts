@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Event } from '@/entities/Event';
@@ -19,7 +19,7 @@ export async function getEvent(id: string): Promise<Event | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(eventTags.data(id));
 
-  return new EventDB(firestoreAdmin).getFromParts(id);
+  return new EventDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidateEventNow(id: string): Promise<void> {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { VersionedCard } from '@/entities/Card';
@@ -20,7 +20,7 @@ export async function getCard(id: string, version: number | string): Promise<Ver
   cacheTag(cardTags.data(id, version));
 
   const _version = typeof version === 'string' ? parseInt(version, 10) : version;
-  return new CardDB(firestoreAdmin).getFromParts(id, _version);
+  return new CardDB(getFirestoreAdmin()).getFromParts(id, _version);
 }
 
 export async function invalidateCardNow(id: string, version: number | string): Promise<void> {

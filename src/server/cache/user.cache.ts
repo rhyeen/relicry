@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { User } from '@/entities/User';
@@ -19,7 +19,7 @@ export async function getUser(id: string): Promise<User | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(userTags.data(id));
 
-  return new UserDB(firestoreAdmin).getFromParts(id);
+  return new UserDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidateUserNow(id: string): Promise<void> {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { PromotedItem } from '@/entities/PromotedItem';
@@ -19,7 +19,7 @@ export async function getPromotedItem(id: string): Promise<PromotedItem | null> 
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(promotedItemTags.data(id));
 
-  return new PromotedItemDB(firestoreAdmin).getFromParts(id);
+  return new PromotedItemDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidatePromotedItemNow(id: string): Promise<void> {

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import { cacheLife, cacheTag, revalidateTag, updateTag } from 'next/cache';
 import { Scene } from '@/entities/Scene';
@@ -19,7 +19,7 @@ export async function getScene(id: string): Promise<Scene | null> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(sceneTags.data(id));
 
-  return new SceneDB(firestoreAdmin).getFromParts(id);
+  return new SceneDB(getFirestoreAdmin()).getFromParts(id);
 }
 
 export async function invalidateSceneNow(id: string): Promise<void> {

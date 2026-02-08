@@ -1,5 +1,5 @@
 import { Art, getArtId } from '@/entities/Art';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import ArtPreviewItem from '@/components/ArtPreviewItem';
 import { ArtDB } from '@/server/db/art.db';
@@ -16,7 +16,7 @@ async function getArts(): Promise<Art[]> {
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(`arts:list:${index}`);
 
-  const entities = await new ArtDB(firestoreAdmin).getBy({
+  const entities = await new ArtDB(getFirestoreAdmin()).getBy({
     where: [],
     sortBy: { field: 'createdAt', direction: 'desc' },
     limit: 100,

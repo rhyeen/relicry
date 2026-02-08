@@ -1,6 +1,6 @@
 import { AdminRole } from '@/entities/AdminRole';
 import { Art, getArtId } from '@/entities/Art';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { ArtDB } from '@/server/db/art.db';
 import { authenticateUser, handleJsonResponse, handleRouteError, NotFound } from '@/server/routeHelpers';
 
@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
     });
     const { id } = await params;
     const conformedId = getArtId(id);
-    const art = await new ArtDB(firestoreAdmin).getFromParts(conformedId);
+    const art = await new ArtDB(getFirestoreAdmin()).getFromParts(conformedId);
     if (!art) {
       throw new NotFound('Art', `Art not found: ${conformedId}`);
     }
