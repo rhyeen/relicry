@@ -5,11 +5,14 @@ import ArtPreviewItem from '@/components/ArtPreviewItem';
 import { ArtDB } from '@/server/db/art.db';
 import { cacheLife, cacheTag, updateTag } from 'next/cache';
 import DSButton from '@/components/ds/DSButton';
+import { connection } from 'next/server';
+import { Suspense } from 'react';
+import DSSection from '@/components/ds/DSSection';
 
 async function getArts(): Promise<Art[]> {
   'use cache';
   const index = 0;
-  cacheLife('hours');
+  cacheLife('expectedChangeLowConsequenceIfStale');
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(`arts:list:${index}`);
 
@@ -35,14 +38,10 @@ export function generateMetadata() {
 }
 
 export default async function ArtPage() {
-  const arts = await getArts();
-
   return (
-    <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-      <div>
-        <h1>Art</h1>
-        <DSButton href="/art/new" label="New Art" />
-      </div>
+    <DSSection>
+      <h1>Art</h1>
+      <DSButton href="/art/new" label="New Art" />
       <div
         style={{
           display: "grid",
@@ -50,14 +49,23 @@ export default async function ArtPage() {
           gap: "16px",
         }}
       >
-        {arts.map((art) => (
-          <ArtPreviewItem
-            key={art.id}
-            art={art}
-            href={`/${getArtId(art.id)}`}
-          />
-        ))}
+        <Suspense fallback={<div>Loading art data...</div>}>
+          <ArtPageData />
+        </Suspense>
       </div>
-    </div>
+    </DSSection>
   );
+}
+
+async function ArtPageData() {
+  await connection();
+  const arts = await getArts();
+
+  return arts.map((art) => (
+    <ArtPreviewItem
+      key={art.id}
+      art={art}
+      href={`/${getArtId(art.id)}`}
+    />
+  ));
 }

@@ -1,14 +1,9 @@
-import { Scene } from '@/entities/Scene';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { SceneDB } from '@/server/db/scene.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getScene } from '@/server/cache/scene.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getScene = cache(async (id: string): Promise<Scene | null> => {
-  return new SceneDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function ScenePage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Scene Details</h1>
+      <Suspense fallback={<div>Loading scene data...</div>}>
+        <ScenePageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ScenePageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const scene = await getScene(id);
 

@@ -1,14 +1,9 @@
-import { Herald } from '@/entities/Herald';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { HeraldDB } from '@/server/db/herald.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getHerald } from '@/server/cache/herald.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getHerald = cache(async (id: string): Promise<Herald | null> => {
-  return new HeraldDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function HeraldPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Herald Details</h1>
+      <Suspense fallback={<div>Loading herald data...</div>}>
+        <HeraldPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function HeraldPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const herald = await getHerald(id);
 

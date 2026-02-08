@@ -9,6 +9,7 @@ import { VersionedFocusCard } from '@/entities/Card';
 import Card from '@/components/card/Card';
 import { normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import { CardType } from '@/entities/CardContext';
+import { connection } from 'next/server';
 
 type Params = { version: string; card_id: string };
 type SearchParams = { size?: string | string[] };
@@ -48,6 +49,7 @@ export default async function CardPage(
 async function CardPageData(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
+  await connection();
   const [{ version, card_id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
 

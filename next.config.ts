@@ -40,6 +40,11 @@ const nextConfig: NextConfig = {
       revalidate: 5 * MINUTE,
       expire: 1 * HOUR,
     },
+    avoidCaching: {
+      stale: 0,
+      revalidate: 0,
+      expire: 0,
+    },
   },
 };
 

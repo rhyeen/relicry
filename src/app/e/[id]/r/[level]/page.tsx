@@ -1,14 +1,9 @@
-import { Reward } from '@/entities/Reward';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { RewardDB } from '@/server/db/reward.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getReward } from '@/server/cache/reward.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string, level: string };
-
-const getReward = cache(async (id: string, level: string): Promise<Reward | null> => {
-  return new RewardDB(firestoreAdmin).getFromParts(id, parseInt(level, 10));
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function RewardPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Reward Details</h1>
+      <Suspense fallback={<div>Loading reward data...</div>}>
+        <RewardPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function RewardPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id, level } = await params;
   const reward = await getReward(id, level);
 

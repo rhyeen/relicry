@@ -1,14 +1,9 @@
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { User } from '@/entities/User';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
-import { UserDB } from '@/server/db/user.db';
+import { Suspense } from 'react';
+import { getUser } from '@/server/cache/user.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getUser = cache(async (id: string): Promise<User | null> => {
-  return new UserDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function UserPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>User Details</h1>
+      <Suspense fallback={<div>Loading user data...</div>}>
+        <UserPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function UserPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const user = await getUser(id);
 

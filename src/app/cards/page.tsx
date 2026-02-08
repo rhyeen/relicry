@@ -7,11 +7,14 @@ import { getArt } from '@/server/cache/art.cache';
 import { CardDB } from '@/server/db/card.db';
 import { cacheLife, cacheTag, updateTag } from 'next/cache';
 import DSButton from '@/components/ds/DSButton';
+import DSSection from '@/components/ds/DSSection';
+import { Suspense } from 'react';
+import { connection } from 'next/server';
 
 async function getCards(): Promise<VersionedCard[]> {
   'use cache';
   const index = 0;
-  cacheLife('hours');
+  cacheLife('expectedChangeLowConsequenceIfStale');
   cacheTag(LOCAL_CACHE_TAG);
   cacheTag(`cards:list:${index}`);
 
@@ -42,14 +45,10 @@ export function generateMetadata() {
 }
 
 export default async function CardsPage() {
-  const previews = await getCardPreviews();
-
-  return (
-    <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
-      <div>
-        <h1>Player Cards</h1>
-        <DSButton href="/cards/new" label="New Card" />
-      </div>
+return (
+    <DSSection>
+      <h1>Cards</h1>
+      <DSButton href="/cards/new" label="New Card" />
       <div
         style={{
           display: "grid",
@@ -57,15 +56,24 @@ export default async function CardsPage() {
           gap: "16px",
         }}
       >
-        {previews.map(({ card, art }) => (
-          <CardPreviewItem
-            key={`${card.id}_v${card.version}`}
-            card={card}
-            art={art}
-            href={`/${getCardDocId(card.id, card.version)}`}
-          />
-        ))}
+        <Suspense fallback={<div>Loading card data...</div>}>
+          <CardsPageData />
+        </Suspense>
       </div>
-    </div>
+    </DSSection>
   );
+}
+
+async function CardsPageData() {
+  await connection();
+  const previews = await getCardPreviews();
+
+  return previews.map(({ card, art }) => (
+    <CardPreviewItem
+      key={`${card.id}_v${card.version}`}
+      card={card}
+      art={art}
+      href={`/${getCardDocId(card.id, card.version)}`}
+    />
+  ));
 }

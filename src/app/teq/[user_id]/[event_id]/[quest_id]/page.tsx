@@ -1,16 +1,9 @@
-import { TrackEventQuest } from '@/entities/Trackers';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { TrackQuestEventDB } from '@/server/db/trackers.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getTrackEventQuest } from '@/server/cache/trackEventQuest.cache';
+import { connection } from 'next/server';
 
 type Params = { user_id: string; event_id: string; quest_id: string };
-
-export const getTrackEventQuest = cache(async (user_id: string, event_id: string, quest_id: string): Promise<
-  TrackEventQuest | null
-> => {
-  return new TrackQuestEventDB(firestoreAdmin).getFromParts(user_id, event_id, quest_id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -34,6 +27,20 @@ export async function generateMetadata(
 export default async function EventQuestPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Event Quest Details</h1>
+      <Suspense fallback={<div>Loading event quest data...</div>}>
+        <EventQuestPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EventQuestPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { user_id, event_id, quest_id } = await params;
   const trackEventQuest = await getTrackEventQuest(user_id, event_id, quest_id);
 

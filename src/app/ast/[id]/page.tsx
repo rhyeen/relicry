@@ -1,14 +1,9 @@
-import { Artist } from '@/entities/Artist';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { ArtistDB } from '@/server/db/artist.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getArtist } from '@/server/cache/artist.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getArtist = cache(async (id: string): Promise<Artist | null> => {
-  return new ArtistDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function ArtistPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Artist Details</h1>
+      <Suspense fallback={<div>Loading artist data...</div>}>
+        <ArtistPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ArtistPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const artist = await getArtist(id);
   if (!artist) notFound();

@@ -110,6 +110,7 @@ export function cardPartToString(part: CardEffectPart): string {
 export function stringToCardEffect(text: string, options?: {
   permitEndingSpace?: boolean;
 }): CardEffect {
+  text = text.trim();
   if (!text) {
     return { conditionals: [], aura: undefined, parts: [] } as CardEffect;
   }

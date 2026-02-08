@@ -1,14 +1,9 @@
-import { VersionedDeck } from '@/entities/Deck';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { DeckDB } from '@/server/db/deck.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getDeck } from '@/server/cache/deck.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getDeck = cache(async (id: string): Promise<VersionedDeck | null> => {
-  return new DeckDB(firestoreAdmin).getLatest(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function DeckPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Deck Details</h1>
+      <Suspense fallback={<div>Loading deck data...</div>}>
+        <DeckPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function DeckPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const deck = await getDeck(id);
 

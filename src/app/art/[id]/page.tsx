@@ -2,6 +2,7 @@ import StoredImageSlot from '@/components/client/StoredImage.slot';
 import { ImageSize } from '@/entities/Image';
 import { getArt } from '@/server/cache/art.cache';
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 
 type Params = { id: string };
@@ -41,6 +42,7 @@ export default async function ArtPage(
 async function ArtPageData(
   { params }: { params: Promise<Params> }
 ) {
+  await connection();
   const { id } = await params;
   const art = await getArt(id);
   if (!art) notFound();

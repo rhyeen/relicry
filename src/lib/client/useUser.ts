@@ -22,6 +22,7 @@ export function useUser() {
         const res = await fetch('/api/user', {
           headers: { Authorization: `Bearer ${token}` },
           cache: 'no-store',
+          method: 'POST',
         });
         if (res.ok) {
           const json = await res.json();

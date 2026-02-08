@@ -1,14 +1,9 @@
-import { Quest } from '@/entities/Quest';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { QuestDB } from '@/server/db/quest.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getQuest } from '@/server/cache/quest.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getQuest = cache(async (id: string): Promise<Quest | null> => {
-  return new QuestDB(firestoreAdmin).getLatest(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function QuestPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Quest Details</h1>
+      <Suspense fallback={<div>Loading quest data...</div>}>
+        <QuestPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function QuestPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const quest = await getQuest(id);
 

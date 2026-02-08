@@ -1,20 +1,15 @@
-import { EventMap } from '@/entities/EventMap';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { EventMapDB } from '@/server/db/eventMap.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getEventMap } from '@/server/cache/eventMap.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getMap = cache(async (id: string): Promise<EventMap | null> => {
-  return new EventMapDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ) {
   const { id } = await params;
-  const map = await getMap(id);
+  const map = await getEventMap(id);
 
   if (!map) {
     return {
@@ -32,8 +27,22 @@ export async function generateMetadata(
 export default async function MapPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Map Details</h1>
+      <Suspense fallback={<div>Loading map data...</div>}>
+        <MapPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function MapPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
-  const map = await getMap(id);
+  const map = await getEventMap(id);
 
   if (!map) notFound();
 

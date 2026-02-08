@@ -1,14 +1,9 @@
-import { PlayerCard } from '@/entities/PlayerCard';
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { PlayerCardDB } from '@/server/db/playerCard.db';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
+import { Suspense } from 'react';
+import { getPlayerCards } from '@/server/cache/playerCard.cache';
+import { connection } from 'next/server';
 
 type Params = { user_id: string };
-
-const getPlayerCards = cache(async (user_id: string): Promise<PlayerCard[]> => {
-  return new PlayerCardDB(firestoreAdmin).getByUserId(user_id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function PlayerCardPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Player Cards</h1>
+      <Suspense fallback={<div>Loading player cards...</div>}>
+        <PlayerCardPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function PlayerCardPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { user_id } = await params;
   const playerCards = await getPlayerCards(user_id);
 
@@ -39,7 +48,6 @@ export default async function PlayerCardPage(
 
   return (
     <div>
-      <h1>Player Cards</h1>
       <p>User ID: {user_id}</p>
       <ul>
         {playerCards.map((card) => (

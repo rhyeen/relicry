@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Aspect } from '../Aspect';
 import { auraToString, conditionalToString, cardPartToString, cardEffectToString, stringToCardEffect } from '../CardEffectAsString';
 import { Conditional } from '../Conditional';
-import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartTag } from '../CardEffect';
+import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
 
 describe('card effect string helpers', () => {
   it('auraToString() handles undefined, number, and range', () => {
@@ -17,8 +17,8 @@ describe('card effect string helpers', () => {
     expect(conditionalToString(Conditional.Solo)).toBe('SOLO?');
     expect(conditionalToString(Conditional.Infinite)).toBe('INF?');
     expect(conditionalToString(Conditional.React)).toBe('REACT');
-    expect(conditionalToString(Conditional.TurnEnd)).toBe('TURN END?');
-    expect(conditionalToString(Conditional.DrawEnd)).toBe('DRAW END?');
+    expect(conditionalToString(Conditional.TurnEnd)).toBe('TURNEND?');
+    expect(conditionalToString(Conditional.DrawEnd)).toBe('DRAWEND?');
   });
 
   it('cardPartToString() formats all part types', () => {
@@ -53,7 +53,7 @@ describe('card effect string helpers', () => {
       ],
     } as CardEffect;
 
-    expect(cardEffectToString(effect)).toBe('PVP? TURN END? AURA (1-2) Deal 3D FLIP');
+    expect(cardEffectToString(effect)).toBe('PVP? TURNEND? AURA (1-2) Deal 3D FLIP');
   });
 
   it('stringToCardEffect() parses conditionals, aura number, and parts', () => {
@@ -70,7 +70,7 @@ describe('card effect string helpers', () => {
   });
 
   it('stringToCardEffect() parses multi-token conditionals and aura range', () => {
-    const s = 'SOLO? TURN END? AURA (1-2) 1+C';
+    const s = 'SOLO? TURNEND? AURA (1-2) 1+C';
     const e = stringToCardEffect(s);
 
     expect(e.conditionals).toEqual([Conditional.Solo, Conditional.TurnEnd]);
@@ -83,17 +83,32 @@ describe('card effect string helpers', () => {
     expect(cardEffectToString(e)).toBe(s);
   });
 
-  it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as tag', () => {
+  it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as text', () => {
     const s = 'REACT AURA (1) ABILITY Deal 2D NOW';
     const e = stringToCardEffect(s);
 
     expect(e.conditionals).toEqual([Conditional.React]);
     expect(e.aura).toBe(1);
 
-    // Parts: tag(ABILITY), text(Deal), damage(2D), tag(NOW)
+    // Parts: tag(ABILITY), text(Deal), damage(2D), text(NOW)
+    expect(e.parts.map((p) => p.type)).toEqual(['tag', 'text', 'damage', 'text']);
+    expect((e.parts[0] as CardEffectPartTag).tag).toBe('ability');
+    expect((e.parts[3] as CardEffectPartText).text).toBe('NOW');
+
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() treats known tag ALLCAPS as tags', () => {
+    const s = 'REACT AURA (1) ABILITY Deal 2D WEAPON';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.React]);
+    expect(e.aura).toBe(1);
+
+    // Parts: tag(ABILITY), text(Deal), damage(2D), tag(DAMAGE)
     expect(e.parts.map((p) => p.type)).toEqual(['tag', 'text', 'damage', 'tag']);
     expect((e.parts[0] as CardEffectPartTag).tag).toBe('ability');
-    expect((e.parts[3] as CardEffectPartTag).tag).toBe('now');
+    expect((e.parts[3] as CardEffectPartTag).tag).toBe('weapon');
 
     expect(cardEffectToString(e)).toBe(s);
   });

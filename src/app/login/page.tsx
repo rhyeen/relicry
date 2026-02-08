@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import styles from './page.module.css';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { signInWithGoogle } from '@/lib/client/signInClient';
@@ -16,6 +16,14 @@ function sanitizeNext(nextValue: string | null): string {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginClient />
+    </Suspense>
+  );
+}
+
+function LoginClient() {
   const { user, ready } = useAuthUser();
   const router = useRouter();
   const sp = useSearchParams();

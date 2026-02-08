@@ -2,6 +2,7 @@ import notFound from '@/app/not-found';
 import EditCardSlot from '@/components/client/EditCard.slot';
 import { getCard } from '@/server/cache/card.cache';
 import { Metadata } from 'next';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 
 type Params = { version: string; card_id: string };
@@ -40,6 +41,7 @@ export default async function EditCardAdminPage(
 async function EditCardAdminPageData(
   { params }: { params: Promise<Params> }
 ) {
+  await connection();
   const { version, card_id } = await params;
 
   const card = await getCard(card_id, version);

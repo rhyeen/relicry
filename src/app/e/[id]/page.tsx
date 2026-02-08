@@ -1,14 +1,9 @@
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
 import { notFound } from 'next/navigation';
-import { cache } from 'react';
-import { Event } from '@/entities/Event';
-import { EventDB } from '@/server/db/event.db';
+import { Suspense } from 'react';
+import { getEvent } from '@/server/cache/event.cache';
+import { connection } from 'next/server';
 
 type Params = { id: string };
-
-const getEvent = cache(async (id: string): Promise<Event | null> => {
-  return new EventDB(firestoreAdmin).getFromParts(id);
-});
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -32,6 +27,20 @@ export async function generateMetadata(
 export default async function EventPage(
   { params }: { params: Promise<Params> }
 ) {
+  return (
+    <div>
+      <h1>Event Details</h1>
+      <Suspense fallback={<div>Loading event data...</div>}>
+        <EventPageData params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EventPageData(
+  { params }: { params: Promise<Params> }
+) {
+  await connection();
   const { id } = await params;
   const event = await getEvent(id);
 
