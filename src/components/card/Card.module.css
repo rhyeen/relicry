@@ -1,0 +1,551 @@
+.cardContainer {
+  width: calc(476px * 0.75);
+  height: calc(664px * 0.75);
+}
+
+.fullCard {
+  position: relative;
+  width: 476px;
+  aspect-ratio: 476 / 664;
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate; /* Important for blend/mask/overlay effects */
+  background-color: black;
+  transform: scale(75%);
+  transform-origin: top left;
+}
+
+.foilOverlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.15;
+  background: linear-gradient(-110deg,
+  #000000 10%,
+  #ff0000 20%,
+  #ffff00 33%,
+  #00ff00 45%,
+  #00ffff 66%,
+  #0000ff 90%,
+  #000000 100%
+  ) 0 0 / 400% 100%;
+  animation: foilShineAnimation 8s ease-in-out infinite;
+}
+
+@keyframes foilShineAnimation {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+.printSize .fullCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0;
+  margin: 100px;
+  transform: scale(417%);
+}
+
+.cardContainer.printSize {
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.qrtexture,
+.rarity,
+.frame,
+.illustration,
+.flavorTextLine,
+.scrapCostTop,
+.scrapCostBottom,
+.scrapCostSingleAspectOverlay,
+.scrapCostDualAspectOverlayTop,
+.scrapCostDualAspectOverlayBottom,
+.aspectSingle,
+.aspectDualLeft,
+.aspectDualRight,
+.aspectDualOverlay {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+
+.illustration {
+  width: 470px;
+  height: 660px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: filter 0.3s ease 0s;
+}
+
+.illustrationClickable {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  top: 40px;
+  left: 90px;
+  width: 260px;
+  height: 340px;
+}
+
+.illustration:has(.illustrationClickable:hover) {
+  filter: brightness(1.2);
+}
+
+.qrcode {
+  position: absolute;
+  top: 19px;
+  right: 19px;
+  width: 93px;
+  height: 93px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease 0s, box-shadow 0.3s ease 0s;
+}
+
+.drawLimit {
+  position: absolute;
+  top: 21px;
+  left: 19px;
+  width: 65px;
+  height: 65px;
+  border-radius: 65px;
+  line-height: 65px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 57px;
+  font-family: var(--font-unifraktur-cook);
+  color: black;
+  transition: background-color 0.2s ease 0s, box-shadow 0.2s ease 0s;
+}
+
+.drawLimit:hover,
+.qrcode:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5);
+}
+
+.qrcodeImageHover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  user-select: none;
+  transition: opacity 0.3s ease 0s;
+}
+
+.qrcodeImageHover:hover {
+  z-index: 10;
+  opacity: 1;
+}
+
+.bannerContainer {
+  position: absolute;
+  width: 100%;
+  height: 66px;
+  bottom: 208px;
+  left: 0;
+  pointer-events: none;
+}
+
+.banner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.banner.top {
+  mix-blend-mode: multiply;
+}
+
+.banner.top.red {
+  background: linear-gradient(
+    110deg,
+    rgba(173, 0, 33, 0.67) 0%,
+    rgba(239, 78, 113, 0.77) 20%,
+    rgba(202, 0, 38, 0.77) 60%
+  );
+}
+
+.banner.bottom.red,
+.banner.bottom.redBlue,
+.banner.bottom.redGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(202, 0, 38, 1.0) 20%,
+    rgba(213, 25, 62, 0.69) 45%,
+    rgba(239, 78, 113, 0.46) 80%,
+    rgba(173, 0, 33, 0.35) 100%
+  );
+}
+
+.banner.top.yellow {
+  background: linear-gradient(
+    110deg,
+    rgba(233, 203, 0, 0.67) 0%,
+    rgba(255, 255, 103, 0.77) 20%,
+    rgba(242, 210, 0, 0.77) 60%
+  );
+}
+
+.banner.bottom.yellow,
+.banner.bottom.yellowRed,
+.banner.bottom.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(178, 126, 0, 1.0) 20%,
+    rgba(217, 164, 0, 0.69) 45%,
+    rgba(255, 255, 0, 0.46) 80%,
+    rgba(161, 114, 0, 0.35) 100%
+  );
+}
+
+.banner.top.blue {
+  background: linear-gradient(
+    110deg,
+    rgba(78, 49, 206, 0.67) 0%,
+    rgba(146, 125, 255, 0.77) 20%,
+    rgba(86, 49, 235, 0.77) 60%
+  );
+}
+
+.banner.bottom.blue,
+.banner.bottom.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(62, 24, 242, 1.0) 20%,
+    rgba(84, 51, 252, 0.69) 45%,
+    rgba(124, 100, 255, 0.46) 80%,
+    rgba(56, 23, 208, 0.35) 100%
+  );
+}
+
+.banner.top.green {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 82, 44, 0.67) 0%,
+    rgba(0, 153, 113, 0.77) 20%,
+    rgba(0, 93, 49, 0.77) 60%
+  );
+}
+
+.banner.bottom.green,
+.banner.bottom.greenBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 93, 49, 1.0) 20%,
+    rgba(0, 113, 71, 0.69) 45%,
+    rgba(0, 153, 113, 0.46) 80%,
+    rgba(0, 80, 42, 0.35) 100%
+  );
+}
+
+.banner.middle {
+  opacity: 0.33;
+}
+
+.banner.top.greenBlue,
+.banner.middle.greenBlue,
+.banner.top.redBlue,
+.banner.middle.redBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(124, 100, 255, 0) 20%,
+    rgba(62, 24, 242, 1) 80%
+  );
+}
+
+.banner.top.redGreen,
+.banner.middle.redGreen,
+.banner.top.yellowGreen,
+.banner.middle.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(5, 198, 63, 0) 20%,
+    rgba(251, 188, 0, 0.5) 50%,
+    rgba(0, 155, 83, 1) 80%
+  );
+}
+
+.banner.top.yellowRed,
+.banner.middle.yellowRed {
+  background: linear-gradient(
+    110deg,
+    rgba(239, 78, 113, 0) 20%,
+    rgba(255, 217, 0, 0.5) 50%,
+    rgba(202, 0, 38, 1) 80%
+  );
+}
+
+.banner.top.blueYellow,
+.banner.middle.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(77, 255, 0, 0) 20%,
+    rgba(77, 255, 0, .5) 50%,
+    rgb(254, 246, 5) 80%
+  );
+}
+
+.titleContainer,
+.details {
+  position: absolute;
+  left: 19px;
+  width: calc(100% - 38px);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleContainer {
+  height: 66px;
+  bottom: 208px;
+  justify-content: center;
+}
+
+@property --hoverGradientColor1 {
+  syntax: '<color>';
+  initial-value: rgba(255, 255, 255, 0);
+  inherits: false;
+}
+
+@property --hoverGradientColor2 {
+  syntax: '<color>';
+  initial-value: rgba(255, 255, 255, 0);
+  inherits: false;
+}
+
+.titleContainer,
+.flavorTextContainer {
+  padding: 0 15px;
+}
+
+.titleContainer,
+.flavorTextContainer,
+.effectsContainer {
+  cursor: pointer;
+  background: linear-gradient(
+    110deg,
+    var(--hoverGradientColor1) 0%,
+    var(--hoverGradientColor2) 90%
+  );
+  transition: --hoverGradientColor1 0.3s ease 0s,
+    --hoverGradientColor2 0.3s ease 0s;
+}
+
+.titleContainer:hover,
+.flavorTextContainer:hover,
+.effectsContainer:hover {
+  --hoverGradientColor1: rgba(255, 255, 255, 0.2);
+  --hoverGradientColor2: rgba(255, 255, 255, 0);
+}
+
+.details {
+  bottom: 63px;
+  height: 145px;
+  justify-content: flex-start;
+}
+
+.title {
+  font-family: var(--font-bree-serif);
+  font-size: 30px;
+  font-weight: 400;
+  color: white;
+  line-height: 30px;
+  margin-top: -4px;
+}
+
+.subtitle {
+  font-family: var(--font-bree-serif);
+  font-size: 20px;
+  line-height: 22px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.header {
+  position: absolute;
+  top: 19px;
+  line-height: 12px;
+  left: 95px;
+  display: flex;
+  justify-content: space-between;
+  width: 262px;
+  gap: 8px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 14px;
+  color: white;
+}
+
+.headerLeft,
+.headerRight {
+  cursor: pointer;
+  transition: text-shadow 0.3s ease 0s;
+}
+
+.headerLeft:hover,
+.headerRight:hover {
+  text-shadow: 0 0 3px rgba(255, 255, 255, 1);
+}
+
+.rarityClickable {
+  position: absolute;
+  cursor: pointer;
+  pointer-events: auto;
+  width: 30px;
+  height: 30px;
+  bottom: 19px;
+  right: 19px;
+}
+
+.rarity {
+  transition: filter 0.3s ease 0s;
+}
+
+.rarity:has(.rarityClickable:hover) {
+  filter: brightness(1.2);
+}
+
+.flavorText {
+  position: relative;
+  margin-top: 4px;
+  font-family: var(--font-barlow-condensed);
+  font-size: 20px;
+  font-style: italic;
+  color: white;
+}
+
+.flavorTextLine {
+  position: relative;
+  margin-left: -8px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  width: 397px;
+  height: 15px;
+}
+
+.scrapCostContainer {
+  position: absolute;
+  top: 105px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.scrapCostContainer:hover {
+  filter: brightness(1.5) saturate(0.75);
+}
+
+.scrapCost {
+  position: relative;
+  width: 45px;
+  aspect-ratio: 70 / 90;
+}
+
+.scrapCostTop {
+  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.scrapCostBottom {
+  transform: rotate(180deg);
+  filter: drop-shadow(-2px -2px 5px rgba(0, 0, 0, 0.25));
+}
+
+.scrapCostDualAspectOverlayTop {
+  transform: translate(-12px, -6px) scale(0.85);
+}
+
+.scrapCostDualAspectOverlayBottom {
+  transform: translate(12px, 6px) scale(0.85);
+}
+
+.aspectContainer {
+  position: absolute;
+  bottom: 24.5px;
+  left: 24.5px;
+  --aspectHeight: 32.5px;
+  height: var(--aspectHeight);
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.aspectContainer:hover {
+  filter: brightness(1.5) saturate(0.75);
+}
+
+.effectsContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 2px;
+}
+
+.aspectSingle,
+.aspectDualLeft,
+.aspectDualRight {
+  height: var(--aspectHeight);
+  aspect-ratio: 40 / 50;
+}
+
+.aspectSingle {
+  position: relative;
+}
+
+.aspectDual {
+  position: relative;
+  width: 74px;
+  height: 36px;
+}
+
+.aspectDualOverlay {
+  top: -2px;
+  left: 20px;
+  height: 36px;
+  aspect-ratio: 82 / 57;
+}
+
+.aspectDualRight {
+  left: 29.5px;
+}
+
+.tags {
+  position: absolute;
+  bottom: 24.5px;
+  left: 65px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  cursor: pointer;
+  transition: filter 0.3s ease 0s;
+}
+
+.tags:hover {
+  filter: brightness(1.5);
+}
+
+.tagsWithTwoAspects {
+  left: 94px;
+}

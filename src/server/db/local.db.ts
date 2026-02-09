@@ -1,179 +1,195 @@
 import "server-only";
-import { firestoreAdmin } from '@/lib/firebaseAdmin';
-import { VersionedDeckCard, VersionedFocusCard, VersionedGambitCard } from '@/entities/Card';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { isEmulated } from '@/lib/environment';
-import { Rarity } from '@/entities/Rarity';
-import { Tag } from '@/entities/Tag';
-import { Conditional } from '@/entities/Conditional';
-import { CardEffectPartCard, CardEffectPartDamage, CardEffectPartText } from '@/entities/CardEffect';
-import { Aspect } from '@/entities/Aspect';
+import { getExampleCard1, getExampleCard2, getExampleCard3 } from './test-data/card.data';
+import { getExampleArt1, getExampleArt2, getExampleArt3, getExampleArt4 } from './test-data/art.data';
+import { getExampleArtist1, getExampleArtist2, getExampleArtist3 } from './test-data/artist.data';
+import { getExampleUser1, getExampleUser2, getExampleUser3 } from './test-data/user.data';
+import { getExampleApex1, getExampleApex2, getExampleApex3 } from './test-data/apex.data';
+import { getExampleDeck1, getExampleDeck2, getExampleDeck3 } from './test-data/deck.data';
+import { getExampleEvent1, getExampleEvent2, getExampleEvent3 } from './test-data/event.data';
+import { getExampleReward1, getExampleReward2, getExampleReward3 } from './test-data/reward.data';
+import { getExampleEventMap1, getExampleEventMap2, getExampleEventMap3 } from './test-data/eventMap.data';
+import { getExampleHerald1, getExampleHerald2, getExampleHerald3 } from './test-data/herald.data';
+import { getExamplePromotedItem1, getExamplePromotedItem2, getExamplePromotedItem3 } from './test-data/promotedItem.data';
+import { getExampleQuest1, getExampleQuest2, getExampleQuest3 } from './test-data/quest.data';
+import { getExampleEventQuest1, getExampleEventQuest2, getExampleEventQuest3 } from './test-data/eventQuest.data';
+import { getExampleScene1, getExampleScene2, getExampleScene3 } from './test-data/scene.data';
+import { getExampleTrackEventQuest1, getExampleTrackEventQuest2, getExampleTrackEventQuest3 } from './test-data/trackers.data';
+import { getExamplePlayerCard1, getExamplePlayerCard2, getExamplePlayerCard3 } from './test-data/playerCard.data';
+import { CardDB } from './card.db';
+import { ArtDB } from './art.db';
+import { ArtistDB } from './artist.db';
+import { UserDB } from './user.db';
+import { ApexDB } from './apex.db';
+import { DeckDB } from './deck.db';
+import { EventDB } from './event.db';
+import { RewardDB } from './reward.db';
+import { EventMapDB } from './eventMap.db';
+import { HeraldDB } from './herald.db';
+import { PromotedItemDB } from './promotedItem.db';
+import { QuestDB } from './quest.db';
+import { EventQuestDB } from './eventQuest.db';
+import { SceneDB } from './scene.db';
+import { TrackQuestEventDB } from './trackers.db';
+import { PlayerCardDB } from './playerCard.db';
+import { seedImage } from './seeds/image.seed';
 
 export const populateLocal = async () => {
   if (!isEmulated) {
     return;
   }
-  await populateLocalCards();
+  await Promise.all([
+    populateLocalCards(),
+    populateLocalArt(),
+    populateLocalArtists(),
+    populateLocalUsers(),
+    populateLocalApexes(),
+    populateLocalDecks(),
+    populateLocalEvents(),
+    populateLocalRewards(),
+    populateLocalEventMaps(),
+    populateLocalHeralds(),
+    populateLocalPromotedItems(),
+    populateLocalQuests(),
+    populateLocalEventQuests(),
+    populateLocalScenes(),
+    populateLocalTrackEventQuests(),
+    populateLocalPlayerCards(),
+  ]);
 };
 
 const populateLocalCards = async () => {
-  const cards: (
-    VersionedDeckCard |
-    VersionedGambitCard |
-    VersionedFocusCard
-  )[] = [
-    {
-      id: '111111',
-      type: 'deck',
-      title: { en: 'Deck Card 1' },
-      rarity: Rarity.Common,
-      tags: [Tag.Item, Tag.Weapon, Tag.Blade],
-      effects: [
-        {
-          conditionals: [Conditional.TurnEnd],
-          parts: {
-            en: [
-              { type: 'text', text: 'Deal ' } as CardEffectPartText,
-              { type: 'damage', amount: 3 } as CardEffectPartDamage,
-            ],
-          },
-        },
-      ],
-      drawLimit: 3,
-      scrapCost: [Aspect.Brave],
-      aspect: Aspect.Brave,
-      version: 1,
-      season: 1,
-      illustration: {
-        artId: 'art/1111111111',
-        artistId: 'ast/1111111111',
-      },
-      revealedAt: new Date(),
-      publishedAt: new Date(),
-      archivedAt: null,
-      isSample: true,
-    },
-    {
-      id: '111112',
-      type: 'deck',
-      title: { en: 'Deck Card 2' },
-      rarity: Rarity.Legendary,
-      tags: [Tag.Ability, Tag.Bling],
-      effects: [
-        {
-          conditionals: [],
-          parts: {
-            en: [
-              { type: 'text', text: 'Draw ' } as CardEffectPartText,
-              { type: 'card', amount: 3 } as CardEffectPartCard,
-            ],
-          },
-        },
-      ],
-      drawLimit: 5,
-      scrapCost: [],
-      aspect: Aspect.Charming,
-      version: 1,
-      season: 1,
-      illustration: {
-        artId: 'art/1111111112',
-        artistId: 'ast/1111111111',
-      },
-      revealedAt: new Date(),
-      publishedAt: new Date(),
-      archivedAt: null,
-      isSample: true,
-    },
-    {
-      id: '111113',
-      type: 'focus',
-      title: { en: 'Focus Card 3' },
-      rarity: Rarity.Rare,
-      tags: [Tag.Focus],
-      effects: [
-        {
-          conditionals: [Conditional.Infinite],
-          parts: {
-            en: [
-              { type: 'text', text: 'If you have ' } as CardEffectPartText,
-              { type: 'card', amount: 3, orMore: true } as CardEffectPartCard,
-              { type: 'text', text: ', ' } as CardEffectPartText,
-              { type: 'flip' },
-            ],
-          },
-        },
-      ],
-      awakenedVersion: {
-        flavorText: {
-          onCard: {
-            en: { text: 'Awakened focus flavor text.' },
-          },
-          extended: {
-            artId: 'art/1111111114',
-            artistId: 'ast/1111111113',
-          },
-        },
-      },
-      awakened: {
-        tags: [Tag.Focus, Tag.Favor],
-        effects: [
-          {
-            conditionals: [],
-            parts: {
-              en: [
-                { type: 'text', text: 'Draw ' } as CardEffectPartText,
-                { type: 'card', amount: 3 } as CardEffectPartCard,
-              ],
-            },
-          },
-        ],
-      },
-      aspect: Aspect.Cunning,
-      version: 1,
-      season: 1,
-      illustration: {
-        artId: 'art/1111111113',
-        artistId: 'ast/1111111112',
-      },
-      revealedAt: new Date(),
-      publishedAt: new Date(),
-      archivedAt: null,
-      isSample: false,
-    },
-  ];
-  const collection = firestoreAdmin.collection("cards");
-  const batch = firestoreAdmin.batch();
-  cards.forEach((card) => {
-    const docRef = collection.doc(card.id);
-    batch.set(docRef, card);
-  });
-  
-  await batch.commit();
+  await new CardDB(getFirestoreAdmin()).batchSet([
+    getExampleCard1(),
+    getExampleCard2(),
+    getExampleCard3(),
+  ]);
 }
 
-// export const getLinks = async () => {
-//   const linkSnapshot = await firestoreAdmin.collection("links").get();
-//   const documents = linkSnapshot.docs.map((link) => ({
-//     url: link.data().url,
-//     title: link.data().title,
-//     desc: link.data().desc,
-//   }));
+const populateLocalArt = async () => {
+  const images = await Promise.all([
+    seedImage({ id: 'art1', color: '#ff8c3fff' }),
+    seedImage({ id: 'art2', color: '#0cbd9dff' }),
+    seedImage({ id: 'art3', color: '#b133ffff' }),
+  ]);
+  
+  await new ArtDB(getFirestoreAdmin()).batchSet([
+    getExampleArt1(images[0]),
+    getExampleArt2(images[1]),
+    getExampleArt3(images[2]),
+    getExampleArt4(),
+  ]);
+}
 
-//   return documents;
-// };
+const populateLocalArtists = async () => {
+  await new ArtistDB(getFirestoreAdmin()).batchSet([
+    getExampleArtist1(),
+    getExampleArtist2(),
+    getExampleArtist3(),
+  ]);
+}
 
-// export const getLogo = async () => {
-//   const logoSnapshot = await firestoreAdmin.collection("images").doc("logo").get();
-//   const logoData = logoSnapshot.data() as { url: string } | undefined;
-//   if (!logoSnapshot.exists || !logoData) {
-//     return null;
-//   }
-//   return logoData.url;
-// };
+const populateLocalUsers = async () => {
+  await new UserDB(getFirestoreAdmin()).batchSet([
+    getExampleUser1(),
+    getExampleUser2(),
+    getExampleUser3(),
+  ]);
+}
 
-// export const getLogoFromStorage = async () => {
-//   const bucket = getStorage().bucket();
-//   const file = bucket.file("images/logo.png");
-//   const imageUrl = await getDownloadURL(file);
-//   console.log(imageUrl);
-//   return imageUrl;
-// };
+const populateLocalApexes = async () => {
+  await new ApexDB(getFirestoreAdmin()).batchSet([
+    getExampleApex1(),
+    getExampleApex2(),
+    getExampleApex3(),
+  ]);
+}
+
+const populateLocalDecks = async () => {
+  await new DeckDB(getFirestoreAdmin()).batchSet([
+    getExampleDeck1(),
+    getExampleDeck2(),
+    getExampleDeck3(),
+  ]);
+}
+
+const populateLocalEvents = async () => {
+  await new EventDB(getFirestoreAdmin()).batchSet([
+    getExampleEvent1(),
+    getExampleEvent2(),
+    getExampleEvent3(),
+  ]);
+}
+
+const populateLocalRewards = async () => {
+  await new RewardDB(getFirestoreAdmin()).batchSet([
+    getExampleReward1(),
+    getExampleReward2(),
+    getExampleReward3(),
+  ]);
+}
+
+const populateLocalEventMaps = async () => {
+  await new EventMapDB(getFirestoreAdmin()).batchSet([
+    getExampleEventMap1(),
+    getExampleEventMap2(),
+    getExampleEventMap3(),
+  ]);
+}
+
+const populateLocalHeralds = async () => {
+  await new HeraldDB(getFirestoreAdmin()).batchSet([
+    getExampleHerald1(),
+    getExampleHerald2(),
+    getExampleHerald3(),
+  ]);
+}
+
+const populateLocalPromotedItems = async () => {
+  await new PromotedItemDB(getFirestoreAdmin()).batchSet([
+    getExamplePromotedItem1(),
+    getExamplePromotedItem2(),
+    getExamplePromotedItem3(),
+  ]);
+}
+
+const populateLocalQuests = async () => {
+  await new QuestDB(getFirestoreAdmin()).batchSet([
+    getExampleQuest1(),
+    getExampleQuest2(),
+    getExampleQuest3(),
+  ]);
+}
+
+const populateLocalEventQuests = async () => {
+  await new EventQuestDB(getFirestoreAdmin()).batchSet([
+    getExampleEventQuest1(),
+    getExampleEventQuest2(),
+    getExampleEventQuest3(),
+  ]);
+}
+
+const populateLocalScenes = async () => {
+  await new SceneDB(getFirestoreAdmin()).batchSet([
+    getExampleScene1(),
+    getExampleScene2(),
+    getExampleScene3(),
+  ]);
+}
+
+const populateLocalTrackEventQuests = async () => {
+  await new TrackQuestEventDB(getFirestoreAdmin()).batchSet([
+    getExampleTrackEventQuest1(),
+    getExampleTrackEventQuest2(),
+    getExampleTrackEventQuest3(),
+  ]);
+}
+
+const populateLocalPlayerCards = async () => {
+  await new PlayerCardDB(getFirestoreAdmin()).batchSet([
+    getExamplePlayerCard1(),
+    getExamplePlayerCard2(),
+    getExamplePlayerCard3(),
+  ]);
+}

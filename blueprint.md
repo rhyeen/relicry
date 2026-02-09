@@ -27,18 +27,51 @@ High performant caching and reduced page size is high priority as most pages are
 
 ### Features
 
-*   **Local Develoment Data:** By hitting the root page while local (https://localhost:5007), this will automatically populate the Firestore database with example cards and other data.
-*   **Card Display:** By navigating to the QR code of a card (e.g. https://localhost:5007/1/abcdef), it will display information about this card.
+*   **Local Develoment Data:** By hitting the root page while local (https://localhost:3000), this will automatically populate the Firestore database with example cards and other data.
+*   **Card Display:** By navigating to the QR code of a card (e.g. https://localhost:3000/1/abcdef), it will display information about this card.
 *   **Responsive Design:** The UI is fully responsive and works seamlessly on both desktop and mobile devices, but focuses mostly on mobile or tablet display.
 
 ## Current Plan
 
 The current plan is to get the scaffolding in place so that the developer can focus on the finer details.
 
-- [x] Get Firebase authentication working so that if a user navigates to https://localhost:5007/login, there is a Google Auth Login page for them.
-- [x] Set up a base layout for all pages that contains a navigation bar that detects if the user is logged in and displays their profile in the right corner or displays a button to login. There is also a button icon for navigating to the home screen and one for seeing ongoing events (navigating to https://localhost:5007/e). There should also be a basic footer with the email relicry@googlegroups.com for contact, a copyright for Relicry, and a link to leave feedback (https://localhost:5007/feedback), and a link to the Discord server (https://discord.gg/YF5RyAaj).
+- [x] Get Firebase authentication working so that if a user navigates to https://localhost:3000/login, there is a Google Auth Login page for them.
+- [x] Set up a base layout for all pages that contains a navigation bar that detects if the user is logged in and displays their profile in the right corner or displays a button to login. There is also a button icon for navigating to the home screen and one for seeing ongoing events (navigating to https://localhost:3000/e). There should also be a basic footer with the email relicry@googlegroups.com for contact, a copyright for Relicry, and a link to leave feedback (https://localhost:3000/feedback), and a link to the Discord server (https://discord.gg/YF5RyAaj).
 - [x] Differentiates the statically loaded content from the server and the authenticated client instances (especially in the layout) so that as much as possible can render on the server. Lazy loading the other stuff on the page as needed.
 - [x] Setting up error boundaries, 404s, and other useful accessibilty features to ensure QoL upfront.
-- [ ] Create basic endpoints as specified in /src/app/README.md.
-- [ ] Create test data populators for all routes shown in /src/app/README.md, utilizing consts to share the same test ID values to ensure each entity can properly reference other entities (e.g. an Art entity, references an Artist via its artistId property which references the Art's id property—the test data should have the same value for both of these test entities for artistId=>id). Populator should update `populateLocal` in /src/app/server/db/local.db.ts, creating additional helper functions/files to keep the population method clean. `populateLocalCards` is used as an example of how to do so logically, but can definitely be cleaned up or moved.
+- [x] Create basic endpoints as specified in /src/app/README.md.
+- [x] Create test data populators for all routes shown in /src/app/README.md, utilizing consts to share the same test ID values to ensure each entity can properly reference other entities (e.g. an Art entity, references an Artist via its artistId property which references the Art's id property—the test data should have the same value for both of these test entities for artistId=>id). Populator should update `populateLocal` in /src/app/server/db/local.db.ts, creating additional helper functions/files to keep the population method clean. `populateLocalCards` is used as an example of how to do so logically, but can definitely be cleaned up or moved.
+- [x] Get auth vs no auth parts of pages working together so more info is displayed based on auth.
+- [x] Set up localStorage-level caching for pages.
+- [x] Getting Firebase storage images to work
+- [x] Attempt basic auth stuff: (1) Adding card to player collection (2) Modifying aspsects of user profile (3) Creating decks
+- [x] Denormalizing data so when we get things like a Card, we also get Art/Artist.
+- [x] See if we can recreate the Card printable card itself with CSS
+- [x] Get full rez version created for printing
+- [x] Build out UI to add/edit cards
+- [x] While a card is still sample, its ID should be different and much longer. Update the 404 page for cards to make it clear to people trying to search for cards that haven't been released yet that it's a useless endeaver.
+- [x] Bulid out UI to upload images
+- [ ] Deploy to prod then test adding cards so we now have a DB
+- [ ] 1 offcenter for tooltips
+- [ ] 1/2 and 0 both needed on tags + all tag colors checked
+- [ ] Create legendary banner
+- [ ] Designate a sample card as such
+- [ ] Build out focus, gambit, quest, and quest token cards
+- [ ] Apex needs to have different values based on number of players facing it (multiplayer)
+- [ ] Get Apex design in place
+- [ ] Incorporate caching model in all components, not just Card
+- [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
+- [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website.
+- [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
+
+### Localization
+
+Almost all the data on the website is loaded via the DB, so all the localization
+has to exist in the DB as well. Rather than using a LocaleMap (e.g.
+`{ en: '', es: ''}`), we can assume that English must always be pulled down as
+a fallback langauge, so that might as well be the default data in the DB. Then
+if the language is not English (e.g. if it is Spanish), we pull locale data from
+`${collectionName}_es/${documentId}`, which contains only the locale changes and
+no other properties. Then we perform a deep merge of the normal document and
+the other language's DB document.

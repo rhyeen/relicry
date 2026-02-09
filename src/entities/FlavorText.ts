@@ -1,12 +1,10 @@
-import { LocaleMap } from './LocaleMap';
-
-export interface FlavorText {
+export type FlavorText = {
   extended: {
     artistId: string;
     artId: string;
   } | null;
-  onCard: LocaleMap<{
+  onCard: {
     text: string;
     source?: string;
-  }> | null;
+  } | null;
 }

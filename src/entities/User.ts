@@ -1,6 +1,9 @@
+import { generateId } from '@/lib/idGenerator';
 import { AdminRole } from './AdminRole';
+import { ImageSize, ImageStorage } from './Image';
+import { prefixId, StoredRoot } from './Root';
 
-export interface User {
+export type User = StoredRoot & {
   // u/a1b2c3d4e5
   id: string;
   firebaseUid: string;
@@ -10,5 +13,16 @@ export interface User {
   updatedAt: Date;
   archivedAt: Date | null;
   adminRoles: AdminRole[];
-  profileImageUrl?: string;
+  profileImage?: {
+    [ImageSize.Banner]?: ImageStorage;
+    [ImageSize.Thumb]?: ImageStorage;
+  };
+}
+
+export function getUserId(id: string): string {
+  return prefixId('u', id);
+}
+
+export function generateUserId(): string {
+  return getUserId(generateId(10));
 }

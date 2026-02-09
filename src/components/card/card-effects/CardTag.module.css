@@ -1,0 +1,94 @@
+.tagContainer {
+  height: 22px;
+  display: inline-flex;
+  position: relative;
+}
+
+.tag {
+  text-transform: uppercase;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 18px;
+  transform: skewX(-25deg);
+  transform-origin: top left;
+  color: black;
+  line-height: 18px;
+  height: 100%;
+  padding: 1px 4px 0;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.straightLeft {
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 10px;
+  height: 100%;
+  user-select: none;
+}
+
+.straightLeftLong {
+  width: 15px;
+  left: -15px;
+}
+
+.tagTexture {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  mix-blend-mode: overlay;
+  opacity: 0.75;
+  user-select: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: top left;
+  pointer-events: none;
+}
+
+.straightLeft .tagTexture {
+  background-position: top right;
+}
+
+.whiteText {
+  color: white;
+}
+
+.infinityTag {
+  line-height: 9px;
+  font-size: 45px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 400;
+}
+
+.tagAuraNumberSpacer {
+  padding-left: 22px;
+}
+
+.tagAuraNumber {
+  position: absolute;
+  right: 15px;
+  bottom: -1px;
+  font-family: var(--font-barlow-condensed);
+  font-weight: 600;
+  font-size: 24px;
+  color: black;
+}
+
+.auraNumberIcon {
+  position: absolute;
+  width: 28px;
+  left: -8.5px;
+  top: -1px;
+  aspect-ratio: 40 / 36;
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.auraNumber {
+  position: relative;
+}

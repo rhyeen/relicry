@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import FeedbackPage from '../feedback/page';
+import FeedbackPage from '../page';
 
 describe('Feedback page', () => {
   test('renders feedback form', () => {
     render(<FeedbackPage />);
-    expect(screen.getByText('Leave Feedback')).toBeInTheDocument();
+    expect(screen.getByText('Leave Feedback')).toBeDefined();
   });
 });

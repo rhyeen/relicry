@@ -1,10 +1,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import { populateLocal } from '@/server/db/local.db';
 
 export default async function Home() {
-  await populateLocal();
-
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -17,7 +14,7 @@ export default async function Home() {
           priority
         />
         <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
+          <h1>Welcome to Relicry</h1>
           <p>
             Looking for a starting point or more instructions? Head over to{" "}
             <a

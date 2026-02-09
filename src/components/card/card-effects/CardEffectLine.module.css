@@ -1,0 +1,15 @@
+.effectLine {
+  font-family: var(--font-barlow-condensed);
+  font-size: 24px;
+  padding: 4px 15px;
+}
+
+.effectConditionals {
+  display: flex;
+  flex-direction: row;
+  column-gap: 6px;
+}
+
+.largeAndCenter {
+  transform: translate(50%) scale(1.4);
+}

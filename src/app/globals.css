@@ -1,6 +1,108 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --auraGradient: linear-gradient(
+    90deg,
+    #10a470 0%,
+    #36ff94 30%,
+    #e7f9bd 55%,
+    #f9fcde 80%
+  );
+
+  --soloGradient: linear-gradient(
+    90deg,
+    #93bd2b 0%,
+    #68dd6a 40%,
+    #e1eb82 85%,
+    #f4f9c8 100%
+  );
+  --soloGradientLeft: linear-gradient(
+    115deg,
+    #768a41 0%,
+    #93bd2b 60%
+  );
+
+  --pvpGradient: linear-gradient(
+    90deg,
+    #4ebbee 0%,
+    #78bfee 20%,
+    #9cfdfa 65%,
+    #f4f9c8 100%
+  );
+  --pvpGradientLeft: linear-gradient(
+    115deg,
+    #3f8cca 0%,
+    #4ebbee 60%
+  );
+
+  --drawEndGradient: linear-gradient(
+    90deg,
+    #5961f9 0%,
+    #a17ef2 20%,
+    #f6befd 45%,
+    #fcedd9 80%
+  );
+  --drawEndGradientLeft: linear-gradient(
+    115deg,
+    #3f58ca 0%,
+    #5961f9 60%
+  );
+
+  --infiniteGradient: linear-gradient(
+    90deg,
+    #e832c3 0%,
+    #fb48fe 30%,
+    #fd9ed1 70%,
+    #fcedd9 100%
+  );
+  --infiniteGradientLeft: linear-gradient(
+    115deg,
+    #e232e8 0%,
+    #e832c3 60%
+  );
+
+  --reactGradient: linear-gradient(
+    90deg,
+    #71a101 0%,
+    #fab522 30%,
+    #f7f73a 70%,
+    #fcedd9 100%
+  );
+  --reactGradientLeft: linear-gradient(
+    115deg,
+    #2d440b 0%,
+    #71a101 60%
+  );
+
+  --turnEndGradient: linear-gradient(
+    90deg,
+    #ff6c6c 0%,
+    #ffb25a 30%,
+    #fae588 60%,
+    #fcedd9 90%
+  );
+  --turnEndGradientLeft: linear-gradient(
+    115deg,
+    #db0d60 0%,
+    #ff6c6c 60%
+  );
+
+  /* Default Base UI Theme */
+  --color-blue: oklch(69% 50% 264deg);
+  --color-red: oklch(80% 55% 31deg);
+
+  --color-gray-50: oklch(17% 0.25% 264deg);
+  --color-gray-100: oklch(28% 0.75% 264deg / 65%);
+  --color-gray-200: oklch(29% 0.75% 264deg / 80%);
+  --color-gray-300: oklch(35% 0.75% 264deg / 80%);
+  --color-gray-400: oklch(47% 0.875% 264deg / 80%);
+  --color-gray-500: oklch(64% 1% 264deg / 80%);
+  --color-gray-600: oklch(82% 1% 264deg / 80%);
+  --color-gray-700: oklch(92% 1.125% 264deg / 80%);
+  --color-gray-800: oklch(93% 0.875% 264deg / 85%);
+  --color-gray-900: oklch(95% 0.5% 264deg / 90%);
+  --color-gray-950: oklch(94% 0.375% 264deg / 95%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -41,7 +143,7 @@ a {
   }
 }
 
-.goldButton {
-  background-color: #D3AF37;
-  box-shadow: 0 0 10px #D3AF37;
+.global-header.hide,
+.global-footer.hide {
+  display: none;
 }

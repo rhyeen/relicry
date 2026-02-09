@@ -34,8 +34,8 @@ const tagOrder = [
   Tag.Armor,
 ];
 
-export function orderTags(tags: Tag[]): Tag[] {
-  return tags.sort((a, b) => {
+export function orderTags(tags?: Tag[]): Tag[] {
+  return (tags ?? Object.values(Tag)).sort((a, b) => {
     return tagOrder.indexOf(a) - tagOrder.indexOf(b);
   });
 }

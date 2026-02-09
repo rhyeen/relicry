@@ -1,15 +1,18 @@
+import { generateId } from '@/lib/idGenerator';
 import { Aspect } from './Aspect';
 import { CardEffect } from './CardEffect';
 import { FlavorText } from './FlavorText';
-import { LocaleMap } from './LocaleMap';
 import { Rarity } from './Rarity';
+import { prefixId, StoredRoot } from './Root';
 import { Tag } from './Tag';
 
-export interface VersionedGambitCard extends GambitCard, Version {}
+export type VersionedCard = VersionedDeckCard | VersionedFocusCard | VersionedGambitCard;
 
-export interface VersionedDeckCard extends DeckCard, Version {}
+export type VersionedGambitCard = GambitCard & Version & StoredRoot;
 
-export interface VersionedFocusCard extends FocusCard, Version {
+export type VersionedDeckCard = DeckCard & Version & StoredRoot;
+
+export type VersionedFocusCard = FocusCard & Version & StoredRoot & {
   awakenedVersion: {
     illustration?: {
       artId: string;
@@ -17,54 +20,73 @@ export interface VersionedFocusCard extends FocusCard, Version {
     };
     flavorText?: FlavorText;
   }
-}
+};
 
-export interface Version {
+export type Version = {
   version: number;
   season: number;
+  // @NOTE: When looking at the list of cards, this is the one that should be shown.
+  // There should only ever be one "isFeatured".
+  isFeatured: boolean;
   illustration: {
     artId: string;
     artistId: string;
   };
   flavorText?: FlavorText;
-  subTitle?: LocaleMap;
-  revealedAt: Date;
-  revealedContext?: LocaleMap;
+  subTitle?: string;
+  revealedAt: Date | null;
+  revealedContext?: string;
   publishedAt: Date | null;
-  publishedContext?: LocaleMap;
+  publishedContext?: string;
   archivedAt: Date | null;
-  archivedContext?: LocaleMap;
+  archivedContext?: string;
   // @NOTE: A sample card is never intended to be released to the public and may use AI-generated assets
   isSample: boolean;
 }
 
-export interface DeckCard extends Card {
+export type DeckCard = Card & {
   type: 'deck';
   drawLimit: number;
   scrapCost: (Aspect | [Aspect, Aspect])[];
   aspect: Aspect | [Aspect, Aspect];
 }
 
-export interface FocusCard extends Card {
+export type FocusCard = Card & {
   type: 'focus';
   aspect: Aspect | [Aspect, Aspect];
   awakened: RootCard;
 }
 
-export interface GambitCard extends Card {
+export type GambitCard = Card & {
   type: 'gambit';
 }
 
-export interface Card extends RootCard {
-  // a1b2c3
+export type Card = RootCard & {
+  // c/a1b2
   id: string;
   type: 'deck' | 'focus' | 'gambit';
-  title: LocaleMap;
+  title: string;
   rarity: Rarity;
 }
 
-export interface RootCard {
-  title?: LocaleMap;
+export type RootCard = {
+  title?: string;
   tags: Tag[];
   effects: CardEffect[];
+}
+
+export function getCardId(id: string): string {
+  return prefixId('c', id);
+}
+
+export function getCardDocId(id: string, version: number): string {
+  return `${getCardId(id)}/${version}`;
+}
+
+/**
+ * @param isSample If the card is a sample card, the ID is significantly longer
+ * to prevent web scrapers from attempting to discover unrevealed cards.
+ */
+export function generateCardId(isSample: boolean): string {
+  return getCardId(generateId(isSample ? 12 : 4));
 }
