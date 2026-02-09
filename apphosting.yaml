@@ -1,0 +1,11 @@
+env:
+  - variable: RC_FIREBASE_CLIENT_EMAIL
+    value: firebase-adminsdk-fbsvc@relicry-prod.iam.gserviceaccount.com
+    availability: [ RUNTIME ]
+  - variable: RC_FIREBASE_CLIENT_ID
+    value: "118299284753872951832"
+    availability: [ RUNTIME ]
+  - variable: RC_FIREBASE_PRIVATE_KEY
+    secret: RC_FIREBASE_PRIVATE_KEY
+  - variable: RC_FIREBASE_PRIVATE_KEY_ID
+    secret: RC_FIREBASE_PRIVATE_KEY_ID
