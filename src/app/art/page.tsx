@@ -3,7 +3,7 @@ import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
 import ArtPreviewItem from '@/components/ArtPreviewItem';
 import { ArtDB } from '@/server/db/art.db';
-import { cacheLife, cacheTag, updateTag } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import DSButton from '@/components/ds/DSButton';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
@@ -21,12 +21,6 @@ async function getArts(): Promise<Art[]> {
     sortBy: { field: 'createdAt', direction: 'desc' },
     limit: 100,
   });
-
-  // @NOTE: This is likely either due to a bug or emulated local environment is not populated yet.
-  if (!entities.length) {
-    updateTag(`arts:list:${index}`);
-  }
-
   return entities;
 }
 
