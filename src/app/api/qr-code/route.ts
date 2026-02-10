@@ -12,8 +12,8 @@ export async function GET(req: NextRequest) {
   let origin = req.nextUrl.origin.replace(/^https?:\/\/(www\.)?/, 'https://');
   // @NOTE: Uppercase makes it so QR codes use a more efficient encoding mode
   // So the code is smaller
-  if (origin.includes('://0.0.0.0')) {
-    origin = (process.env.NEXT_PUBLIC_SITE_URL ?? origin.replace('0.0.0.0', 'relicry.com'));
+  if (origin.includes('://0.0.0.0:8080')) {
+    origin = (process.env.NEXT_PUBLIC_SITE_URL ?? origin.replace('0.0.0.0:8080', 'relicry.com'));
   }
   const url = new URL(path, origin).toString().toUpperCase();
   if (cacheBuster) {
