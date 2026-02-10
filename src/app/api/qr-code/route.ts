@@ -1,4 +1,3 @@
-// app/qr/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import QRCode from 'qrcode';
 
@@ -10,9 +9,12 @@ export async function GET(req: NextRequest) {
   }
   const cacheBuster = searchParams.get('cb');
   // Do not include www. in the generated URL
-  const origin = req.nextUrl.origin.replace(/^https?:\/\/(www\.)?/, 'https://');
+  let origin = req.nextUrl.origin.replace(/^https?:\/\/(www\.)?/, 'https://');
   // @NOTE: Uppercase makes it so QR codes use a more efficient encoding mode
   // So the code is smaller
+  if (origin.includes('://0.0.0.0')) {
+    origin = (process.env.NEXT_PUBLIC_SITE_URL ?? origin.replace('0.0.0.0', 'relicry.com'));
+  }
   const url = new URL(path, origin).toString().toUpperCase();
   if (cacheBuster) {
     console.info(`Cache buster present: ${cacheBuster}`);
