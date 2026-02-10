@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function proxy(req: NextRequest) {
-  if (req.nextUrl.pathname !== req.nextUrl.pathname.toLowerCase()) {
-    return NextResponse.redirect(
-      new URL(req.nextUrl.origin + req.nextUrl.pathname.toLowerCase())
-    );
+  const lowerPath = req.nextUrl.pathname.toLowerCase();
+  if (req.nextUrl.pathname !== lowerPath) {
+    const url = req.nextUrl.clone();
+    url.pathname = lowerPath;
+    return NextResponse.redirect(url);
   }
   return NextResponse.next();
 }
