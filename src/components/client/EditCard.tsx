@@ -4,7 +4,7 @@ import { Fragment, useMemo, useState } from "react";
 import { Aspect, orderAspects, orderComboAspects } from "@/entities/Aspect";
 import { orderRarities, Rarity } from "@/entities/Rarity";
 import { orderTags, Tag } from "@/entities/Tag";
-import { getCardDocId, VersionedCard, VersionedDeckCard } from "@/entities/Card";
+import { getCardDocId, Card as ExtendableCard, VersionedCard, VersionedDeckCard, VersionedFocusCard, Version, VersionedGambitCard } from "@/entities/Card";
 import DSForm from "@/components/ds/DSForm";
 import DSSection from "@/components/ds/DSSection";
 import DSField, { fromDateOnlyString, toDateOnlyString } from "@/components/ds/DSField";
@@ -73,15 +73,15 @@ export function getDefaultNewCard(type: "deck" | "focus" | "gambit"): VersionedC
     case "deck":
       return getDefaultNewDeckCard();
     case "focus":
-      throw new Error("Not implemented: getDefaultNewFocusCard");
+      return getDefaultNewFocusCard();
     case "gambit":
-      throw new Error("Not implemented: getDefaultNewGambitCard");
+      return getDefaultNewGambitCard();
     default:
       throw new Error(`Unknown card type: ${type}`);
   }
 }
 
-export function getDefaultNewDeckCard(): VersionedDeckCard {
+function getDefaultCard(): ExtendableCard {
   return {
     title: "",
     tags: [],
@@ -89,15 +89,17 @@ export function getDefaultNewDeckCard(): VersionedDeckCard {
     id: "",
     type: "deck",
     rarity: Rarity.Common,
-    drawLimit: 1,
-    scrapCost: [],
-    aspect: Aspect.Brave,
+  };
+}
+
+function getDefaultVersion(): Version {
+  return {
     version: 1,
     season: CURRENT_SEASON,
     isFeatured: true,
     illustration: { artId: "", artistId: "" },
     flavorText: {
-      extended: { artistId: "", artId: "" },
+      extended: null,
       onCard: { text: "", source: "" },
     },
     subTitle: "",
@@ -111,17 +113,56 @@ export function getDefaultNewDeckCard(): VersionedDeckCard {
   };
 }
 
+export function getDefaultNewGambitCard(): VersionedGambitCard {
+  return {
+    ...getDefaultCard(),
+    ...getDefaultVersion(),
+    type: "gambit",
+  };
+}
+
+export function getDefaultNewFocusCard(): VersionedFocusCard {
+  return {
+    ...getDefaultCard(),
+    ...getDefaultVersion(),
+    type: "focus",
+    aspect: Aspect.Brave,
+    awakened: {
+      title: "",
+      tags: [],
+      effects: [],
+    },
+    awakenedVersion: {
+      illustration: { artId: "", artistId: "" },
+      flavorText: {
+        extended: null,
+        onCard: { text: "", source: "" },
+      },
+    },
+  };
+}
+
+export function getDefaultNewDeckCard(): VersionedDeckCard {
+  return {
+    ...getDefaultCard(),
+    ...getDefaultVersion(),
+    type: 'deck',
+    drawLimit: 1,
+    scrapCost: [],
+    aspect: Aspect.Brave,
+  };
+}
+
 type EditCardProps = Readonly<{
   card?: VersionedCard;
-  type: "deck" | "focus" | "gambit";
 }>;
 
-export default function EditCard({ card: initCard, type }: EditCardProps) {
+export default function EditCard({ card: initCard }: EditCardProps) {
   // Keyed remount = reset form when switching cards/types (no effect-based setState)
   const editorKey = useMemo(() => {
-    if (initCard?.id) return `${type}:${initCard.id}:${initCard.version}`;
-    return `${type}:new`;
-  }, [type, initCard?.id, initCard?.version]);
+    if (initCard?.id) return `${initCard.id}:${initCard.version}`;
+    return 'new';
+  }, [initCard?.id, initCard?.version]);
   const { user, ready } = useUser();
   if (!ready) {
     return null;
@@ -130,35 +171,16 @@ export default function EditCard({ card: initCard, type }: EditCardProps) {
     return PermissionDenied();
   }
 
-  return <EditCardInner key={editorKey} initCard={initCard} type={type} />;
+  return <EditCardInner key={editorKey} initCard={initCard} />;
 }
 
 function EditCardInner({
   initCard,
-  type,
 }: {
   initCard?: VersionedCard;
-  type: "deck" | "focus" | "gambit";
 }) {
   const rarityOptions = useMemo(
     () => orderRarities().map((value) => ({ label: value.toLocaleUpperCase(), value })),
-    []
-  );
-
-  const aspectOptions = useMemo(
-    () =>
-      [...orderAspects(), ...orderComboAspects()].map((value) => ({
-        label:
-          typeof value === "string"
-            ? value.toLocaleUpperCase()
-            : value.map((v) => v.toLocaleUpperCase()).join(" + "),
-        value,
-      })),
-    []
-  );
-
-  const tagOptions = useMemo(
-    () => orderTags().map((value) => ({ label: value.toLocaleUpperCase(), value })),
     []
   );
 
@@ -167,9 +189,28 @@ function EditCardInner({
   const [saveAttempted, setSaveAttempted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [card, setCard] = useState<VersionedCard>(() => initCard ?? getDefaultNewCard(type));
+  const [card, setCard] = useState<VersionedCard>(() => initCard ?? getDefaultNewCard("deck"));
   const [previewArt, setPreviewArt] = useState<Art | null>(null);
   const [previewArtist, setPreviewArtist] = useState<Artist | null>(null);
+  const [previewAwakenedArt, setPreviewAwakenedArt] = useState<Art | null>(null);
+  const [previewAwakenedArtist, setPreviewAwakenedArtist] = useState<Artist | null>(null);
+  const cardType = card.type;
+
+  const tagOptions = useMemo(
+    () => orderTags(undefined, cardType).map((value) => ({ label: value.toLocaleUpperCase(), value })),
+    [cardType]
+  );
+
+  const aspectOptions = useMemo(() =>
+    [...orderAspects(), ...(cardType === 'deck' ? orderComboAspects() : [])].map((value) => ({
+      label:
+        typeof value === "string"
+          ? value.toLocaleUpperCase()
+          : value.map((v) => v.toLocaleUpperCase()).join(" + "),
+      value,
+    })),
+    [cardType]
+  );
 
   const update = <K extends keyof VersionedCard>(key: K, value: VersionedCard[K]) => {
     setCard((c) => ({ ...c, [key]: value }));
@@ -180,24 +221,46 @@ function EditCardInner({
     setLoading(true);
     try {
       const token = await authUser.user?.getIdToken();
-      const [artRes, artistRes] = await Promise.all([
+      const [artRes, artistRes, awakenedArtRes, awakenedArtistRes] = await Promise.all([
         fetch(`/api/${card.illustration.artId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         }),
         fetch(`/api/${card.illustration.artistId}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined,
         }),
+        (card as VersionedFocusCard).awakenedVersion?.illustration?.artId
+          ? fetch(`/api/${(card as VersionedFocusCard).awakenedVersion?.illustration?.artId}`, {
+              headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            })
+          : Promise.resolve({ ok: false, json: async () => ({}), status: 204 }),
+        (card as VersionedFocusCard).awakenedVersion?.illustration?.artistId
+          ? fetch(`/api/${(card as VersionedFocusCard).awakenedVersion?.illustration?.artistId}`, {
+              headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            })
+          : Promise.resolve({ ok: false, json: async () => ({}), status: 204 }),
       ]);
-      const artJson = await artRes.json().catch(() => ({}));
-      const artistJson = await artistRes.json().catch(() => ({}));
+      const [ artJson, artistJson, awakenedArtJson, awakenedArtistJson ] = await Promise.all([
+        artRes.json().catch(() => ({})),
+        artistRes.json().catch(() => ({})),
+        awakenedArtRes.json().catch(() => ({})),
+        awakenedArtistRes.json().catch(() => ({})),
+      ]);
       if (!artRes.ok) {
         throw new Error(artJson?.error || artJson?.details || `Failed to load art (${artRes.status})`);
       }
       if (!artistRes.ok) {
         throw new Error(artistJson?.error || artistJson?.details || `Failed to load artist (${artistRes.status})`);
       }
+      if (awakenedArtRes.ok && !awakenedArtJson?.art) {
+        throw new Error(awakenedArtJson?.error || awakenedArtJson?.details || `Failed to load awakened art (${awakenedArtRes.status})`);
+      }
+      if (awakenedArtistRes.ok && !awakenedArtistJson?.artist) {
+        throw new Error(awakenedArtistJson?.error || awakenedArtistJson?.details || `Failed to load awakened artist (${awakenedArtistRes.status})`);
+      }
       setPreviewArt(artJson.art as Art);
       setPreviewArtist(artistJson.artist as Artist);
+      setPreviewAwakenedArt(awakenedArtJson.art as Art);
+      setPreviewAwakenedArtist(awakenedArtistJson.artist as Artist);
     } catch (err: unknown) {
       console.error("Failed to load preview art or artist:", err);
     } finally {
@@ -205,9 +268,87 @@ function EditCardInner({
     }
   };
 
-  const getFinalCard = (): VersionedCard => {
+  const getFinalVersionedCard = (): VersionedCard => {
+    switch (card.type) {
+      case "deck":
+        return getFinalDeckCard(card as VersionedDeckCard);
+      case "focus":
+        return getFinalFocusCard(card as VersionedFocusCard);
+      case "gambit":
+        return getFinalGambitCard(card as VersionedGambitCard);
+      default:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        throw new Error(`Unknown card type: ${(card as any).type}`);
+    }
+  };
+
+  const getFinalDeckCard = (card: VersionedDeckCard): VersionedDeckCard => {
     return {
-      ...card,
+      ...getFinalCard(card),
+      ...getFinalVersion(card),
+      type: 'deck',
+      drawLimit: card.drawLimit,
+      scrapCost: [...card.scrapCost],
+      aspect: Array.isArray(card.aspect) ? [ ...card.aspect ] : card.aspect,
+    };
+  };
+
+  const getFinalFocusCard = (card: VersionedFocusCard): VersionedFocusCard => {
+    return {
+      ...getFinalCard(card),
+      ...getFinalVersion(card),
+      type: 'focus',
+      aspect: Array.isArray(card.aspect) ? [ ...card.aspect ] : card.aspect,
+      awakened: {
+        title: card.awakened?.title?.trim(),
+        tags: [...(card.awakened?.tags ?? [])],
+        effects: card.awakened?.effects.map((e) => stringToCardEffect(cardEffectToString(e))) ?? [],
+      },
+      awakenedVersion: {
+        illustration: card.awakenedVersion?.illustration ? { ...card.awakenedVersion.illustration } : { artId: "", artistId: "" },
+        flavorText: card.awakenedVersion?.flavorText?.onCard?.text
+        ? {
+            extended: card.awakenedVersion.flavorText.extended?.artId ? { ...card.awakenedVersion.flavorText.extended } : null,
+            onCard: card.awakenedVersion.flavorText.onCard.text.trim()
+              ? {
+                  text: card.awakenedVersion.flavorText.onCard.text.trim(),
+                  source: card.awakenedVersion.flavorText.onCard.source?.trim()
+                    ? card.awakenedVersion.flavorText.onCard.source.trim()
+                    : undefined,
+                }
+              : null,
+          }
+        : undefined,
+      }
+    };
+  };
+
+  const getFinalGambitCard = (card: VersionedGambitCard): VersionedGambitCard => {
+    return {
+      ...getFinalCard(card),
+      ...getFinalVersion(card),
+      type: 'gambit',
+    };
+  };
+
+  const getFinalCard = (card: VersionedCard): ExtendableCard => {
+    return {
+      id: card.id,
+      type: card.type,
+      title: card.title.trim(),
+      rarity: card.rarity,
+      // Remove any trailing spaces from card effect parts
+      effects: card.effects.map((e) => stringToCardEffect(cardEffectToString(e))),
+      tags: [...card.tags],
+    };
+  };
+
+  const getFinalVersion = (card: VersionedCard): Version => {
+    return {
+      version: card.version,
+      season: card.isSample ? card.season * -1 : card.season,
+      isFeatured: card.isFeatured,
+      illustration: card.illustration ? { ...card.illustration } : { artId: "", artistId: "" },
       flavorText: card.flavorText?.onCard?.text
         ? {
             extended: card.flavorText.extended?.artId ? { ...card.flavorText.extended } : null,
@@ -221,17 +362,17 @@ function EditCardInner({
               : null,
           }
         : undefined,
-      title: card.title.trim(),
       subTitle:
         [Rarity.Epic, Rarity.Legendary].includes(card.rarity) && card.subTitle?.trim()
           ? card.subTitle
           : undefined,
+      revealedAt: card.revealedAt ? new Date(card.revealedAt) : null,
       revealedContext: card.revealedContext?.trim() ? card.revealedContext : undefined,
+      publishedAt: card.publishedAt ? new Date(card.publishedAt) : null,
       publishedContext: card.publishedAt && card.publishedContext?.trim() ? card.publishedContext : undefined,
+      archivedAt: card.archivedAt ? new Date(card.archivedAt) : null,
       archivedContext: card.archivedAt && card.archivedContext?.trim() ? card.archivedContext : undefined,
-      season: card.isSample ? card.season * -1 : card.season,
-      // Remove any trailing spaces from card effect parts
-      effects: card.effects.map((e) => stringToCardEffect(cardEffectToString(e))),
+      isSample: card.isSample,
     };
   };
 
@@ -249,7 +390,7 @@ function EditCardInner({
       return;
     }
 
-    const copiedCard = getFinalCard();
+    const copiedCard = getFinalVersionedCard();
     setLoading(true);
     setSaveError(null);
 
@@ -282,9 +423,9 @@ function EditCardInner({
     <DSSection>
       <DSLoadingOverlay loading={loading} error={saveError} dismissError={setSaveError} />
       <DSForm>
-        <DSForm.Title>Edit Deck Card</DSForm.Title>
+        <DSForm.Title>Edit Card</DSForm.Title>
         <DSForm.Description>
-          Edit or create a deck card version. Leaving it as a sample card will allow it to be created without validation.
+          Edit or create a card version. Leaving it as a sample card will allow it to be created without validation.
         </DSForm.Description>
 
         <DSField
@@ -307,24 +448,84 @@ function EditCardInner({
           onChange={(value) => update("isFeatured", value)}
         />
 
-        {type === "deck" && (
+        <DSSelect
+          label="Type"
+          options={[
+            { label: "Deck", value: "deck" },
+            { label: "Focus", value: "focus" },
+            { label: "Gambit", value: "gambit" },
+          ]}
+          value={card.type}
+          onChange={(type) => setCard((c) => {
+            const newCard = {
+            ...(type === 'deck' ? getDefaultNewDeckCard() :
+            type === 'focus' ? getDefaultNewFocusCard() :
+              getDefaultNewGambitCard()),
+            ...c,
+            type,
+            } as VersionedDeckCard | VersionedFocusCard | VersionedGambitCard;
+            // @NOTE: Focuses cannot have two aspects.
+            if (newCard.type === 'focus') {
+              if (Array.isArray((newCard as VersionedFocusCard).aspect)) {
+                (newCard as VersionedFocusCard).aspect = Aspect.Brave;
+              }
+              newCard.tags = [
+                Tag.Focus,
+                ...(newCard.tags.filter((t) => (
+                  t !== Tag.Ability &&
+                  t !== Tag.Item &&
+                  t !== Tag.Gambit &&
+                  // @NOTE: Added above
+                  t !== Tag.Focus
+                ))),
+              ];
+              newCard.awakened.tags = [
+                Tag.Focus,
+                ...(newCard.awakened.tags.filter((t) => (
+                  t !== Tag.Ability &&
+                  t !== Tag.Item &&
+                  t !== Tag.Gambit &&
+                  // @NOTE: Added above
+                  t !== Tag.Focus
+                ))),
+              ];
+            }
+            // @NOTE: Gambits only have the Gambit tag.
+            if (newCard.type === 'gambit') {
+              newCard.tags = [Tag.Gambit];
+            }
+            if (newCard.type === 'deck') {
+              newCard.tags = [
+                ...(newCard.tags.filter((t) => (
+                  t !== Tag.Gambit &&
+                  t !== Tag.Focus
+                ))),
+              ];
+            }
+            return newCard;
+          })}
+        />
+
+        {(card.type === "deck" || card.type === "focus") && (
           <DSSelect
             label="Aspect"
             options={aspectOptions}
             value={card.aspect}
-            onChange={(aspect) => setCard((c) => ({ ...c, aspect }) as VersionedDeckCard)}
+            onChange={(aspect) => setCard((c) => ({ ...c, aspect }) as VersionedDeckCard | VersionedFocusCard )}
             required={!card.isSample}
           />
         )}
 
-        <DSSelect
-          label="Draw Limit"
-          options={[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ label: n.toString(), value: n }))}
-          value={card.drawLimit}
-          onChange={(value) => update("drawLimit", value)}
-        />
+        {card.type === "deck" &&
+          <DSSelect
+            label="Draw Limit"
+            options={[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ label: n.toString(), value: n }))}
+            value={card.drawLimit}
+            onChange={(value) => update("drawLimit", value)}
+          />
+        }
 
-        {type === "deck" &&
+        {card.type === "deck" &&
           (card as VersionedDeckCard).scrapCost.map((cost, index) => (
             <DSSelect
               key={index}
@@ -348,13 +549,12 @@ function EditCardInner({
             />
           ))}
 
-        {type === "deck" && (card as VersionedDeckCard).scrapCost.length < 4 && (
+        {card.type === "deck" && (card as VersionedDeckCard).scrapCost.length < 4 && (
           <DSButton
             onClick={() =>
               setCard((c) => ({ ...c, scrapCost: [...(c as VersionedDeckCard).scrapCost, Aspect.Brave] }))
             }
             label="+ Scrap Cost"
-
           />
         )}
 
@@ -404,15 +604,17 @@ function EditCardInner({
           label="+ Card Effect"
         />
 
-        <DSToggleGroup.Text
-          label="Tags"
-          options={tagOptions}
-          multiple
-          values={card.tags}
-          onChange={(values: Tag[]) => setCard((c) => ({ ...c, tags: values }))}
-          minimum={card.isSample ? undefined : 1}
-          error={saveAttempted ? FormErrors.tagsError(card.tags) : undefined}
-        />
+        { card.type !== "gambit" &&
+          <DSToggleGroup.Text
+            label="Tags"
+            options={tagOptions}
+            multiple
+            values={card.tags}
+            onChange={(values: Tag[]) => setCard((c) => ({ ...c, tags: values }))}
+            minimum={card.isSample ? undefined : 1}
+            error={saveAttempted ? FormErrors.tagsError(card.tags) : undefined}
+          />
+        }
 
         <DSSelect
           label="Rarity"
@@ -430,6 +632,16 @@ function EditCardInner({
           error={saveAttempted ? FormErrors.getTitleError(card.title) : undefined}
         />
 
+        {[Rarity.Epic, Rarity.Legendary].includes(card.rarity) && (
+          <DSField
+            label="Subtitle"
+            value={card.subTitle || ""}
+            onChange={(value) => update("subTitle", value)}
+            required={!card.isSample}
+            error={saveAttempted ? FormErrors.getSubtitleError(card.rarity, card.subTitle) : undefined}
+          />
+        )}
+
         <SelectArt
           selectedArtId={card.illustration?.artId}
           onSelect={(art) =>
@@ -442,18 +654,8 @@ function EditCardInner({
             }))
           }
           type="illustration"
+          required={!card.isSample}
         />
-
-        {[Rarity.Epic, Rarity.Legendary].includes(card.rarity) && (
-          <DSField
-            label="SubTitle"
-            value={card.subTitle || ""}
-            onChange={(value) => update("subTitle", value)}
-            required={!card.isSample}
-            error={saveAttempted ? FormErrors.getSubtitleError(card.rarity, card.subTitle) : undefined}
-
-          />
-        )}
 
         <DSField
           label="Version"
@@ -493,6 +695,41 @@ function EditCardInner({
             }))
           }
         />
+
+        <DSSwitch
+          label="Extended Flavor Text?"
+          checked={card.flavorText?.extended?.artId !== undefined}
+          onChange={(value) =>
+            setCard((c) => ({
+              ...c,
+              flavorText: {
+                ...c.flavorText,
+                extended: value ? c.flavorText?.extended || { artistId: "", artId: "" } : null,
+                onCard: c.flavorText?.onCard || { text: "", source: "" },
+              },
+            }))
+          }
+        />
+
+        {card.flavorText?.extended && (
+          <SelectArt
+            selectedArtId={card.flavorText.extended.artId}
+            onSelect={(art) =>
+              setCard((c) => ({
+                ...c,
+                flavorText: {
+                  ...c.flavorText,
+                  extended: {
+                    artId: art.id,
+                    artistId: art.artistId,
+                  },
+                  onCard: c.flavorText?.onCard || { text: "", source: "" },
+                },
+              }))
+            }
+            type="writing"
+          />
+        )}
 
         <DSSwitch
           label="Revealed?"
@@ -569,6 +806,182 @@ function EditCardInner({
           </>
         )}
 
+
+        {card.type === "focus" &&
+          <>
+            <h1>Awakened Version</h1>
+            {card.awakened.effects.map((effect, index) => (
+              <Fragment key={index}>
+                <DSField
+                  label="Awakened Card Effect As Text"
+                  value={cardEffectToString(effect, { permitEndingSpace: true })}
+                  onChange={(value) =>
+                    setCard((c) => ({
+                      ...c,
+                      awakened: {
+                        ...((c as VersionedFocusCard).awakened),
+                        effects: (c as VersionedFocusCard).awakened.effects.map((e, i) =>
+                          i === index ? stringToCardEffect(value, { permitEndingSpace: true }) : e
+                        ),
+                      },
+                    }))
+                  }
+      
+                />
+                <CardEffectLine effect={effect} ctx={{ type: CardType.Preview }} />
+                <DSButton
+                  key={index}
+                  onClick={() =>
+                    setCard((c) => ({
+                      ...c,
+                      awakened: {
+                        ...((c as VersionedFocusCard).awakened),
+                        effects: (c as VersionedFocusCard).awakened.effects.filter((_, i) => i !== index),
+                      },
+                    }))
+                  }
+                  label="Remove"
+      
+                />
+              </Fragment>
+            ))}
+
+            <DSButton
+              onClick={() =>
+                setCard((c) => ({
+                  ...c,
+                  awakened: {
+                    ...((c as VersionedFocusCard).awakened),
+                    effects: [
+                      ...((c as VersionedFocusCard).awakened.effects),
+                      {
+                        conditionals: [],
+                        parts: [],
+                      },
+                    ],
+                  },
+                }))
+              }
+              label="+ Awakened Card Effect"
+            />
+
+            <DSToggleGroup.Text
+              label="Awakened Tags"
+              options={tagOptions}
+              multiple
+              values={card.awakened.tags}
+              onChange={(values: Tag[]) => setCard((c) => ({ ...c, awakened: { ...((c as VersionedFocusCard).awakened), tags: values } }))}
+              minimum={card.isSample ? undefined : 1}
+              error={saveAttempted ? FormErrors.tagsError(card.tags) : undefined}
+            />
+
+            <DSField
+              label="Awakened Title"
+              value={card.awakened.title || ''}
+              onChange={(value) =>
+                setCard((c) => ({
+                  ...c,
+                  awakened: {
+                    ...((c as VersionedFocusCard).awakened),
+                    title: value,
+                  },
+                }))
+              }
+            />
+
+            <SelectArt
+              selectedArtId={card.awakenedVersion.illustration?.artId}
+              onSelect={(art) =>
+                setCard((c) => ({
+                  ...c,
+                  awakenedVersion: {
+                    ...(c as VersionedFocusCard).awakenedVersion,
+                    illustration: {
+                      artId: art.id,
+                      artistId: art.artistId,
+                    },
+                  },
+                }))
+              }
+              type="illustration"
+              label="Awakened Illustration (if different)"
+            />
+
+            <DSField
+              label="Awakened Flavor Text"
+              value={card.awakenedVersion?.flavorText?.onCard?.text || ""}
+              onChange={(value) =>
+                setCard((c) => ({
+                  ...c,
+                  awakenedVersion: {
+                    ...(c as VersionedFocusCard).awakenedVersion,
+                    flavorText: {
+                      ...(c as VersionedFocusCard).awakenedVersion?.flavorText || { extended: null, onCard: { text: "", source: "" } },
+                      onCard: { text: value },
+                    },
+                  },
+                }))
+              }
+            />
+
+            <DSField
+              label="Awakened Flavor Text Source"
+              value={card.awakenedVersion?.flavorText?.onCard?.source || ""}
+              onChange={(value) =>
+                setCard((c) => ({
+                  ...c,
+                  awakenedVersion: {
+                    ...(c as VersionedFocusCard).awakenedVersion,
+                    flavorText: {
+                      ...(c as VersionedFocusCard).awakenedVersion?.flavorText || { extended: null, onCard: { text: "", source: "" } },
+                      onCard: { ...((c as VersionedFocusCard).awakenedVersion?.flavorText?.onCard || { text: "", source: "" }), source: value },
+                    },
+                  },
+                }))
+              }
+            />
+
+            <DSSwitch
+              label="Extended Awakened Flavor Text?"
+              checked={card.awakenedVersion?.flavorText?.extended?.artId !== undefined}
+              onChange={(value) =>
+                setCard((c) => ({
+                  ...c,
+                  awakenedVersion: {
+                    ...(c as VersionedFocusCard).awakenedVersion,
+                    flavorText: {
+                      ...(c as VersionedFocusCard).awakenedVersion?.flavorText || { extended: null, onCard: { text: "", source: "" } },
+                      extended: value ? (c as VersionedFocusCard).awakenedVersion?.flavorText?.extended || { artistId: "", artId: "" } : null,
+                    },
+                  },
+                }))
+              }
+            />
+
+            {card.awakenedVersion?.flavorText?.extended && (
+              <SelectArt
+                selectedArtId={card.awakenedVersion.flavorText.extended.artId}
+                onSelect={(art) =>
+                  setCard((c) => ({
+                    ...c,
+                    awakenedVersion: {
+                      ...(c as VersionedFocusCard).awakenedVersion,
+                      flavorText: {
+                        ...(c as VersionedFocusCard).awakenedVersion?.flavorText || { extended: null, onCard: { text: "", source: "" } },
+                        extended: {
+                          artId: art.id,
+                          artistId: art.artistId,
+                        },
+                      },
+                    },
+                  }))
+                }
+                type="writing"
+              />
+            )}
+          </>
+        }
+
         <DSForm.ButtonGroup>
           <DSButton onClick={onSave} label="Save" loading={loading} disabled={!authUser.ready} />
 
@@ -584,15 +997,53 @@ function EditCardInner({
             }
             content={
               <Card
-                card={getFinalCard()}
+                card={getFinalVersionedCard()}
                 ctx={{ type: CardType.Full }}
                 art={previewArt}
                 artist={previewArtist}
+                awakenedArt={previewAwakenedArt}
+                awakenedArtist={previewAwakenedArtist}
+                awakened={false}
+                flavorTextExtendedArt={null}
+                flavorTextExtendedArtist={null}
+                awakenedFlavorTextExtendedArt={null}
+                awakenedFlavorTextExtendedArtist={null}
               />
             }
             actions={<DSDialog.Close />}
             loading={loading}
           />
+
+          { card.type === "focus" &&
+            <DSDialog
+              title="Awakened Card Preview"
+              trigger={
+                <DSButton
+                  onClick={loadPreviewParts}
+                  label="Preview Awakened"
+                  dialogTrigger
+                  loading={loading}
+                />
+              }
+              content={
+                <Card
+                  card={getFinalVersionedCard()}
+                  ctx={{ type: CardType.Full }}
+                  art={previewArt}
+                  artist={previewArtist}
+                  awakenedArt={previewAwakenedArt}
+                  awakenedArtist={previewAwakenedArtist}
+                  awakened={true}
+                  flavorTextExtendedArt={null}
+                  flavorTextExtendedArtist={null}
+                  awakenedFlavorTextExtendedArt={null}
+                  awakenedFlavorTextExtendedArtist={null}
+                />
+              }
+              actions={<DSDialog.Close />}
+              loading={loading}
+            />
+          }
 
           <DSButton onClick={onSave} label="Cancel" loading={loading} />
         </DSForm.ButtonGroup>

@@ -11,6 +11,14 @@ type Props = {
 export default function CardEffectParts({
   parts, ctx,
 }: Props) {
+  const getNumberPart = (amount: number | undefined) => {
+    const classNames = [styles.numberPart];
+    if (amount === 1) {
+      classNames.push(styles.one);
+    }
+    return <span className={classNames.join(' ')}>{amount}</span>;
+  };
+
   const getPart = (part: CardEffectPart) => {
     switch (part.type) {
       case 'text':
@@ -21,7 +29,7 @@ export default function CardEffectParts({
             <span className={styles.cardPartSymbol} style={{
               backgroundImage: `url(${assetURL(ctx, 'part/card.1.png')})`,
             }} />
-            <span className={styles.numberPart}>{ (part as CardEffectPartCard).amount }</span>
+            {getNumberPart((part as CardEffectPartCard).amount)}
           </span>
         );
       case 'damage':
@@ -30,7 +38,7 @@ export default function CardEffectParts({
             <span className={styles.damagePartSymbol} style={{
               backgroundImage: `url(${assetURL(ctx, 'part/damage.1.png')})`,
             }} />
-            <span className={styles.numberPart}>{ (part as CardEffectPartDamage).amount }</span>
+            {getNumberPart((part as CardEffectPartDamage).amount)}
           </span>
         );
       case 'flip':
@@ -55,7 +63,7 @@ export default function CardEffectParts({
             <span className={styles.quellPartSymbol} style={{
               backgroundImage: `url(${assetURL(ctx, 'part/quell.1.png')})`,
             }} />
-            <span className={styles.numberPart}>{ (part as CardEffectPartQuell).amount }</span>
+            {getNumberPart((part as CardEffectPartQuell).amount)}
           </span>
         )
       case 'tag':

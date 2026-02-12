@@ -3,6 +3,7 @@ export enum Aspect {
   Cunning = 'cunning',
   Wise = 'wise',
   Charming = 'charming',
+  Gambit = 'gambit',
 }
 
 const aspectOrder: Aspect[] = [
@@ -22,7 +23,9 @@ const aspectComboOrder: [Aspect, Aspect][] = [
 ];
 
 export function orderAspects(aspects?: Aspect[]): Aspect[] {
-  return (aspects ?? Object.values(Aspect)).sort((a, b) => {
+  return (aspects ?? Object.values(Aspect)).filter(
+    (aspect) => aspect !== Aspect.Gambit
+  ).sort((a, b) => {
     return aspectOrder.indexOf(a) - aspectOrder.indexOf(b);
   });
 }

@@ -31,9 +31,25 @@ type DSFieldRootProps = Readonly<{
   error?: string;
   disabled?: boolean;
   loading?: boolean;
+  multiline?: boolean;
+  rows?: number;
 }>;
 
-function DSFieldRoot({ disabled, loading, error, type, description, label, value, onChange, placeholder, readonly, required }: DSFieldRootProps) {
+function DSFieldRoot({
+  disabled,
+  loading,
+  error,
+  type,
+  description,
+  label,
+  value,
+  onChange,
+  placeholder,
+  readonly,
+  required,
+  multiline,
+  rows,
+}: DSFieldRootProps) {
   return (
     <Root>
       <Label required={required} label={label} />
@@ -44,9 +60,20 @@ function DSFieldRoot({ disabled, loading, error, type, description, label, value
         readOnly={readonly}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        type={type}
+        type={multiline ? undefined : type}
         disabled={disabled || loading}
         data-loading={loading ? 'true' : undefined}
+        data-multiline={multiline ? 'true' : undefined}
+        render={
+          multiline
+            ? (props) => (
+              <textarea
+                {...props}
+                rows={rows || 6}
+              />
+            )
+            : undefined
+        }
       />
       <Error error={error} />
       <Description description={description} />

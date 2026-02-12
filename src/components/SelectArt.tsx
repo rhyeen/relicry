@@ -15,12 +15,16 @@ type SelectArtProps = Readonly<{
   // It is only called when one is selected from the dialog.
   onSelect: (art: Art) => void;
   type?: "illustration" | "writing";
+  label?: string;
+  required?: boolean;
 }>;
 
 export default function SelectArt({
   selectedArtId,
   onSelect,
   type = "illustration",
+  label,
+  required,
 }: SelectArtProps) {
   const authUser = useAuthUser();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -117,12 +121,13 @@ export default function SelectArt({
   return (
     <>
       <DSField
-        label="Illustration Art ID"
+        label={label || "Illustration Art ID"}
         value={selectedArtId || ""}
         onChange={noop}
         placeholder="Select art"
         readonly
         description={selectedArtDescription}
+        required={required}
       />
 
       {previewImage && (

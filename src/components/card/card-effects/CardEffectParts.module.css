@@ -17,6 +17,8 @@
 .aspectPart {
   position: relative;
   display: inline-block;
+  display: flex;
+  justify-content: center;
 }
 
 .cardPartSymbol,
@@ -48,7 +50,6 @@
 
 .cardPart .numberPart {
   color: black;
-  padding-left: 5px;
 }
 
 .damagePartSymbol {
@@ -60,10 +61,6 @@
   width: 26px;
 }
 
-.damagePart .numberPart {
-  padding-left: 7px;
-}
-
 .quellPartSymbol {
   aspect-ratio: 39 / 36;
   margin-top: 3px;
@@ -71,10 +68,6 @@
 
 .quellPart {
   width: 28px;
-}
-
-.quellPart .numberPart {
-  padding-left: 9px;
 }
 
 .scrappedPartSymbol {
@@ -102,4 +95,8 @@
 
 .aspectPart {
   width: 25px;
+}
+
+.numberPart.one {
+  margin-left: -1.5px;
 }

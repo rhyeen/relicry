@@ -31,36 +31,36 @@ export default function CardTag({
 }: Props) {
   const getBackgroundColor = () => {
     switch (tag) {
-      case Tag.Focus:
-        return '#404040';
       case Tag.Gambit:
-        return '#c7c7c7ff';
-      case Tag.Item:
-        return '#ffae3c';
-      case Tag.Ability:
-        return '#b354f2';
-      case Tag.Magic:
-        return '#61dcce';
+        return 'rgb(235, 235, 235)';
+      case Tag.Focus:
+        return '#3a3d49';
       case Tag.Scrap:
-        return '#877c9aff';
-      case Tag.Volant:
-        return '#995dfaff';
-      case Tag.Void:
-        return '#5b0070ff';
-      case Tag.Bling:
-        return '#00d466';
-      case Tag.Blade:
-        return '#ff5959';
-      case Tag.Brew:
-        return '#ff6fc3ff';
-      case Tag.Tool:
-        return '#3590ffff';
-      case Tag.Favor:
-        return '#ffbab3ff';
+        return '#526285';
       case Tag.Weapon:
         return '#c59684';
+      case Tag.Favor:
+        return '#ff829b';
+      case Tag.Blade:
+        return '#fe4d47';
       case Tag.Armor:
-        return '#ffa764ff';
+        return '#ff6a25';
+      case Tag.Item:
+        return '#ffb300';
+      case Tag.Brew:
+        return '#bad300';
+      case Tag.Volant:
+        return '#00e450';
+      case Tag.Magic:
+        return '#00e2b1';
+      case Tag.Tool:
+        return '#599cff';
+      case Tag.Void:
+        return '#6200ca';
+      case Tag.Ability:
+        return '#c165ff';
+      case Tag.Bling:
+        return '#fe5fcc';
       default:
         throw new Error(`Unknown tag: ${tag}`);
     }
@@ -73,6 +73,11 @@ export default function CardTag({
       straightLeft={straightLeft}
       backgroundColor={getBackgroundColor()}
       straightLeftColor={getBackgroundColor()}
+      add={
+        tag === Tag.Scrap ? '1/2' :
+        (tag === Tag.Void || tag === Tag.Focus || tag === Tag.Gambit) ? '0' : undefined
+      }
+      whiteText={tag === Tag.Focus || tag === Tag.Void}
       ctx={ctx}
     />
   );

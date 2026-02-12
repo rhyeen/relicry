@@ -51,18 +51,21 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Build out UI to add/edit cards
 - [x] While a card is still sample, its ID should be different and much longer. Update the 404 page for cards to make it clear to people trying to search for cards that haven't been released yet that it's a useless endeaver.
 - [x] Bulid out UI to upload images
-- [ ] Deploy to prod then test adding cards so we now have a DB
-- [ ] 1 offcenter for tooltips
-- [ ] 1/2 and 0 both needed on tags + all tag colors checked
-- [ ] Create legendary banner
-- [ ] Designate a sample card as such
+- [x] Deploy to prod then test adding cards so we now have a DB
+- [x] 1 offcenter for tooltips
+- [x] 1/2 and 0 both needed on tags + all tag colors checked
+- [x] Create legendary banner
+- [x] Have multiple lines of tags work
 - [ ] Build out focus, gambit, quest, and quest token cards
+- [ ] Designate a sample card as such
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
-- [ ] Incorporate caching model in all components, not just Card
+- [x] Incorporate caching model in all components, not just Card
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website.
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
+- [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
+- [ ] Add 800 DPI images for rarity, focus/gambit
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization

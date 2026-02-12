@@ -83,9 +83,11 @@ function getDefaultNewRootArt(type: "illustration" | "writing"): RootArt {
     artistId: "",
     title: "",
     description: "",
+    referenceUrl: "",
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: null,
+    aIGenerated: true,
   };
 }
 
@@ -133,16 +135,22 @@ function EditArtInner({
     const rootArt: RootArt = {
       ...art,
       artistId: art.artistId.trim(),
-      title: art.title?.trim(),
-      description: art.description?.trim(),
+      title: art.title?.trim() || undefined,
+      description: art.description?.trim() || undefined,
+      referenceUrl: art.referenceUrl?.trim() || undefined,
+      aIGenerated: art.aIGenerated,
     };
     if (art.type === 'illustration') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (rootArt as any).markdown;
       return {
         ...rootArt,
         type: 'illustration',
         image: (rootArt as IllustrationArt).image,
       } as IllustrationArt;
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (rootArt as any).image;
       return {
         ...rootArt,
         type: 'writing',
@@ -285,6 +293,12 @@ function EditArtInner({
           onChange={(value) => setArt(a => ({ ...a, description: value }))}
         />
 
+        <DSField
+          label="Reference URL"
+          value={art.referenceUrl || ''}
+          onChange={(value) => setArt(a => ({ ...a, referenceUrl: value }))}
+        />
+
         <SelectArtist
           selectedArtistId={art.artistId}
           onSelect={(artist) => {
@@ -297,7 +311,11 @@ function EditArtInner({
           label="Art Type"
           options={typeOptions}
           value={art.type}
-          onChange={(type) => setArt((a) => ({ ...a, type }) as IllustrationArt | WritingArt)}
+          onChange={(type) => setArt((a) => ({
+            ...getDefaultNewArt(type as 'illustration' | 'writing'),
+            ...a,
+            type,
+          }) as IllustrationArt | WritingArt)}
           required
         />
 
@@ -308,6 +326,7 @@ function EditArtInner({
             onChange={(value) => setArt(a => ({ ...a, markdown: value }))}
             description="Write content in Markdown format."
             required
+            multiline
           />
         }
 
@@ -321,6 +340,12 @@ function EditArtInner({
             type="illustration"
           />
         }
+
+        <DSSwitch
+          label="AI Generated?"
+          checked={art.aIGenerated}
+          onChange={(value) => setArt(a => ({ ...a, aIGenerated: value }))}
+        />
 
         <DSSwitch
           label="Archived?"

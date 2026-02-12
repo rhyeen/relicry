@@ -28,6 +28,8 @@ export type RootArt = {
   createdAt: Date;
   updatedAt: Date;
   archivedAt: Date | null;
+  aIGenerated: boolean;
+  referenceUrl?: string;
 };
 
 export function getArtId(id: string): string {

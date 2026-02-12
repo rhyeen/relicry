@@ -7,7 +7,7 @@ import { getArt } from '@/server/cache/art.cache';
 import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
 import Card from '@/components/card/Card';
-import { normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import { normalizeAwakenedSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import { CardType } from '@/entities/CardContext';
 import { connection } from 'next/server';
 
@@ -52,6 +52,7 @@ async function CardPageData(
   await connection();
   const [{ version, card_id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
+  const awakened = normalizeAwakenedSP(sp);
 
   const card = await getCard(card_id, version);
   if (!card) notFound();
@@ -63,12 +64,12 @@ async function CardPageData(
   const [
     illustrationArt,
     illustrationArtist,
-    // flavorTextExtendedArt,
-    // flavorTextExtendedArtist,
-    // awakenedIllustrationArt,
-    // awakenedIllustrationArtist,
-    // awakenedFlavorTextExtendedArt,
-    // awakenedFlavorTextExtendedArtist,
+    flavorTextExtendedArt,
+    flavorTextExtendedArtist,
+    awakenedIllustrationArt,
+    awakenedIllustrationArtist,
+    awakenedFlavorTextExtendedArt,
+    awakenedFlavorTextExtendedArtist,
   ] = await Promise.all([
     getArt(card.illustration.artId),
     getArtist(card.illustration.artistId),
@@ -90,6 +91,13 @@ async function CardPageData(
           type: CardType.Full,
           size: size,
         }}
+        awakenedArt={awakenedIllustrationArt}
+        awakenedArtist={awakenedIllustrationArtist}
+        flavorTextExtendedArt={flavorTextExtendedArt}
+        flavorTextExtendedArtist={flavorTextExtendedArtist}
+        awakenedFlavorTextExtendedArt={awakenedFlavorTextExtendedArt}
+        awakenedFlavorTextExtendedArtist={awakenedFlavorTextExtendedArtist}
+        awakened={card.type === 'focus' && awakened}
       />
       <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
     </section>

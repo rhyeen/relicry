@@ -5,8 +5,10 @@ import { CardContext } from '@/entities/CardContext';
 
 type Props = {
   artist: Artist | null;
+  awakenedArtist: Artist | null;
   card: VersionedCard;
   ctx: CardContext;
+  focusAwakened?: boolean;
 }
 
 function truncate(str: string, maxLength: number): string {
@@ -14,10 +16,11 @@ function truncate(str: string, maxLength: number): string {
   return str.slice(0, maxLength - 2) + '\u2026';
 }
 
-export default function HeaderCardPart({ artist, card }: Props) {
+export default function HeaderCardPart({ artist, awakenedArtist, card, focusAwakened }: Props) {
+  const displayArtist = focusAwakened ? awakenedArtist : artist;
   return (
     <div className={styles.header}>
-      <div className={styles.headerLeft}>{artist ? artist.name : 'Unknown Artist'}</div>
+      <div className={styles.headerLeft}>{displayArtist ? displayArtist.name : 'Unknown Artist'}</div>
       <div className={styles.headerRight}>
         <span aria-label='Language'>EN</span>
         <span> • </span>
