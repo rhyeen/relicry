@@ -16,13 +16,13 @@ function truncate(str: string, maxLength: number): string {
   return str.slice(0, maxLength - 2) + '\u2026';
 }
 
-export default function HeaderCardPart({ artist, awakenedArtist, card, focusAwakened }: Props) {
+export default function HeaderCardPart({ artist, awakenedArtist, card, focusAwakened, ctx }: Props) {
   const displayArtist = focusAwakened ? awakenedArtist : artist;
   return (
     <div className={styles.header}>
       <div className={styles.headerLeft}>{displayArtist ? displayArtist.name : 'Unknown Artist'}</div>
       <div className={styles.headerRight}>
-        <span aria-label='Language'>EN</span>
+        <span aria-label='Language'>{ctx.language ?? 'EN'}</span>
         <span> • </span>
         <span aria-label='Season'>S{card.season}</span>
         <span> • </span>

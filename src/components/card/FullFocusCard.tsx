@@ -15,6 +15,9 @@ import AspectCardPart from './card-parts/AspectCardPart';
 import TagsCardPart from './card-parts/TagsCardPart';
 import { assetURL, CardContext } from '@/entities/CardContext';
 import FoilShineOverlay from './card-parts/FoilShineOverlay';
+import TypeTitleCardPart from './card-parts/TypeTitleCardPart';
+import { aspectAsArray } from './card-parts/aspectsAsArray';
+import { Aspect } from '@/entities/Aspect';
 
 type Props = {
   card: VersionedFocusCard;
@@ -33,6 +36,7 @@ export default function FullFocusCard({
     throw new Error(`FullFocusCard can only render focus type cards, received: ${card.type}`);
   }
   const thisSide = awakened ? card.awakened : card;
+  const firstAspect = aspectAsArray(card.aspect)[0];
   return (
     <section className={styles.fullCard}>
       <IllustrationCardPart art={art} awakenedArt={awakenedArt} ctx={ctx} focusAwakened={awakened} />
@@ -45,9 +49,15 @@ export default function FullFocusCard({
         className={styles.frame}
         style={{
           backgroundImage: `url(${assetURL(ctx, `focus/frame${awakened ? '-awakened' : ''}.${ASSET_VERSION}.png`)})`,
+          filter:
+            firstAspect === Aspect.Cunning ? 'hue-rotate(155deg) saturate(0.8)' :
+            firstAspect === Aspect.Wise ? 'hue-rotate(240deg) saturate(1.2) brightness(0.9)' :
+            firstAspect === Aspect.Charming ? 'hue-rotate(50deg) brightness(1.5) contrast(1.3)' :
+            'none',
         }}
         aria-hidden="true"
       />
+      <TypeTitleCardPart type={card.type} ctx={ctx} />
       <HeaderCardPart artist={artist} awakenedArtist={awakenedArtist} card={card} ctx={ctx} focusAwakened={awakened} />
       <TitleCardPart
         rarity={card.rarity}

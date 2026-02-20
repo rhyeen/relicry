@@ -89,7 +89,7 @@ async function CardPageData(
         artist={illustrationArtist}
         ctx={{
           type: CardType.Full,
-          size: size,
+          size,
         }}
         awakenedArt={awakenedIllustrationArt}
         awakenedArtist={awakenedIllustrationArtist}

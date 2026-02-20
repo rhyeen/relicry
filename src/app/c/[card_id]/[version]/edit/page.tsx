@@ -48,6 +48,6 @@ async function EditCardAdminPageData(
   if (!card) notFound();
 
   return (
-    <EditCardSlot type="deck" card={card || undefined} />
+    <EditCardSlot card={card || undefined} />
   );
 }

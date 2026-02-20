@@ -1,3 +1,5 @@
+import { PlayerCardLanguage } from './PlayerCard';
+
 export enum CardSize {
   PrintSize = '800dpi',
   WebSize = '96dpi',
@@ -11,6 +13,7 @@ export enum CardType {
 export type CardContext = {
   type: CardType;
   size?: CardSize;
+  language?: PlayerCardLanguage;
 };
 
 export function assetURL(ctx: CardContext, subPath: string): string {

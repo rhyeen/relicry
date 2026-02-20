@@ -16,6 +16,7 @@ import TagsCardPart from './card-parts/TagsCardPart';
 import { assetURL, CardContext } from '@/entities/CardContext';
 import FoilShineOverlay from './card-parts/FoilShineOverlay';
 import { Aspect } from '@/entities/Aspect';
+import TypeTitleCardPart from './card-parts/TypeTitleCardPart';
 
 type Props = {
   card: VersionedGambitCard;
@@ -41,10 +42,11 @@ export default function FullGambitCard({
       <div
         className={styles.frame}
         style={{
-          backgroundImage: `url(${assetURL(ctx, `deck/frame.${ASSET_VERSION}.png`)})`,
+          backgroundImage: `url(${assetURL(ctx, `gambit/frame.${ASSET_VERSION}.png`)})`,
         }}
         aria-hidden="true"
       />
+      <TypeTitleCardPart type={card.type} ctx={ctx} />
       <HeaderCardPart artist={artist} awakenedArtist={null} card={card} ctx={ctx} />
       <TitleCardPart
         rarity={card.rarity}

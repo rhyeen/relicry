@@ -23,11 +23,19 @@ export default function TitleCardPart({ title, subTitle, rarity, aspect, focus, 
           firstAspect === Aspect.Wise ? 'blue' :
             firstAspect === Aspect.Charming ? 'yellow' :
               'white';
+  const _rarity = (focus || aspect === Aspect.Gambit) ? Rarity.Common : rarity;
   return (
-    <div className={`${styles.titleContainer} ${styles[rarity]} ${styles[color]}`}>
+    <div className={`${styles.titleContainer} ${styles[_rarity]} ${styles[color]}`}>
       {aspect !== Aspect.Gambit && <div aria-label='Title' className={styles.title}>{title}</div>}
-      {subTitle && <div aria-label='Subtitle' className={styles.subtitle}>{subTitle}</div>}
-      {aspect === Aspect.Gambit && <div aria-label='Title' className={styles.title}>{title}</div>}
+      {subTitle &&
+        <div
+          aria-label='Subtitle'
+          className={`${styles.subtitle} ${aspect === Aspect.Gambit ? styles.gambitSubtitle : ''}`}
+        >
+          {subTitle}
+        </div>
+      }
+      {aspect === Aspect.Gambit && <div aria-label='Title' className={`${styles.title} ${styles.gambitTitle}`}>{title}</div>}
     </div>
   );
 }

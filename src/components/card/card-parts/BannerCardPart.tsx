@@ -140,7 +140,7 @@ export default function BannerCardPart({ aspect, rarity, focus, focusAwakened, c
           aria-hidden="true"
         />
         <div
-          className={`${styles.banner} ${styles.gambit} ${getColorStyle(false, false)}`}
+          className={`${styles.banner} ${styles.gambit}`}
           aria-hidden="true"
           style={{
             backgroundImage: `url(${assetURL(ctx, `gambit/banner.${ASSET_VERSION}.png`)})`,
