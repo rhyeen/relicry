@@ -1,0 +1,120 @@
+.challengeLevelNumber {
+  position: absolute;
+  width: 100%;
+  top: 138px;
+  text-align: center;
+  font-size: 116px;
+  color: white;
+  font-family: var(--font-unifraktur-cook);
+}
+
+.levelOne .challengeLevelNumber {
+  left: -6px;
+}
+
+.levelOne .challengeLevelNumber.back,
+.levelOne .scanForReward {
+  color: #2D3949;
+}
+
+.levelTwo .challengeLevelNumber.back,
+.levelTwo .scanForReward {
+  color: #6148A0;
+}
+
+.levelThree .challengeLevelNumber.back,
+.levelThree .scanForReward {
+  color: #A64700;
+}
+
+.bannerTitle {
+  position: absolute;
+  width: 100%;
+  top: 383px;
+  text-align: center;
+  font-size: 58px;
+  text-transform: uppercase;
+  color: white;
+  font-family: var(--font-pirata-one);
+}
+
+.toClaimAt {
+  position: absolute;
+  width: 100%;
+  top: 453px;
+  text-align: center;
+  font-size: 21px;
+  color: white;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}
+
+.eventName {
+  position: absolute;
+  width: 100%;
+  top: 472.5px;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+  font-family: var(--font-bree-serif);
+}
+
+.eventYear {
+  position: absolute;
+  width: 100%;
+  top: 507px;
+  text-align: center;
+  font-size: 62px;
+  color: white;
+  font-family: var(--font-unifraktur-cook);
+}
+
+.qrcode {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 439px;
+  left: 50%;
+  width: 165px;
+  height: 165px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease 0s, box-shadow 0.3s ease 0s;
+  mix-blend-mode: multiply;
+}
+
+.qrcodeColor {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 439px;
+  left: 50%;
+
+  /* @NOTE: Smaller than qrCode because of QR Code margin buffer */
+  width: 145px;
+  height: 145px;
+  mix-blend-mode: lighten;
+}
+
+.levelOne .qrcodeColor {
+  background-color: #2D3949;
+}
+
+.levelTwo .qrcodeColor {
+  background-color: #6148A0;
+}
+
+.levelThree .qrcodeColor {
+  background-color: #A64700;
+}
+
+.scanForReward {
+  position: absolute;
+  width: 100%;
+  top: 530px;
+  text-align: center;
+  font-size: 22px;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}

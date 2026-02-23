@@ -51,6 +51,19 @@
   transform: scale(417%);
 }
 
+.fullCardCropBleed .frame {
+  /*
+    (476/744 * (816-744))/2
+    476 = fullCardWidth
+    744 = 330dpi in Adobe Animate
+    816 = 330dpi in Adobe Animate + bleed (full board width)
+  */
+  top: -23px;
+  right: -23px;
+  bottom: -23px;
+  left: -23px;
+}
+
 .cardContainer.printSize {
   width: 100vw;
   height: 100vh;
@@ -327,13 +340,19 @@
   font-family: var(--font-barlow-condensed);
   font-weight: 600;
   font-size: 14px;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .footer {
   width: 100%;
   color: black;
-  bottom: 45px;
+  bottom: 26px;
   justify-content: center;
+}
+
+.footer.white {
+  color: white;
 }
 
 .header {
@@ -341,8 +360,12 @@
   left: 95px;
   width: 262px;
   color: white;
-  justify-content: space-between;
-  gap: 8px;
+}
+
+.footerCenter {
+  white-space: nowrap;
+  display: flex;
+  gap: 3px;
 }
 
 .headerLeft,

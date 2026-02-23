@@ -1,10 +1,9 @@
 .tokenName {
   position: absolute;
   width: 100%;
-  top: 114.5px;
+  top: 98.5px;
   text-align: center;
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 40px;
   font-family: var(--font-pirata-one);
   -webkit-text-stroke: 4px #E1E0DF;
   paint-order: stroke fill;
@@ -29,9 +28,9 @@
 .bannerTitle {
   position: absolute;
   width: 100%;
-  top: 380px;
+  top: 383px;
   text-align: center;
-  font-size: 54px;
+  font-size: 58px;
   text-transform: uppercase;
   color: white;
   font-family: var(--font-pirata-one);
@@ -40,9 +39,9 @@
 .ofThe {
   position: absolute;
   width: 100%;
-  top: 445px;
+  top: 453px;
   text-align: center;
-  font-size: 20px;
+  font-size: 21px;
   color: black;
   text-transform: uppercase;
   font-family: var(--font-bree-serif);
@@ -51,10 +50,25 @@
 .factionName {
   position: absolute;
   width: 100%;
-  top: 464px;
+  top: 472.5px;
   text-align: center;
-  font-size: 36px;
+  font-size: 39px;
   color: black;
   text-transform: uppercase;
   font-family: var(--font-bree-serif);
+}
+
+.tokenImage {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+  width: 416px;
+  aspect-ratio: 416 / 224;
+  left: 50%;
+  top: 162px;
+  transform: translate(-50%, 0%);
+  mix-blend-mode: multiply;
 }

@@ -57,11 +57,12 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Create legendary banner
 - [x] Have multiple lines of tags work
 - [x] Build out focus and gambit
-- [ ] Quest, token, and reward cards
+- [x] Quest, token, and reward cards
 - [ ] Designate a sample card as such (ID replaced with SAMPLE) and SAMPLE on back of card, plus SAMPLE watermark (very light)
 - [ ] Adding VOID to back of card
 - [x] Incorporate caching model in all components, not just Card
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
+- [ ] The copyright doesn't fit on the quest card.
 - [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website.
 - [ ] Add 800 DPI images for rarity, focus/gambit, quests folder
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.

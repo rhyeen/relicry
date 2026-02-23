@@ -19,14 +19,9 @@ export class QuestTokenDB extends RootDB<QuestToken> {
   }
 
   public async getQuestTokens(questId: string, season: number): Promise<QuestToken[]> {
-    const querySnapshot = await this.firestoreAdmin
-      .collection(this.collectionName)
-      .where('questId', '==', getQuestDocId(questId, season))
-      .get();
-    if (querySnapshot.empty) {
-      return [];
-    }
-    return querySnapshot.docs.map(d => d.data() as QuestToken);
+    return this.getBy({
+      where: [ { field: 'questId', op: '==', value: getQuestDocId(questId, season) } ],
+    });
   } 
 
   /**
@@ -38,24 +33,22 @@ export class QuestTokenDB extends RootDB<QuestToken> {
     faction?: Faction,
     season?: number,
   ): Promise<QuestToken | null> {
-    let query = this.firestoreAdmin
-      .collection(this.collectionName)
-      .where('id', '==', this.prefixId(id));
+    const where: { field: string; op: FirebaseFirestore.WhereFilterOp; value: string | number | boolean | Date }[] = [
+      { field: 'id', op: '==', value: this.prefixId(id) },
+    ];
     if (season !== undefined) {
-      query = query.where('season', '==', season);
+      where.push({ field: 'season', op: '==', value: season });
     }
     if (faction !== undefined) {
-      query = query.where('faction', '==', faction);
+      where.push({ field: 'faction', op: '==', value: faction });
     }
-    // @NOTE: If season is not given, then grab the latest
-    if (season === undefined) {
-      query = query.orderBy('season', 'desc');
-    }
-    const querySnapshot = await query.limit(1).get();
-    if (querySnapshot.empty) {
-      return null;
-    }
-    return querySnapshot.docs[0].data() as QuestToken;
+    const entities = await this.getBy({
+      where,
+      // @NOTE: If season is not given, then grab the latest
+      sortBy: season === undefined ? { field: 'season', direction: 'desc' } : undefined,
+      limit: 1,
+    });
+    return entities[0] ?? null;
   }
 
   protected getUnsafeDocId(item: QuestToken): string {

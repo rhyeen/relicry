@@ -2,6 +2,8 @@ import { CardSize } from '@/entities/CardContext';
 import { SearchParams } from 'next/dist/server/request/search-params';
 import { ReadonlyURLSearchParams } from 'next/navigation';
 
+export type CardSide = 'front' | 'back';
+
 export function normalizeSizeSP(sp?: SearchParams | ReadonlyURLSearchParams): CardSize | undefined {
   if (!sp) return undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,4 +28,15 @@ export function normalizeAwakenedSP(sp?: SearchParams | ReadonlyURLSearchParams)
   const v = Array.isArray(awakened) ? awakened[0] : awakened;
   if (!v) return false;
   return v === 'true';
+}
+
+export function normalizeSideSP(sp?: SearchParams | ReadonlyURLSearchParams): CardSide {
+  if (!sp) return 'front';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let side = (sp as any).side || null;
+  if (typeof sp.get === 'function') {
+    side = sp.get('side');
+  }
+  const v = Array.isArray(side) ? side[0] : side;
+  return v === 'back' ? 'back' : 'front';
 }

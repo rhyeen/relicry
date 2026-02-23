@@ -11,6 +11,7 @@ export const questTokenIds = {
   token1: 't/1',
   token2: 't/2',
   token3: 't/3',
+  token4: 't/4',
 };
 
 function defaultVersionedQuest(id: string, faction: Faction, level: number): VersionedQuest {
@@ -64,7 +65,7 @@ export function getExampleQuestToken2() {
   return defaultQuestToken(
     getQuestDocId(questTestIds.quest2, 1),
     questTokenIds.token2,
-    Faction.NightglassCo,
+    Faction.OrdoAether,
   );
 }
 
@@ -73,5 +74,13 @@ export function getExampleQuestToken3() {
     getQuestDocId(questTestIds.quest3, 1),
     questTokenIds.token3,
     Faction.BridlewildKin,
+  );
+}
+
+export function getExampleQuestToken4() {
+  return defaultQuestToken(
+    getQuestDocId(questTestIds.quest3, 1),
+    questTokenIds.token4,
+    Faction.NightglassCo,
   );
 }

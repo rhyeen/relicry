@@ -7,7 +7,7 @@ type Props = {
 const localeEn = {
   [Faction.BridlewildKin]: 'Bridlewild Kin',
   [Faction.IronbandGuild]: 'Ironband Guild',
-  [Faction.NightglassCo]: 'Nightglass Co.',
+  [Faction.NightglassCo]: 'Nightglass & Co.',
   [Faction.OrdoAether]: 'Ordo Aether',
 }
 

@@ -4,10 +4,10 @@ import { connection } from 'next/server';
 import { getAnyOfToken } from '@/server/cache/questToken.cache';
 import FullQuestTokenCard from '@/components/quest/FullQuestTokenCard';
 import { CardType } from '@/entities/CardContext';
-import { normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 
 type Params = { id: string };
-type SearchParams = { size?: string | string[] };
+type SearchParams = { size?: string | string[]; side?: string | string[] };
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -47,13 +47,14 @@ async function QuestTokenPageData(
   await connection();
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
+  const side = normalizeSideSP(sp);
 
   const token = await getAnyOfToken(id);
   if (!token) notFound();
 
   return (
     <section>
-      <FullQuestTokenCard token={token} side="front" ctx={{
+      <FullQuestTokenCard token={token} side={side} ctx={{
         type: CardType.Full,
         size,
       }} />

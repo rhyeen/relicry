@@ -20,15 +20,10 @@ export class PlayerCardDB extends RootDB<PlayerCard> {
   }
 
   public async getByUserId(userId: string): Promise<PlayerCard[]> {
-    const querySnapshot = await this.firestoreAdmin
-      .collection(this.collectionName)
-      .where('userId', '==', getUserId(userId))
-      .limit(100)
-      .get();
-    if (querySnapshot.empty) {
-      return [];
-    }
-    return querySnapshot.docs.map(doc => this.conformData(doc.data()) as PlayerCard);
+    return this.getBy({
+      where: [ { field: 'userId', op: '==', value: getUserId(userId) } ],
+      limit: 100,
+    });
   }
 
   protected getUnsafeDocId(item: PlayerCard): string {

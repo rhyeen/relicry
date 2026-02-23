@@ -2,7 +2,7 @@ import cardStyles from '../card/Card.module.css';
 import styles from './QuestTokenCard.module.css';
 import { ASSET_VERSION } from '../card/assetVersion';
 import { assetURL, CardContext } from '@/entities/CardContext';
-import { extractTokenRawId, getQuestTokenId, QuestToken } from '@/entities/Quest';
+import { definedRawQuestTokenIdsEn, extractTokenRawId, getQuestTokenId, QuestToken } from '@/entities/Quest';
 import FooterCardPart from './card-parts/FooterCardPart';
 import FactionName from './card-parts/FactionName';
 
@@ -18,17 +18,9 @@ const localeEn = {
   'ofThe': 'of the',
 };
 
-const tokenNameLocaleEn: Record<string, string> = {
-  '1': 'Broken Sword',
-  '2': 'Heaven’s Fruit',
-  '3': 'Brass Bell',
-  '4': 'Secret Note',
-  '5': 'Cursed Idol',
-};
-
 function getTokenName(token: QuestToken): string {
   const rawId = extractTokenRawId(token.id);
-  return tokenNameLocaleEn[rawId] ?? 'Unknown Token';
+  return definedRawQuestTokenIdsEn[rawId] ?? 'Unknown Token';
 }
 
 export default function FullQuestTokenCard({
@@ -44,6 +36,13 @@ export default function FullQuestTokenCard({
         aria-hidden="true"
       />
       <div className={styles.tokenName}>{getTokenName(token)}</div>
+      <div
+        className={styles.tokenImage}
+        style={{
+          backgroundImage: `url(${assetURL(ctx, `quest/tokens/t${extractTokenRawId(token.id)}.${ASSET_VERSION}.png`)})`,
+        }}
+        aria-hidden="true"
+      />
       <div className={styles.bannerTitle}>{localeEn.questToken}</div>
       <div className={styles.ofThe}>{localeEn.ofThe}</div>
       <div className={styles.factionName}><FactionName faction={token.faction} /></div>

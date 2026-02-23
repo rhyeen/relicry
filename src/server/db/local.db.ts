@@ -8,11 +8,11 @@ import { getExampleUser1, getExampleUser2, getExampleUser3 } from './test-data/u
 import { getExampleApex1, getExampleApex2, getExampleApex3 } from './test-data/apex.data';
 import { getExampleDeck1, getExampleDeck2, getExampleDeck3 } from './test-data/deck.data';
 import { getExampleEvent1, getExampleEvent2, getExampleEvent3 } from './test-data/event.data';
-import { getExampleReward1, getExampleReward2, getExampleReward3 } from './test-data/reward.data';
+import { getExampleReward1, getExampleReward2, getExampleReward3, getExampleReward4 } from './test-data/reward.data';
 import { getExampleEventMap1, getExampleEventMap2, getExampleEventMap3 } from './test-data/eventMap.data';
 import { getExampleHerald1, getExampleHerald2, getExampleHerald3 } from './test-data/herald.data';
 import { getExamplePromotedItem1, getExamplePromotedItem2, getExamplePromotedItem3 } from './test-data/promotedItem.data';
-import { getExampleQuest1, getExampleQuest2, getExampleQuest3, getExampleQuestToken1, getExampleQuestToken2, getExampleQuestToken3 } from './test-data/quest.data';
+import { getExampleQuest1, getExampleQuest2, getExampleQuest3, getExampleQuestToken1, getExampleQuestToken2, getExampleQuestToken3, getExampleQuestToken4 } from './test-data/quest.data';
 import { getExampleEventQuest1, getExampleEventQuest2, getExampleEventQuest3 } from './test-data/eventQuest.data';
 import { getExampleScene1, getExampleScene2, getExampleScene3 } from './test-data/scene.data';
 import { getExampleTrackEventQuest1, getExampleTrackEventQuest2, getExampleTrackEventQuest3 } from './test-data/trackers.data';
@@ -129,6 +129,7 @@ const populateLocalRewards = async () => {
     getExampleReward1(),
     getExampleReward2(),
     getExampleReward3(),
+    getExampleReward4(),
   ]);
 }
 
@@ -169,6 +170,7 @@ const populateLocalQuestTokens = async () => {
     getExampleQuestToken1(),
     getExampleQuestToken2(),
     getExampleQuestToken3(),
+    getExampleQuestToken4(),
   ]);
 }
 

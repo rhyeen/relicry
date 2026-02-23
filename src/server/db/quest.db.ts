@@ -1,5 +1,5 @@
 import 'server-only';
-import { getQuestDocId, getQuestId, VersionedQuest } from '@/entities/Quest';
+import { generateQuestId, getQuestDocId, getQuestId, VersionedQuest } from '@/entities/Quest';
 import { RootDB } from './root.db';
 
 export class QuestDB extends RootDB<VersionedQuest> {
@@ -18,19 +18,19 @@ export class QuestDB extends RootDB<VersionedQuest> {
   }
 
   public async getLatest(id: string): Promise<VersionedQuest | null> {
-    const querySnapshot = await this.firestoreAdmin
-      .collection(this.collectionName)
-      .where('id', '==', this.prefixId(id))
-      .orderBy('season', 'desc')
-      .limit(1)
-      .get();
-    if (querySnapshot.empty) {
-      return null;
-    }
-    return querySnapshot.docs[0].data() as VersionedQuest;
+    const entities = await this.getBy({
+      where: [ { field: 'id', op: '==', value: this.prefixId(id) } ],
+      sortBy: { field: 'season', direction: 'desc' },
+      limit: 1,
+    });
+    return entities[0] ?? null;
   }
 
   protected getUnsafeDocId(item: VersionedQuest): string {
     return getQuestDocId(item.id, item.season);
+  }
+
+  public async generateId(): Promise<string> {
+    return this.getUniqueId(generateQuestId);
   }
 }
