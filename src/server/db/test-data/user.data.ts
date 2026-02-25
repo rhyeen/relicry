@@ -25,7 +25,7 @@ export function getExampleUser1(): User {
     ...defaultUser(
       userTestIds.user1,
       'Test User 1',
-      'admin@example.com',
+      'testuser1@example.com',
     ),
     adminRoles: [AdminRole.SuperAdmin],
   };

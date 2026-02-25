@@ -33,7 +33,7 @@ export default function FullDeckCard({
   }
   return (
     <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} ctx={ctx} />
+      <IllustrationCardPart art={art} ctx={ctx} isSample={card.isSample} />
       <RarityCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
       <BannerCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
       <TagsCardPart tags={card.tags} aspect={card.aspect} ctx={ctx} />
@@ -46,7 +46,7 @@ export default function FullDeckCard({
         }}
         aria-hidden="true"
       />
-      <HeaderCardPart artist={artist} card={card} ctx={ctx} awakenedArtist={null} />
+      <HeaderCardPart artist={artist} card={card} ctx={ctx} awakenedArtist={null} art={art} />
       <DrawLimitCardPart drawLimit={card.drawLimit} ctx={ctx} />
       <ScrapCostCardPart scrapCost={card.scrapCost} ctx={ctx} />
       <TitleCardPart

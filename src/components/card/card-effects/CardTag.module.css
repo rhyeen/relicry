@@ -119,6 +119,10 @@
   left: 13px;
 }
 
+.addZero {
+  padding-left: 4px;
+}
+
 .addZero::before {
   content: '-';
   transform: skew(-10deg) rotate(-25deg); 

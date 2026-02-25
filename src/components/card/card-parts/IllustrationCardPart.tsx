@@ -7,11 +7,12 @@ type Props = {
   ctx: CardContext;
   awakenedArt?: Art | null;
   focusAwakened?: boolean;
+  isSample?: boolean;
 }
 
 const DEBUG_ALWAYS_SHOW_EXAMPLE = false;
 
-export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwakened }: Props) {
+export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwakened, isSample }: Props) {
   const _art = focusAwakened ? awakenedArt : art;
   let backgroundImage = assetURL(ctx, 'example-illustration.ai.webp');
   if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (_art && _art.image && (_art as IllustrationArt).image.card?.url)) {
@@ -27,6 +28,8 @@ export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwake
       }}
     >
       <div className={styles.illustrationClickable} />
+      {isSample && <div className={styles.sampleWatermark} aria-hidden>Sample</div>}
+      {isSample && <div className={styles.sampleTag} aria-label='This is a Sample Card'>Sample</div>}
     </div>
   );
 }

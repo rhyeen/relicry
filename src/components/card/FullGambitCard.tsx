@@ -47,7 +47,7 @@ export default function FullGambitCard({
         aria-hidden="true"
       />
       <TypeTitleCardPart type={card.type} ctx={ctx} />
-      <HeaderCardPart artist={artist} awakenedArtist={null} card={card} ctx={ctx} />
+      <HeaderCardPart artist={artist} awakenedArtist={null} card={card} ctx={ctx} art={art} />
       <TitleCardPart
         rarity={card.rarity}
         title={card.title}

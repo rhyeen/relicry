@@ -58,7 +58,14 @@ export default function FullFocusCard({
         aria-hidden="true"
       />
       <TypeTitleCardPart type={card.type} ctx={ctx} />
-      <HeaderCardPart artist={artist} awakenedArtist={awakenedArtist} card={card} ctx={ctx} focusAwakened={awakened} />
+      <HeaderCardPart
+        artist={artist}
+        awakenedArtist={awakenedArtist}
+        card={card}
+        ctx={ctx}
+        focusAwakened={awakened}
+        art={art}
+      />
       <TitleCardPart
         rarity={card.rarity}
         title={card.title}

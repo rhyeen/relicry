@@ -564,3 +564,36 @@
   /* Matches skew of bottomRow if straightLeft was false */
   margin-left: 11px;
 }
+
+.sampleWatermark {
+  position: absolute;
+  top: 33%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  font-size: 120px;
+  font-weight: 800;
+  font-family: var(--font-barlow-condensed);
+  color: black;
+  -webkit-text-stroke: 4px #E1E0DF;
+  paint-order: stroke fill;
+  pointer-events: none;
+  text-transform: uppercase;
+  mix-blend-mode: lighten;
+  opacity: 0.2;
+}
+
+.sampleTag {
+  position: absolute;
+  top: 42px;
+  left: 100px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 18px;
+  font-family: var(--font-barlow-condensed);
+  padding: 4px 10px;
+  background-color: black;
+  border-radius: 40px;
+  color: white;
+  pointer-events: none;
+  text-transform: uppercase;
+}
