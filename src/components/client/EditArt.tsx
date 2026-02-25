@@ -93,15 +93,14 @@ function getDefaultNewRootArt(type: "illustration" | "writing"): RootArt {
 
 type EditArtProps = Readonly<{
   art?: Art;
-  type?: "illustration" | "writing";
 }>;
 
-export default function EditArt({ art: initArt, type }: EditArtProps) {
+export default function EditArt({ art: initArt }: EditArtProps) {
   // Keyed remount = reset form when switching cards/types (no effect-based setState)
   const editorKey = useMemo(() => {
-    if (initArt?.id) return `${type}:${initArt.id}`;
-    return `${type}:new`;
-  }, [type, initArt?.id]);
+    if (initArt?.id) return `${initArt.type}:${initArt.id}`;
+    return `${initArt?.type ?? "illustration"}:new`;
+  }, [initArt?.type, initArt?.id]);
   const { user, ready } = useUser();
   if (!ready) {
     return null;
@@ -110,15 +109,13 @@ export default function EditArt({ art: initArt, type }: EditArtProps) {
     return PermissionDenied();
   }
 
-  return <EditArtInner key={editorKey} initArt={initArt} type={type} />;
+  return <EditArtInner key={editorKey} initArt={initArt} />;
 }
 
 function EditArtInner({
   initArt,
-  type,
 }: {
   initArt?: Art;
-  type?: "illustration" | "writing";
 }) {
   const typeOptions = useMemo(
     () => ['illustration', 'writing'].map((value) => ({ label: value.toLocaleUpperCase(), value })),
@@ -129,7 +126,7 @@ function EditArtInner({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const [art, setArt] = useState<Art>(() => initArt ?? getDefaultNewArt(type ?? "illustration"));
+  const [art, setArt] = useState<Art>(() => initArt ?? getDefaultNewArt("illustration"));
 
   const getFinalArt = (): Art => {
     const rootArt: RootArt = {
