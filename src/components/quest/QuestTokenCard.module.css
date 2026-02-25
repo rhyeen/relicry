@@ -1,0 +1,74 @@
+.tokenName {
+  position: absolute;
+  width: 100%;
+  top: 98.5px;
+  text-align: center;
+  font-size: 40px;
+  font-family: var(--font-pirata-one);
+  -webkit-text-stroke: 4px #E1E0DF;
+  paint-order: stroke fill;
+}
+
+.IB .tokenName {
+  color: #9C4315;
+}
+
+.NG .tokenName {
+  color: #2B3186;
+}
+
+.BW .tokenName {
+  color: #2D5A2E;
+}
+
+.OA .tokenName {
+  color: #91517F;
+}
+
+.bannerTitle {
+  position: absolute;
+  width: 100%;
+  top: 383px;
+  text-align: center;
+  font-size: 58px;
+  text-transform: uppercase;
+  color: white;
+  font-family: var(--font-pirata-one);
+}
+
+.ofThe {
+  position: absolute;
+  width: 100%;
+  top: 453px;
+  text-align: center;
+  font-size: 21px;
+  color: black;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}
+
+.factionName {
+  position: absolute;
+  width: 100%;
+  top: 472.5px;
+  text-align: center;
+  font-size: 39px;
+  color: black;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}
+
+.tokenImage {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+  width: 416px;
+  aspect-ratio: 416 / 224;
+  left: 50%;
+  top: 162px;
+  transform: translate(-50%, 0%);
+  mix-blend-mode: multiply;
+}

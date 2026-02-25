@@ -1,7 +1,7 @@
 import 'server-only';
 import { Reward, getRewardId } from '@/entities/Reward';
 import { RootDB } from './root.db';
-import { getQuestId } from '@/entities/Quest';
+import { getEventId } from '@/entities/Event';
 
 export class RewardDB extends RootDB<Reward> {
   constructor(
@@ -11,7 +11,7 @@ export class RewardDB extends RootDB<Reward> {
   }
 
   protected prefixId(id: string): string {
-    return getQuestId(id);
+    return getEventId(id);
   }
 
   public getFromParts(eventId: string, level: number): Promise<Reward | null> {

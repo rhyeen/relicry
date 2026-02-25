@@ -1,6 +1,6 @@
 import { Art } from '@/entities/Art';
 import { Artist } from '@/entities/Artist';
-import { VersionedCard, VersionedDeckCard } from '@/entities/Card';
+import { VersionedDeckCard } from '@/entities/Card';
 import styles from './Card.module.css';
 import RarityCardPart from './card-parts/RarityCardPart';
 import { ASSET_VERSION } from './assetVersion';
@@ -19,7 +19,7 @@ import { assetURL, CardContext } from '@/entities/CardContext';
 import FoilShineOverlay from './card-parts/FoilShineOverlay';
 
 type Props = {
-  card: VersionedCard;
+  card: VersionedDeckCard;
   art: Art | null;
   artist: Artist | null;
   ctx: CardContext;
@@ -31,15 +31,14 @@ export default function FullDeckCard({
   if (card.type !== 'deck') {
     throw new Error(`FullDeckCard can only render deck type cards, received: ${card.type}`);
   }
-  const _card: VersionedDeckCard = card;
   return (
     <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} ctx={ctx} />
-      <RarityCardPart rarity={_card.rarity} ctx={ctx} />
-      <BannerCardPart aspect={_card.aspect} ctx={ctx} />
-      <TagsCardPart tags={_card.tags} aspect={_card.aspect} ctx={ctx} />
-      <AspectCardPart aspect={_card.aspect} ctx={ctx} />
-      <DetailsCardPart card={_card} ctx={ctx} />
+      <IllustrationCardPart art={art} ctx={ctx} isSample={card.isSample} />
+      <RarityCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
+      <BannerCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
+      <TagsCardPart tags={card.tags} aspect={card.aspect} ctx={ctx} />
+      <AspectCardPart aspect={card.aspect} ctx={ctx} />
+      <DetailsCardPart card={card} ctx={ctx} />
       <div
         className={styles.frame}
         style={{
@@ -47,10 +46,15 @@ export default function FullDeckCard({
         }}
         aria-hidden="true"
       />
-      <HeaderCardPart artist={artist} card={card} ctx={ctx} />
-      <DrawLimitCardPart drawLimit={_card.drawLimit} ctx={ctx} />
-      <ScrapCostCardPart scrapCost={_card.scrapCost} ctx={ctx} />
-      <TitleCardPart title={_card.title} subTitle={_card.subTitle} ctx={ctx} />
+      <HeaderCardPart artist={artist} card={card} ctx={ctx} awakenedArtist={null} art={art} />
+      <DrawLimitCardPart drawLimit={card.drawLimit} ctx={ctx} />
+      <ScrapCostCardPart scrapCost={card.scrapCost} ctx={ctx} />
+      <TitleCardPart
+        rarity={card.rarity}
+        title={card.title}
+        subTitle={card.subTitle} ctx={ctx}
+        aspect={card.aspect}
+      />
       <QRCodeCardPart card={card} ctx={ctx} />
       <QRTextureCardPart ctx={ctx} />
       { card.version === 2 && <FoilShineOverlay /> }

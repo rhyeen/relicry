@@ -1,3 +1,4 @@
+import { AdminRole } from '@/entities/AdminRole';
 import { User } from '@/entities/User';
 
 export const userTestIds = {
@@ -20,11 +21,14 @@ function defaultUser(id: string, displayName: string, email: string) : User {
 }
 
 export function getExampleUser1(): User {
-  return defaultUser(
-    userTestIds.user1,
-    'Test User 1',
-    'testuser1@example.com',
-  );
+  return {
+    ...defaultUser(
+      userTestIds.user1,
+      'Test User 1',
+      'testuser1@example.com',
+    ),
+    adminRoles: [AdminRole.SuperAdmin],
+  };
 }
 
 export function getExampleUser2(): User {

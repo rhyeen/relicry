@@ -1,0 +1,322 @@
+.bannerContainer {
+  position: absolute;
+  width: calc(100% - 10px);
+  height: 66px;
+  bottom: 208px;
+  left: 5px;
+  pointer-events: none;
+}
+
+.bannerContainer.legendary.top {
+  height: 4px;
+  bottom: calc(208px + 28px - 2px);
+}
+
+.bannerContainer.legendary {
+  height: 28px;
+}
+
+.banner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.banner.top {
+  mix-blend-mode: multiply;
+}
+
+.banner.top.legendaryTop {
+  mix-blend-mode: normal;
+  opacity: 0.5;
+}
+
+.banner.bottom.legendaryTop {
+  mix-blend-mode: overlay;
+}
+
+.banner.top.legendaryTop,
+.banner.bottom.legendaryTop {
+  background: linear-gradient(
+    110deg,
+    rgba(255, 170, 0, 0.6) 0%,
+    rgba(255, 255, 255, 1) 75%,
+    rgba(255, 170, 0, 0.6) 90%
+  );
+}
+
+.topGlow {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(
+    110deg,
+    rgba(247, 220, 166, 0.36) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(247, 220, 166, 0.36) 100%
+  );
+  filter: blur(5px);
+}
+
+.topGlow.wide {
+  --bannerCardPartTopGlowWideWidth: 100px;
+  --bannerCardPartTopGlowWideHeight: 10px;
+  margin-top: calc((-1 * var(--bannerCardPartTopGlowWideHeight) / 2) + 2px);
+  right: calc(150px - (var(--bannerCardPartTopGlowWideWidth) / 2));
+  width: var(--bannerCardPartTopGlowWideWidth);
+  height: var(--bannerCardPartTopGlowWideHeight);
+  mix-blend-mode: overlay;
+}
+
+.topGlow.short {
+  --bannerCardPartTopGlowShortWidth: 60px;
+  --bannerCardPartTopGlowShortHeight: 6px;
+  margin-top: calc((-1 * var(--bannerCardPartTopGlowShortHeight) / 2) + 2px);
+  right: calc(150px - (var(--bannerCardPartTopGlowShortWidth) / 2));
+  width: var(--bannerCardPartTopGlowShortWidth);
+  height: var(--bannerCardPartTopGlowShortHeight);
+  opacity: 0.33;
+}
+
+.banner.top.red {
+  background: linear-gradient(
+    110deg,
+    rgba(173, 0, 33, 0.67) 0%,
+    rgba(239, 78, 113, 0.77) 20%,
+    rgba(202, 0, 38, 0.77) 60%
+  );
+}
+
+.banner.bottom.red,
+.banner.bottom.redBlue,
+.banner.bottom.redGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(202, 0, 38, 1.0) 20%,
+    rgba(213, 25, 62, 0.69) 45%,
+    rgba(239, 78, 113, 0.46) 80%,
+    rgba(173, 0, 33, 0.35) 100%
+  );
+}
+
+.banner.top.yellow {
+  background: linear-gradient(
+    110deg,
+    rgba(233, 203, 0, 0.67) 0%,
+    rgba(255, 255, 103, 0.77) 20%,
+    rgba(242, 210, 0, 0.77) 60%
+  );
+}
+
+.banner.bottom.yellow,
+.banner.bottom.yellowRed,
+.banner.bottom.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(178, 126, 0, 1.0) 20%,
+    rgba(217, 164, 0, 0.69) 45%,
+    rgba(255, 255, 0, 0.46) 80%,
+    rgba(161, 114, 0, 0.35) 100%
+  );
+}
+
+.banner.top.blue {
+  background: linear-gradient(
+    110deg,
+    rgba(78, 49, 206, 0.67) 0%,
+    rgba(146, 125, 255, 0.77) 20%,
+    rgba(86, 49, 235, 0.77) 60%
+  );
+}
+
+.banner.bottom.blue,
+.banner.bottom.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(62, 24, 242, 1.0) 20%,
+    rgba(84, 51, 252, 0.69) 45%,
+    rgba(124, 100, 255, 0.46) 80%,
+    rgba(56, 23, 208, 0.35) 100%
+  );
+}
+
+.banner.top.green {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 82, 44, 0.67) 0%,
+    rgba(0, 153, 113, 0.77) 20%,
+    rgba(0, 93, 49, 0.77) 60%
+  );
+}
+
+.banner.bottom.green,
+.banner.bottom.greenBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 93, 49, 1.0) 20%,
+    rgba(0, 113, 71, 0.69) 45%,
+    rgba(0, 153, 113, 0.46) 80%,
+    rgba(0, 80, 42, 0.35) 100%
+  );
+}
+
+.banner.middle {
+  opacity: 0.33;
+}
+
+.banner.top.greenBlue,
+.banner.middle.greenBlue,
+.banner.top.redBlue,
+.banner.middle.redBlue {
+  background: linear-gradient(
+    110deg,
+    rgba(124, 100, 255, 0) 20%,
+    rgba(62, 24, 242, 1) 80%
+  );
+}
+
+.banner.top.redGreen,
+.banner.middle.redGreen,
+.banner.top.yellowGreen,
+.banner.middle.yellowGreen {
+  background: linear-gradient(
+    110deg,
+    rgba(5, 198, 63, 0) 20%,
+    rgba(251, 188, 0, 0.5) 50%,
+    rgba(0, 155, 83, 1) 80%
+  );
+}
+
+.banner.top.yellowRed,
+.banner.middle.yellowRed {
+  background: linear-gradient(
+    110deg,
+    rgba(239, 78, 113, 0) 20%,
+    rgba(255, 217, 0, 0.5) 50%,
+    rgba(202, 0, 38, 1) 80%
+  );
+}
+
+.banner.top.blueYellow,
+.banner.middle.blueYellow {
+  background: linear-gradient(
+    110deg,
+    rgba(77, 255, 0, 0) 20%,
+    rgba(77, 255, 0, .5) 50%,
+    rgb(254, 246, 5) 80%
+  );
+}
+
+.focus,
+.gambit {
+  content: '';
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+}
+
+.focus.top {
+  mix-blend-mode: overlay;
+}
+
+.focus.bottom {
+  mix-blend-mode: screen;
+  filter: brightness(1.2);
+}
+
+.focus.red {
+  filter: hue-rotate(110deg);
+}
+
+.focusRed {
+  background: linear-gradient(
+    110deg,
+    rgba(255, 110, 110, 1) 25%,
+    rgba(255, 165, 165, 0.6) 50%,
+    rgba(207, 115, 115, 0.6) 85%,
+    rgba(255, 110, 110, 1) 95%
+  );
+}
+
+.focus.blue {
+  filter: hue-rotate(0deg);
+}
+
+.focusBlue {
+  background: linear-gradient(
+    110deg,
+    rgb(141, 181, 255) 25%,
+    rgba(165, 165, 255, 0.6) 50%,
+    rgba(128, 128, 215, 0.6) 85%,
+    rgb(126, 171, 255) 95%
+  );
+}
+
+.focus.green {
+  filter: hue-rotate(-67deg);
+}
+
+.focusGreen {
+  background: linear-gradient(
+    110deg,
+    rgb(15, 163, 67) 25%,
+    rgba(54, 215, 180, 0.6) 50%,
+    rgba(42, 189, 150, 0.6) 85%,
+    rgb(55, 158, 72) 95%
+  );
+}
+
+.focus.yellow {
+  filter: hue-rotate(-170deg);
+}
+
+.focusYellow {
+  background: linear-gradient(
+    110deg,
+    rgb(255, 201, 101) 25%,
+    rgba(255, 208, 79, 0.6) 50%,
+    rgba(253, 209, 51, 0.6) 85%,
+    rgb(255, 228, 110) 95%
+  );
+}
+
+.focus.focusBlack {
+  filter: saturate(0%);
+}
+
+.banner.top.focusBlack {
+  background: linear-gradient(
+    110deg,
+    rgb(1, 1, 1) 10%,
+    rgb(255, 255, 255) 40%,
+    rgb(45, 45, 45) 55%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+.banner.gambit {
+  mix-blend-mode: screen;
+}
+
+.banner.gambitColor {
+  background: linear-gradient(
+    110deg,
+    #FFCC0000 20%,
+    #d7610077 45%,
+    #FFCC00aa 60%,
+    #30ffb79f 70%,
+    #6340d7ce 85%,
+    #9D99FF44 100%
+  );
+}
+
+.banner.bottom.gambitColor {
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+.banner.top.gambitColor {
+  mix-blend-mode: overlay;
+  opacity: 0.33;
+}

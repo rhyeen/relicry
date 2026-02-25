@@ -1,0 +1,73 @@
+.questHeader {
+  position: absolute;
+  width: 100%;
+  top: 37px;
+  text-align: center;
+  font-size: 60px;
+  font-family: var(--font-pirata-one);
+  color: black;
+  text-transform: uppercase;
+}
+
+.factionName {
+  position: absolute;
+  width: 100%;
+  top: 282px;
+  text-align: center;
+  font-size: 39px;
+  color: white;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}
+
+.challengeLevelNumber {
+  position: absolute;
+  width: 100%;
+  top: 424px;
+  text-align: center;
+  font-size: 116px;
+  color: black;
+  font-family: var(--font-unifraktur-cook);
+}
+
+.levelOne {
+  left: -6px;
+}
+
+.challengeLevelLabel {
+  position: absolute;
+  width: 100%;
+  top: 554px;
+  text-align: center;
+  font-size: 18px;
+  color: black;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}
+
+.qrcode {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: calc(50% + 7px);
+  left: 50%;
+  width: 144px;
+  height: 144px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease 0s, box-shadow 0.3s ease 0s;
+  mix-blend-mode: multiply;
+}
+
+.scanForQuest {
+  position: absolute;
+  width: 100%;
+  top: calc(50% + 88px);
+  text-align: center;
+  font-size: 22px;
+  color: black;
+  text-transform: uppercase;
+  font-family: var(--font-bree-serif);
+}

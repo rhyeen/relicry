@@ -18,6 +18,7 @@ function defaultIllustrationArt(image: ImageBySize, id: string, artistId: string
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: null,
+    aIGenerated: false,
   };
 }
 
@@ -30,6 +31,7 @@ function defaultWritingArt(id: string, artistId: string): WritingArt {
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: null,
+    aIGenerated: false,
   };
 }
 

@@ -15,12 +15,22 @@ export default function TagsCardPart({
 }: Props) {
   const twoAspects = Array.isArray(aspect) ? aspect.length === 2 : false;
   const sortedTags = orderTags(tags);
+  const firstTag = sortedTags[0];
+  const topRowTags = sortedTags.slice(6);
+  const bottomRowTags = [ firstTag, ...sortedTags.slice(1, 6) ];
 
   return (
-    <div className={`${styles.tags} ${twoAspects ? styles.tagsWithTwoAspects : ''}`}>
-      {sortedTags.map((tag, index) => (
-        <CardTag key={tag} tag={tag} straightLeft={index === 0} ctx={ctx} />
-      ))}
+    <div className={`${styles.tagsContainer} ${twoAspects ? styles.tagsWithTwoAspects : ''}`}>
+      <div className={`${styles.tags} ${styles.topRow}`}>
+        {topRowTags.map((tag) => (
+          <CardTag key={tag} tag={tag} ctx={ctx} />
+        ))}
+      </div>
+      <div className={`${styles.tags} ${styles.bottomRow}`}>
+        {bottomRowTags.map((tag, index) => (
+          <CardTag key={tag} tag={tag} straightLeft={index === 0} ctx={ctx} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -29,5 +29,9 @@ export function getExampleReward2() {
 }
 
 export function getExampleReward3() {
+  return defaultReward(eventTestIds.event1, 3);
+}
+
+export function getExampleReward4() {
   return defaultReward(eventTestIds.event2, 1);
 }

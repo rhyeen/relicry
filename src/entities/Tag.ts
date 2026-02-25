@@ -34,8 +34,17 @@ const tagOrder = [
   Tag.Armor,
 ];
 
-export function orderTags(tags?: Tag[]): Tag[] {
-  return (tags ?? Object.values(Tag)).sort((a, b) => {
+export function orderTags(tags?: Tag[], cardType?: "deck" | "focus" | "gambit"): Tag[] {
+  return (tags ?? Object.values(Tag)).filter(tag => {
+    if (cardType === 'deck') {
+      return tag !== Tag.Focus && tag !== Tag.Gambit;
+    } else if (cardType === 'focus') {
+      return tag !== Tag.Gambit && tag !== Tag.Item && tag !== Tag.Ability;
+    } else if (cardType === 'gambit') {
+      return tag === Tag.Gambit;
+    }
+    return true;
+  }).sort((a, b) => {
     return tagOrder.indexOf(a) - tagOrder.indexOf(b);
   });
 }

@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function QRCodeCardPart({ card }: Props) {
-  const cardPath = getCardDocId(card.id, card.version);  
+  const cardPath = getCardDocId(card.id, card.version); 
   return (
     <div aria-label='QR Code' className={styles.qrcode}>
       {/* eslint-disable-next-line @next/next/no-img-element */}

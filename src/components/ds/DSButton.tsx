@@ -11,8 +11,8 @@ type DSButtonRootProps = Readonly<{
 }>;
 
 function DSButtonRoot({ href, label, onClick, dialogTrigger, disabled, loading }: DSButtonRootProps) {
-  const isNative = !dialogTrigger;
   const isLink = !!href;
+  const isNative = !dialogTrigger && !isLink;
   return (
     <Button
       className={styles.button}

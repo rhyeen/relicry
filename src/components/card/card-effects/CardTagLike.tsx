@@ -10,6 +10,7 @@ type Props = {
   straightLeftColor?: string;
   whiteText?: boolean;
   auraNumber?: number;
+  add?: '0' | '1/2';
   ctx: CardContext;
 }
 
@@ -22,6 +23,7 @@ export default function CardTagLike({
   straightLeftColor,
   whiteText = false,
   auraNumber,
+  add,
   ctx,
 }: Props) {
   return (
@@ -55,6 +57,15 @@ export default function CardTagLike({
           aria-hidden="true"
         />
         {locale}
+        {add === '1/2' &&
+          <span className={styles.addHalf} aria-label=" ½">
+            <span aria-hidden="true"> </span>
+            <span className={styles.addHalf1} aria-hidden="true">1</span>
+            <span className={styles.addHalfSlash} aria-hidden="true">/</span>
+            <span className={styles.addHalf2} aria-hidden="true">2</span>
+          </span>
+        }
+        {(add === '0') && <span className={styles.addZero} aria-label=" 0"> 0</span>}
         {auraNumber !== undefined && <span className={styles.tagAuraNumberSpacer} />}
       </span>
       {auraNumber !== undefined &&
