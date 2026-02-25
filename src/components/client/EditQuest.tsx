@@ -298,7 +298,7 @@ function EditQuestInner({
 
         <DSField.Error error={saveAttempted ? getTokensError() : undefined} />
 
-        <DSButton.Text
+        <DSButton
           label="Save Quest"
           onClick={onSave}
           loading={loading}

@@ -43,9 +43,15 @@ async function EditQuestAdminPageData(
   await connection();
   const { id, season } = await params;
   const seasonNumber = Number.parseInt(season, 10);
-  if (!Number.isInteger(seasonNumber) || seasonNumber < 1) notFound();
+  if (!Number.isInteger(seasonNumber) || seasonNumber < 1) {
+    notFound();
+    return;
+  }
   const quest = await getQuest(id, season);
-  if (!quest) notFound();
+  if (!quest) {
+    notFound();
+    return;
+  }
   const questTokens = await getQuestTokens(id, seasonNumber);
   return <EditQuestSlot quest={quest} questTokens={questTokens} />;
 }
