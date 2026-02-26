@@ -141,7 +141,16 @@ export default function SelectArtist({
               </DSField.Root>
             )}
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                maxHeight: "min(50vh, 28rem)",
+                overflowY: "auto",
+                paddingRight: "4px",
+              }}
+            >
               {filteredArtists.map((artist) => {
                 const label = artist.name?.trim()
                   ? `${artist.name} (${artist.id})`

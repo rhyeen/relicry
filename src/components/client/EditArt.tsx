@@ -330,7 +330,7 @@ function EditArtInner({
         { art.type === 'illustration' &&
           <ImageUploader
             label="Illustration Image"
-            description="Upload the illustration image for this art piece in different resolutions for card art."
+            description="Upload the illustration image for this art piece in different resolutions for card art. Minimum is 735x1032 pixels."
             images={(art as IllustrationArt).image}
             onChange={(images) => setArt(a => ({ ...a, image: images }) as IllustrationArt)}
             required
