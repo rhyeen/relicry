@@ -182,7 +182,16 @@ export default function SelectArt({
               </DSField.Root>
             )}
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                maxHeight: "min(50vh, 28rem)",
+                overflowY: "auto",
+                paddingRight: "4px",
+              }}
+            >
               {filteredArts.map((art) => {
                 const preview = getPreviewImage(art);
                 const label = art.title?.trim()
