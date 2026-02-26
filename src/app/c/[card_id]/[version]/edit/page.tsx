@@ -1,6 +1,7 @@
 import notFound from '@/app/not-found';
 import EditCardSlot from '@/components/client/EditCard.slot';
-import { getCard } from '@/server/cache/card.cache';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
+import { CardDB } from '@/server/db/card.db';
 import { Metadata } from 'next';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
@@ -11,7 +12,7 @@ export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ): Promise<Metadata> {
   const { version, card_id } = await params;
-  const card = await getCard(card_id, version);
+  const card = await new CardDB(getFirestoreAdmin()).getFromParts(card_id, Number.parseInt(version, 10));
 
   if (!card) {
     return {
@@ -43,8 +44,7 @@ async function EditCardAdminPageData(
 ) {
   await connection();
   const { version, card_id } = await params;
-
-  const card = await getCard(card_id, version);
+  const card = await new CardDB(getFirestoreAdmin()).getFromParts(card_id, Number.parseInt(version, 10));
   if (!card) notFound();
 
   return (
