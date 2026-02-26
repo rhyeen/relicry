@@ -199,37 +199,38 @@ export function stringToCardEffect(text: string, options?: {
 
   for (; i < tokens.length; i++) {
     const t = tokens[i];
+    const n = t.replace(/^,+|,+$/g, '');
 
-    if (t === 'FLIP') {
+    if (n === 'FLIP') {
       parts.push({ type: 'flip' } as CardEffectPart);
       continue;
     }
 
-    if (t === 'SCRAPPED') {
+    if (n === 'SCRAPPED') {
       parts.push({ type: 'scrapped' } as CardEffectPart);
       continue;
     }
 
-    const asp = aspectFromToken(t);
+    const asp = aspectFromToken(n);
     if (asp) {
       parts.push({ type: 'aspect', aspect: asp } as CardEffectPartAspect);
       continue;
     }
 
-    const dm = t.match(/^(\d+)D$/);
+    const dm = n.match(/^(\d+)D$/);
     if (dm) {
       parts.push({ type: 'damage', amount: Number(dm[1]) } as CardEffectPartDamage);
       continue;
     }
 
-    const qm = t.match(/^(\d+)Q$/);
+    const qm = n.match(/^(\d+)Q$/);
     if (qm) {
       parts.push({ type: 'quell', amount: Number(qm[1]) } as CardEffectPartQuell);
       continue;
     }
 
     // Card part: "C", "+C", "2C", "2+C"
-    const cm = t.match(/^(\d+)?(\+)?C$/);
+    const cm = n.match(/^(\d+)?(\+)?C$/);
     if (cm) {
       const amount = cm[1] ? Number(cm[1]) : undefined;
       const orMore = !!cm[2];
@@ -240,19 +241,19 @@ export function stringToCardEffect(text: string, options?: {
     // Tag part heuristic: all-caps word (A-Z/0-9/_/-), not a known keyword.
     // Store lowercased because cardPartToString uppercases it.
     const isAllCaps =
-      /^[A-Z0-9][A-Z0-9_-]*$/.test(t) &&
-      t !== 'AURA' &&
-      t !== 'PVP?' &&
-      t !== 'SOLO?' &&
-      t !== 'INF?' &&
-      t !== 'REACT' &&
-      t !== 'FLIP' &&
-      t !== 'SCRAPPED' &&
-      t !== 'TURNEND?' &&
-      t !== 'DRAWEND?';
+      /^[A-Z0-9][A-Z0-9_-]*$/.test(n) &&
+      n !== 'AURA' &&
+      n !== 'PVP?' &&
+      n !== 'SOLO?' &&
+      n !== 'INF?' &&
+      n !== 'REACT' &&
+      n !== 'FLIP' &&
+      n !== 'SCRAPPED' &&
+      n !== 'TURNEND?' &&
+      n !== 'DRAWEND?';
 
-    if (isAllCaps && Object.values(Tag).includes(t.toLowerCase() as Tag)) {
-      parts.push({ type: 'tag', tag: t.toLowerCase() } as CardEffectPartTag);
+    if (isAllCaps && Object.values(Tag).includes(n.toLowerCase() as Tag)) {
+      parts.push({ type: 'tag', tag: n.toLowerCase() } as CardEffectPartTag);
       continue;
     }
 
