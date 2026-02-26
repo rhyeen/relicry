@@ -1,7 +1,8 @@
 import notFound from '@/app/not-found';
 import EditQuestSlot from '@/components/client/EditQuest.slot';
-import { getQuest } from '@/server/cache/quest.cache';
-import { getQuestTokens } from '@/server/cache/questToken.cache';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
+import { QuestDB } from '@/server/db/quest.db';
+import { QuestTokenDB } from '@/server/db/questToken.db';
 import { Metadata } from 'next';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
@@ -12,7 +13,14 @@ export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ): Promise<Metadata> {
   const { id, season } = await params;
-  const quest = await getQuest(id, season);
+  const seasonNumber = Number.parseInt(season, 10);
+  if (!Number.isInteger(seasonNumber) || seasonNumber < 1) {
+    return {
+      title: 'Quest Not Found',
+      description: 'The requested quest does not exist.',
+    };
+  }
+  const quest = await new QuestDB(getFirestoreAdmin()).getFromParts(id, seasonNumber);
 
   if (!quest) {
     return {
@@ -47,11 +55,12 @@ async function EditQuestAdminPageData(
     notFound();
     return;
   }
-  const quest = await getQuest(id, season);
+  const firestoreAdmin = getFirestoreAdmin();
+  const quest = await new QuestDB(firestoreAdmin).getFromParts(id, seasonNumber);
   if (!quest) {
     notFound();
     return;
   }
-  const questTokens = await getQuestTokens(id, seasonNumber);
+  const questTokens = await new QuestTokenDB(firestoreAdmin).getQuestTokens(id, seasonNumber);
   return <EditQuestSlot quest={quest} questTokens={questTokens} />;
 }

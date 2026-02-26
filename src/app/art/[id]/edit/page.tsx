@@ -1,6 +1,7 @@
 import notFound from '@/app/not-found';
 import EditArtSlot from '@/components/client/EditArt.slot';
-import { getArt } from '@/server/cache/art.cache';
+import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
+import { ArtDB } from '@/server/db/art.db';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 
@@ -10,7 +11,7 @@ export async function generateMetadata(
   { params }: { params: Promise<Params> }
 ) {
   const { id } = await params;
-  const art = await getArt(id);
+  const art = await new ArtDB(getFirestoreAdmin()).getFromParts(id);
 
   if (!art) {
     return {
@@ -43,7 +44,7 @@ async function EditArtPageData(
 ) {
   await connection();
   const { id } = await params;
-  const art = await getArt(id);
+  const art = await new ArtDB(getFirestoreAdmin()).getFromParts(id);
   if (!art) {
     notFound();
     return;
