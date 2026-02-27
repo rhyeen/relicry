@@ -181,6 +181,9 @@ export function stringToCardEffect(text: string, options?: {
   }
 
   const parts: CardEffectPart[] = [];
+  const trimEdgePunctuation = (t: string): string => t.replace(/^[,.;:!?]+|[,.;:!?]+$/g, '');
+  const trimEdgeDelimiters = (t: string): string =>
+    t.replace(/^[()\[\]{}"'`<>]+|[()\[\]{}"'`<>]+$/g, '');
 
   const aspectFromToken = (t: string): Aspect | undefined => {
     switch (t) {
@@ -199,38 +202,39 @@ export function stringToCardEffect(text: string, options?: {
 
   for (; i < tokens.length; i++) {
     const t = tokens[i];
-    const n = t.replace(/^,+|,+$/g, '');
+    const basic = trimEdgePunctuation(t);
+    const core = trimEdgeDelimiters(basic);
 
-    if (n === 'FLIP') {
+    if (basic === 'FLIP' || core === 'FLIP') {
       parts.push({ type: 'flip' } as CardEffectPart);
       continue;
     }
 
-    if (n === 'SCRAPPED') {
+    if (basic === 'SCRAPPED' || core === 'SCRAPPED') {
       parts.push({ type: 'scrapped' } as CardEffectPart);
       continue;
     }
 
-    const asp = aspectFromToken(n);
+    const asp = aspectFromToken(t) ?? aspectFromToken(basic);
     if (asp) {
       parts.push({ type: 'aspect', aspect: asp } as CardEffectPartAspect);
       continue;
     }
 
-    const dm = n.match(/^(\d+)D$/);
+    const dm = basic.match(/^(\d+)D$/) ?? core.match(/^(\d+)D$/);
     if (dm) {
       parts.push({ type: 'damage', amount: Number(dm[1]) } as CardEffectPartDamage);
       continue;
     }
 
-    const qm = n.match(/^(\d+)Q$/);
+    const qm = basic.match(/^(\d+)Q$/) ?? core.match(/^(\d+)Q$/);
     if (qm) {
       parts.push({ type: 'quell', amount: Number(qm[1]) } as CardEffectPartQuell);
       continue;
     }
 
     // Card part: "C", "+C", "2C", "2+C"
-    const cm = n.match(/^(\d+)?(\+)?C$/);
+    const cm = basic.match(/^(\d+)?(\+)?C$/) ?? core.match(/^(\d+)?(\+)?C$/);
     if (cm) {
       const amount = cm[1] ? Number(cm[1]) : undefined;
       const orMore = !!cm[2];
@@ -241,19 +245,19 @@ export function stringToCardEffect(text: string, options?: {
     // Tag part heuristic: all-caps word (A-Z/0-9/_/-), not a known keyword.
     // Store lowercased because cardPartToString uppercases it.
     const isAllCaps =
-      /^[A-Z0-9][A-Z0-9_-]*$/.test(n) &&
-      n !== 'AURA' &&
-      n !== 'PVP?' &&
-      n !== 'SOLO?' &&
-      n !== 'INF?' &&
-      n !== 'REACT' &&
-      n !== 'FLIP' &&
-      n !== 'SCRAPPED' &&
-      n !== 'TURNEND?' &&
-      n !== 'DRAWEND?';
+      /^[A-Z0-9][A-Z0-9_-]*$/.test(core) &&
+      core !== 'AURA' &&
+      core !== 'PVP?' &&
+      core !== 'SOLO?' &&
+      core !== 'INF?' &&
+      core !== 'REACT' &&
+      core !== 'FLIP' &&
+      core !== 'SCRAPPED' &&
+      core !== 'TURNEND?' &&
+      core !== 'DRAWEND?';
 
-    if (isAllCaps && Object.values(Tag).includes(n.toLowerCase() as Tag)) {
-      parts.push({ type: 'tag', tag: n.toLowerCase() } as CardEffectPartTag);
+    if (isAllCaps && Object.values(Tag).includes(core.toLowerCase() as Tag)) {
+      parts.push({ type: 'tag', tag: core.toLowerCase() } as CardEffectPartTag);
       continue;
     }
 

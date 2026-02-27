@@ -1,4 +1,5 @@
 import StoredImageSlot from '@/components/client/StoredImage.slot';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { ImageSize } from '@/entities/Image';
 import { getArt } from '@/server/cache/art.cache';
 import { notFound } from 'next/navigation';
@@ -53,6 +54,12 @@ async function ArtPageData(
       <p>ID: {art.id}</p>
       <p>Type: {art.type}</p>
       <p>Description: {art.description}</p>
+      {art.type === 'writing' && art.markdown && (
+        <section>
+          <h2>Markdown</h2>
+          <MarkdownRenderer markdown={art.markdown} />
+        </section>
+      )}
       {art.type === 'illustration' && art.image[ImageSize.CardFull] &&
         <StoredImageSlot
           image={art.image[ImageSize.CardFull]}
