@@ -184,6 +184,25 @@ export function stringToCardEffect(text: string, options?: {
   const trimEdgePunctuation = (t: string): string => t.replace(/^[,.;:!?]+|[,.;:!?]+$/g, '');
   const trimEdgeDelimiters = (t: string): string =>
     t.replace(/^[()\[\]{}"'`<>]+|[()\[\]{}"'`<>]+$/g, '');
+  const pushTextPart = (value: string) => {
+    if (!value) return;
+    parts.push({
+      type: 'text',
+      text: value,
+    } as CardEffectPartText);
+  };
+  const pushPartWithDelimiters = (rawToken: string, parsedToken: string, part: CardEffectPart) => {
+    const start = rawToken.indexOf(parsedToken);
+    if (start === -1) {
+      parts.push(part);
+      return;
+    }
+    const prefix = rawToken.slice(0, start);
+    const suffix = rawToken.slice(start + parsedToken.length);
+    pushTextPart(prefix);
+    parts.push(part);
+    pushTextPart(suffix);
+  };
 
   const aspectFromToken = (t: string): Aspect | undefined => {
     switch (t) {
@@ -206,30 +225,51 @@ export function stringToCardEffect(text: string, options?: {
     const core = trimEdgeDelimiters(basic);
 
     if (basic === 'FLIP' || core === 'FLIP') {
-      parts.push({ type: 'flip' } as CardEffectPart);
+      pushPartWithDelimiters(
+        t,
+        basic === 'FLIP' ? basic : core,
+        { type: 'flip' } as CardEffectPart,
+      );
       continue;
     }
 
     if (basic === 'SCRAPPED' || core === 'SCRAPPED') {
-      parts.push({ type: 'scrapped' } as CardEffectPart);
+      pushPartWithDelimiters(
+        t,
+        basic === 'SCRAPPED' ? basic : core,
+        { type: 'scrapped' } as CardEffectPart,
+      );
       continue;
     }
 
-    const asp = aspectFromToken(t) ?? aspectFromToken(basic);
+    const aspectToken = aspectFromToken(t) ? t : (aspectFromToken(basic) ? basic : undefined);
+    const asp = aspectToken ? aspectFromToken(aspectToken) : undefined;
     if (asp) {
-      parts.push({ type: 'aspect', aspect: asp } as CardEffectPartAspect);
+      pushPartWithDelimiters(
+        t,
+        aspectToken!,
+        { type: 'aspect', aspect: asp } as CardEffectPartAspect,
+      );
       continue;
     }
 
     const dm = basic.match(/^(\d+)D$/) ?? core.match(/^(\d+)D$/);
     if (dm) {
-      parts.push({ type: 'damage', amount: Number(dm[1]) } as CardEffectPartDamage);
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^(\d+)D$/) ? basic : core,
+        { type: 'damage', amount: Number(dm[1]) } as CardEffectPartDamage,
+      );
       continue;
     }
 
     const qm = basic.match(/^(\d+)Q$/) ?? core.match(/^(\d+)Q$/);
     if (qm) {
-      parts.push({ type: 'quell', amount: Number(qm[1]) } as CardEffectPartQuell);
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^(\d+)Q$/) ? basic : core,
+        { type: 'quell', amount: Number(qm[1]) } as CardEffectPartQuell,
+      );
       continue;
     }
 
@@ -238,7 +278,11 @@ export function stringToCardEffect(text: string, options?: {
     if (cm) {
       const amount = cm[1] ? Number(cm[1]) : undefined;
       const orMore = !!cm[2];
-      parts.push({ type: 'card', amount, orMore } as CardEffectPartCard);
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^(\d+)?(\+)?C$/) ? basic : core,
+        { type: 'card', amount, orMore } as CardEffectPartCard,
+      );
       continue;
     }
 
@@ -257,7 +301,11 @@ export function stringToCardEffect(text: string, options?: {
       core !== 'DRAWEND?';
 
     if (isAllCaps && Object.values(Tag).includes(core.toLowerCase() as Tag)) {
-      parts.push({ type: 'tag', tag: core.toLowerCase() } as CardEffectPartTag);
+      pushPartWithDelimiters(
+        t,
+        core,
+        { type: 'tag', tag: core.toLowerCase() } as CardEffectPartTag,
+      );
       continue;
     }
 
