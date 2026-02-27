@@ -132,18 +132,21 @@ describe('card effect string helpers', () => {
     const e = stringToCardEffect(s);
 
     expect(e.conditionals).toEqual([Conditional.TurnEnd]);
-    expect(e.parts.map((p) => p.type)).toEqual(['text', 'text', 'text', 'text', 'text', 'tag', 'text', 'damage']);
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'text', 'text', 'text', 'text', 'tag', 'text', 'text', 'damage']);
     expect((e.parts[5] as CardEffectPartTag).tag).toBe('weapon');
-    expect((e.parts[7] as CardEffectPartDamage).amount).toBe(5);
+    expect((e.parts[6] as CardEffectPartText).text).toBe(',');
+    expect((e.parts[8] as CardEffectPartDamage).amount).toBe(5);
   });
 
   it('stringToCardEffect() parses comma-wrapped numeric/card parts', () => {
     const s = 'Deal 2D, then draw +C,';
     const e = stringToCardEffect(s);
 
-    expect(e.parts.map((p) => p.type)).toEqual(['text', 'damage', 'text', 'text', 'card']);
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'damage', 'text', 'text', 'text', 'card', 'text']);
     expect((e.parts[1] as CardEffectPartDamage).amount).toBe(2);
-    expect((e.parts[4] as CardEffectPartCard).orMore).toBe(true);
+    expect((e.parts[2] as CardEffectPartText).text).toBe(',');
+    expect((e.parts[5] as CardEffectPartCard).orMore).toBe(true);
+    expect((e.parts[6] as CardEffectPartText).text).toBe(',');
   });
 
   it('stringToCardEffect() classifies tags with period, semicolon, and parentheses delimiters', () => {
@@ -151,8 +154,11 @@ describe('card effect string helpers', () => {
     const e = stringToCardEffect(s);
 
     expect(e.conditionals).toEqual([Conditional.TurnEnd]);
-    expect(e.parts.map((p) => p.type)).toEqual(['text', 'text', 'text', 'text', 'tag', 'text', 'damage']);
-    expect((e.parts[4] as CardEffectPartTag).tag).toBe('weapon');
-    expect((e.parts[6] as CardEffectPartDamage).amount).toBe(5);
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'text', 'text', 'text', 'text', 'tag', 'text', 'text', 'damage', 'text']);
+    expect((e.parts[4] as CardEffectPartText).text).toBe('(');
+    expect((e.parts[5] as CardEffectPartTag).tag).toBe('weapon');
+    expect((e.parts[6] as CardEffectPartText).text).toBe(');');
+    expect((e.parts[8] as CardEffectPartDamage).amount).toBe(5);
+    expect((e.parts[9] as CardEffectPartText).text).toBe('.');
   });
 });
