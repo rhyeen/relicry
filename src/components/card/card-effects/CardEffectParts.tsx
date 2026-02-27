@@ -27,9 +27,17 @@ export default function CardEffectParts({
         return (
           <span className={styles.cardPart}>
             <span className={styles.cardPartSymbol} style={{
-              backgroundImage: `url(${assetURL(ctx, 'part/card.1.png')})`,
+              backgroundImage: `url(${assetURL(ctx, `part/card${(part as CardEffectPartCard).orMore ? '-plus' : ''}.1.png`)})`,
             }} />
             {getNumberPart((part as CardEffectPartCard).amount)}
+          </span>
+        );
+      case 'downCard':
+        return (
+          <span className={styles.cardPart}>
+            <span className={styles.cardPartSymbol} style={{
+              backgroundImage: `url(${assetURL(ctx, `part/card-down.1.png`)})`,
+            }} />
           </span>
         );
       case 'damage':
