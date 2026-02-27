@@ -145,4 +145,14 @@ describe('card effect string helpers', () => {
     expect((e.parts[1] as CardEffectPartDamage).amount).toBe(2);
     expect((e.parts[4] as CardEffectPartCard).orMore).toBe(true);
   });
+
+  it('stringToCardEffect() classifies tags with period, semicolon, and parentheses delimiters', () => {
+    const s = 'TURNEND? If this is top (WEAPON); deal 5D.';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.TurnEnd]);
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'text', 'text', 'text', 'tag', 'text', 'damage']);
+    expect((e.parts[4] as CardEffectPartTag).tag).toBe('weapon');
+    expect((e.parts[6] as CardEffectPartDamage).amount).toBe(5);
+  });
 });

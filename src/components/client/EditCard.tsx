@@ -190,6 +190,18 @@ function EditCardInner({
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [card, setCard] = useState<VersionedCard>(() => initCard ?? getDefaultNewCard("deck"));
+  const [effectDrafts, setEffectDrafts] = useState<string[]>(() =>
+    (initCard ?? getDefaultNewCard("deck")).effects.map((effect) =>
+      cardEffectToString(effect, { permitEndingSpace: true })
+    )
+  );
+  const [awakenedEffectDrafts, setAwakenedEffectDrafts] = useState<string[]>(() => {
+    const baseCard = initCard ?? getDefaultNewCard("deck");
+    if (baseCard.type !== "focus") return [];
+    return (baseCard as VersionedFocusCard).awakened.effects.map((effect) =>
+      cardEffectToString(effect, { permitEndingSpace: true })
+    );
+  });
   const [previewArt, setPreviewArt] = useState<Art | null>(null);
   const [previewArtist, setPreviewArtist] = useState<Artist | null>(null);
   const [previewAwakenedArt, setPreviewAwakenedArt] = useState<Art | null>(null);
@@ -562,26 +574,28 @@ function EditCardInner({
           <Fragment key={index}>
             <DSField
               label="Card Effect As Text"
-              value={cardEffectToString(effect, { permitEndingSpace: true })}
-              onChange={(value) =>
+              value={effectDrafts[index] ?? ""}
+              onChange={(value) => {
+                setEffectDrafts((current) => current.map((draft, i) => (i === index ? value : draft)));
                 setCard((c) => ({
                   ...c,
                   effects: c.effects.map((e, i) =>
                     i === index ? stringToCardEffect(value, { permitEndingSpace: true }) : e
                   ),
-                }))
-              }
+                }));
+              }}
   
             />
             <CardEffectLine effect={effect} ctx={{ type: CardType.Preview }} />
             <DSButton
               key={index}
-              onClick={() =>
+              onClick={() => {
+                setEffectDrafts((current) => current.filter((_, i) => i !== index));
                 setCard((c) => ({
                   ...c,
                   effects: c.effects.filter((_, i) => i !== index),
-                }))
-              }
+                }));
+              }}
               label="Remove"
   
             />
@@ -589,7 +603,8 @@ function EditCardInner({
         ))}
 
         <DSButton
-          onClick={() =>
+          onClick={() => {
+            setEffectDrafts((current) => [...current, ""]);
             setCard((c) => ({
               ...c,
               effects: [
@@ -599,8 +614,8 @@ function EditCardInner({
                   parts: [],
                 },
               ],
-            }))
-          }
+            }));
+          }}
           label="+ Card Effect"
         />
 
@@ -814,8 +829,9 @@ function EditCardInner({
               <Fragment key={index}>
                 <DSField
                   label="Awakened Card Effect As Text"
-                  value={cardEffectToString(effect, { permitEndingSpace: true })}
-                  onChange={(value) =>
+                  value={awakenedEffectDrafts[index] ?? ""}
+                  onChange={(value) => {
+                    setAwakenedEffectDrafts((current) => current.map((draft, i) => (i === index ? value : draft)));
                     setCard((c) => ({
                       ...c,
                       awakened: {
@@ -824,22 +840,23 @@ function EditCardInner({
                           i === index ? stringToCardEffect(value, { permitEndingSpace: true }) : e
                         ),
                       },
-                    }))
-                  }
+                    }));
+                  }}
       
                 />
                 <CardEffectLine effect={effect} ctx={{ type: CardType.Preview }} />
                 <DSButton
                   key={index}
-                  onClick={() =>
+                  onClick={() => {
+                    setAwakenedEffectDrafts((current) => current.filter((_, i) => i !== index));
                     setCard((c) => ({
                       ...c,
                       awakened: {
                         ...((c as VersionedFocusCard).awakened),
                         effects: (c as VersionedFocusCard).awakened.effects.filter((_, i) => i !== index),
                       },
-                    }))
-                  }
+                    }));
+                  }}
                   label="Remove"
       
                 />
@@ -847,7 +864,8 @@ function EditCardInner({
             ))}
 
             <DSButton
-              onClick={() =>
+              onClick={() => {
+                setAwakenedEffectDrafts((current) => [...current, ""]);
                 setCard((c) => ({
                   ...c,
                   awakened: {
@@ -860,8 +878,8 @@ function EditCardInner({
                       },
                     ],
                   },
-                }))
-              }
+                }));
+              }}
               label="+ Awakened Card Effect"
             />
 
