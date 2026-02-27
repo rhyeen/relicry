@@ -33,6 +33,10 @@ export type CardEffectPartCard = CardEffectPart & {
   orMore?: true;
 }
 
+export type CardEffectPartDownCard = CardEffectPart & {
+  type: 'downCard';
+}
+
 export type CardEffectPartTag = CardEffectPart & {
   type: 'tag';
   tag: Tag;
@@ -44,7 +48,7 @@ export type CardEffectPartAspect = CardEffectPart & {
 }
 
 export type CardEffectPart = {
-  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect';
+  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect' | 'downCard';
 }
 
 export function defaultHideCardEffect(effect: CardEffect): CardEffect {

@@ -8,6 +8,7 @@ import {
   CardEffectPartCard,
   CardEffectPartTag,
   CardEffectPartAspect,
+  CardEffectPartDownCard,
 } from './CardEffect';
 import { Conditional } from './Conditional';
 import { Tag } from './Tag';
@@ -282,6 +283,17 @@ export function stringToCardEffect(text: string, options?: {
         t,
         basic.match(/^(\d+)?(\+)?C$/) ? basic : core,
         { type: 'card', amount, orMore } as CardEffectPartCard,
+      );
+      continue;
+    }
+
+    // Card down part: "DC"
+    const dcm = basic.match(/^DC$/) ?? core.match(/^DC$/);
+    if (dcm) {
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^DC$/) ? basic : core,
+        { type: 'downCard' } as CardEffectPartDownCard,
       );
       continue;
     }
