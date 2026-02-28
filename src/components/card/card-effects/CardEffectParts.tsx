@@ -36,18 +36,18 @@ export default function CardEffectParts({
       case 'card':
         if ((part as CardEffectPartCard).orMore) {
           return (
-            <span className={styles.cardPart}>
-              <span className={styles.cardPartSymbol} style={{
-                backgroundImage: `url(${assetURL(ctx, 'part/card.1.png')})`,
+            <span className={styles.cardPartPlus}>
+              <span className={styles.cardPartPlusSymbol} style={{
+                backgroundImage: `url(${assetURL(ctx, 'part/card-plus.1.png')})`,
               }} />
               {getNumberPart((part as CardEffectPartCard).amount)}
             </span>
           );
         } else {
             return (
-            <span className={styles.cardPartPlus}>
-              <span className={styles.cardPartPlusSymbol} style={{
-                backgroundImage: `url(${assetURL(ctx, 'part/card-plus.1.png')})`,
+            <span className={styles.cardPart}>
+              <span className={styles.cardPartSymbol} style={{
+                backgroundImage: `url(${assetURL(ctx, 'part/card.1.png')})`,
               }} />
               {getNumberPart((part as CardEffectPartCard).amount)}
             </span>
