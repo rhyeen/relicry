@@ -9,6 +9,8 @@ import {
   CardEffectPartTag,
   CardEffectPartAspect,
   CardEffectPartDownCard,
+  CardEffectPartGlimpse,
+  CardEffectPartDrawLimit,
 } from './CardEffect';
 import { Conditional } from './Conditional';
 import { Tag } from './Tag';
@@ -19,7 +21,9 @@ export function cardEffectToString(effect: CardEffect, options?: {
   const conditionalsString = effect.conditionals.map(conditionalToString).join(' ');
   const partsString = effect.parts.map(part => cardPartToString(part)).join(' ');
   const auraString = auraToString(effect.aura);
-  let result = `${conditionalsString} ${auraString} ${partsString}`.trimStart();
+  let result = [conditionalsString, auraString, partsString]
+    .filter((part) => part.length > 0)
+    .join(' ');
   if (!options?.permitEndingSpace) {
     result = result.trimEnd();
   }
@@ -88,6 +92,16 @@ export function cardPartToString(part: CardEffectPart): string {
       return 'FLIP';
     case 'scrapped':
       return 'SCRAPPED';
+    case 'downCard':
+      return 'DC';
+    case 'glimpse': {
+      const glimpsePart = part as CardEffectPartGlimpse;
+      return `${glimpsePart.amount}${glimpsePart.lookAt === 'top' ? 'T' : 'B'}`;
+    }
+    case 'drawLimit': {
+      const drawLimitPart = part as CardEffectPartDrawLimit;
+      return `${drawLimitPart.amount}L`;
+    }
     default:
       return '???';
   }
@@ -294,6 +308,35 @@ export function stringToCardEffect(text: string, options?: {
         t,
         basic.match(/^DC$/) ? basic : core,
         { type: 'downCard' } as CardEffectPartDownCard,
+      );
+      continue;
+    }
+
+    // Glimpse part: "9T" (top) or "9B" (bot)
+    const gm = basic.match(/^(\d+)(T|B)$/) ?? core.match(/^(\d+)(T|B)$/);
+    if (gm) {
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^(\d+)(T|B)$/) ? basic : core,
+        {
+          type: 'glimpse',
+          amount: Number(gm[1]),
+          lookAt: gm[2] === 'T' ? 'top' : 'bot',
+        } as CardEffectPartGlimpse,
+      );
+      continue;
+    }
+
+    // Draw limit part: "9L"
+    const dlm = basic.match(/^(\d+)L$/) ?? core.match(/^(\d+)L$/);
+    if (dlm) {
+      pushPartWithDelimiters(
+        t,
+        basic.match(/^(\d+)L$/) ? basic : core,
+        {
+          type: 'drawLimit',
+          amount: Number(dlm[1]),
+        } as CardEffectPartDrawLimit,
       );
       continue;
     }

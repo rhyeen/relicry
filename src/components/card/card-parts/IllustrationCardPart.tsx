@@ -13,7 +13,7 @@ type Props = {
 const DEBUG_ALWAYS_SHOW_EXAMPLE = false;
 
 export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwakened, isSample }: Props) {
-  const _art = focusAwakened ? awakenedArt : art;
+  const _art = focusAwakened ? (awakenedArt || art) : art;
   let backgroundImage = assetURL(ctx, 'example-illustration.ai.webp');
   if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (_art && _art.image && (_art as IllustrationArt).image.card?.url)) {
     backgroundImage = (_art as IllustrationArt).image.card?.url || '';

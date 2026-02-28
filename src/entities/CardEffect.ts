@@ -47,8 +47,19 @@ export type CardEffectPartAspect = CardEffectPart & {
   aspect: Aspect;
 }
 
+export type CardEffectPartGlimpse = CardEffectPart & {
+  type: 'glimpse';
+  amount: number;
+  lookAt: 'top' | 'bot';
+}
+
+export type CardEffectPartDrawLimit = CardEffectPart & {
+  type: 'drawLimit';
+  amount: number;
+}
+
 export type CardEffectPart = {
-  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect' | 'downCard';
+  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect' | 'downCard' | 'glimpse' | 'drawLimit';
 }
 
 export function defaultHideCardEffect(effect: CardEffect): CardEffect {

@@ -38,6 +38,8 @@ export default function CardEffectLine({
         {effect.aura !== undefined && (
           <CardAura aura={effect.aura} ctx={ctx} />
         )}
+      </div>
+      <div className={styles.effectParts}>
         <CardEffectParts parts={effect.parts} ctx={ctx} />
       </div>
     </div>
