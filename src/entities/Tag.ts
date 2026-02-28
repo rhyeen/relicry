@@ -14,6 +14,7 @@ export enum Tag {
   Favor = 'favor',
   Weapon = 'weapon',
   Armor = 'armor',
+  React = 'react',
 }
 
 const tagOrder = [
@@ -32,6 +33,7 @@ const tagOrder = [
   Tag.Favor,
   Tag.Weapon,
   Tag.Armor,
+  // @NOTE: React is intentionally not included as its only shown in card effects, like Force Field.
 ];
 
 export function orderTags(tags?: Tag[], cardType?: "deck" | "focus" | "gambit"): Tag[] {

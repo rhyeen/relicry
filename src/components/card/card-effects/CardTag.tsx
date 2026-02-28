@@ -24,6 +24,7 @@ const tagLocaleEn = {
   [Tag.Favor]: 'Favor',
   [Tag.Weapon]: 'Weapon',
   [Tag.Armor]: 'Armor',
+  [Tag.React]: 'React',
 }
 
 export default function CardTag({
@@ -61,6 +62,8 @@ export default function CardTag({
         return '#c165ff';
       case Tag.Bling:
         return '#fe5fcc';
+      case Tag.React:
+        return 'var(--reactGradient)';
       default:
         throw new Error(`Unknown tag: ${tag}`);
     }
