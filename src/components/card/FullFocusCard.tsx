@@ -74,8 +74,8 @@ export default function FullFocusCard({
         focus
         focusAwakened={awakened}
       />
-      <QRCodeCardPart card={card} ctx={ctx} />
-      <QRTextureCardPart ctx={ctx} />
+      {!awakened && <QRCodeCardPart card={card} ctx={ctx} />}
+      {!awakened && <QRTextureCardPart ctx={ctx} />}
       {/* @DEBUG: Not sure when we'd apply foil */}
       { card.version === 2 && <FoilShineOverlay /> }
     </section>

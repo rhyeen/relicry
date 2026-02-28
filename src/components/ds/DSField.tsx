@@ -1,7 +1,12 @@
 import { Field } from '@base-ui/react';
 import styles from "./DSField.module.css";
 
-export function toDateOnlyString(d: Date): string {
+export function toDateOnlyString(d: Date | string): string {
+  if (typeof d === 'string') {
+    const parsed = fromDateOnlyString(d);
+    if (!parsed) return toDateOnlyString(new Date());
+    return toDateOnlyString(parsed);
+  }
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");

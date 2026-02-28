@@ -1,4 +1,4 @@
-import { CardEffectPart, CardEffectPartAspect, CardEffectPartCard, CardEffectPartDamage, CardEffectPartQuell, CardEffectPartTag, CardEffectPartText } from '@/entities/CardEffect';
+import { CardEffectPart, CardEffectPartAspect, CardEffectPartCard, CardEffectPartDamage, CardEffectPartDrawLimit, CardEffectPartGlimpse, CardEffectPartQuell, CardEffectPartTag, CardEffectPartText } from '@/entities/CardEffect';
 import styles from './CardEffectParts.module.css';
 import CardTag from './CardTag';
 import { assetURL, CardContext } from '@/entities/CardContext';
@@ -22,22 +22,62 @@ export default function CardEffectParts({
   const getPart = (part: CardEffectPart) => {
     switch (part.type) {
       case 'text':
-        return (part as CardEffectPartText).text;
+        const text = (part as CardEffectPartText).text;
+        // If text starts with punctuation, render it in a span to avoid weird spacing issues
+        if (text.length > 0 && /[.,\/#!$%\^&\*;:{}=\-_`~()]/.test(text[0])) {
+          return (
+            <span className={styles.punctuationPart}>
+              {text}
+            </span>
+          );
+        } else {
+          return (part as CardEffectPartText).text;
+        }
       case 'card':
-        return (
-          <span className={styles.cardPart}>
-            <span className={styles.cardPartSymbol} style={{
-              backgroundImage: `url(${assetURL(ctx, `part/card${(part as CardEffectPartCard).orMore ? '-plus' : ''}.1.png`)})`,
-            }} />
-            {getNumberPart((part as CardEffectPartCard).amount)}
-          </span>
-        );
+        if ((part as CardEffectPartCard).orMore) {
+          return (
+            <span className={styles.cardPart}>
+              <span className={styles.cardPartSymbol} style={{
+                backgroundImage: `url(${assetURL(ctx, 'part/card.1.png')})`,
+              }} />
+              {getNumberPart((part as CardEffectPartCard).amount)}
+            </span>
+          );
+        } else {
+            return (
+            <span className={styles.cardPartPlus}>
+              <span className={styles.cardPartPlusSymbol} style={{
+                backgroundImage: `url(${assetURL(ctx, 'part/card-plus.1.png')})`,
+              }} />
+              {getNumberPart((part as CardEffectPartCard).amount)}
+            </span>
+          );
+        }
       case 'downCard':
         return (
           <span className={styles.cardPart}>
             <span className={styles.cardPartSymbol} style={{
               backgroundImage: `url(${assetURL(ctx, `part/card-down.1.png`)})`,
             }} />
+          </span>
+        );
+      case 'glimpse':
+        const amount = (part as CardEffectPartGlimpse).amount;
+        return (
+          <span className={styles.glimpsePart}>
+            <span className={`${styles.glimpsePartSymbol} ${amount === 2 || amount === 4 ? styles.bump : ''}`} style={{
+              backgroundImage: `url(${assetURL(ctx, `part/glimpse-${(part as CardEffectPartGlimpse).lookAt}.1.png`)})`,
+            }} />
+            {getNumberPart(amount)}
+          </span>
+        );
+      case 'drawLimit':
+        return (
+          <span className={styles.drawLimitPart}>
+            <span className={styles.drawLimitPartSymbol} style={{
+              backgroundImage: `url(${assetURL(ctx, 'part/draw-limit.1.png')})`,
+            }} />
+            {getNumberPart((part as CardEffectPartDrawLimit).amount)}
           </span>
         );
       case 'damage':

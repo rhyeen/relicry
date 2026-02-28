@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Aspect } from '../Aspect';
 import { auraToString, conditionalToString, cardPartToString, cardEffectToString, stringToCardEffect } from '../CardEffectAsString';
 import { Conditional } from '../Conditional';
-import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
+import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartDrawLimit, CardEffectPartGlimpse, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
 
 describe('card effect string helpers', () => {
   it('auraToString() handles undefined, number, and range', () => {
@@ -40,6 +40,10 @@ describe('card effect string helpers', () => {
 
     expect(cardPartToString({ type: 'flip' } as CardEffectPart)).toBe('FLIP');
     expect(cardPartToString({ type: 'scrapped' } as CardEffectPart)).toBe('SCRAPPED');
+    expect(cardPartToString({ type: 'downCard' } as CardEffectPart)).toBe('DC');
+    expect(cardPartToString({ type: 'glimpse', amount: 9, lookAt: 'top' } as CardEffectPart)).toBe('9T');
+    expect(cardPartToString({ type: 'glimpse', amount: 3, lookAt: 'bot' } as CardEffectPart)).toBe('3B');
+    expect(cardPartToString({ type: 'drawLimit', amount: 4 } as CardEffectPart)).toBe('4L');
   });
 
   it('cardEffectToString() composes conditionals, aura, and parts', () => {
@@ -80,6 +84,38 @@ describe('card effect string helpers', () => {
     expect((e.parts[0] as CardEffectPartCard).amount).toBe(1);
     expect((e.parts[0] as CardEffectPartCard).orMore).toBe(true);
 
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses DC as downCard', () => {
+    const s = 'REACT DC';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.React]);
+    expect(e.parts.map((p) => p.type)).toEqual(['downCard']);
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses nT and nB as glimpse parts', () => {
+    const s = 'REACT 9T 3B';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.React]);
+    expect(e.parts.map((p) => p.type)).toEqual(['glimpse', 'glimpse']);
+    expect((e.parts[0] as CardEffectPartGlimpse).amount).toBe(9);
+    expect((e.parts[0] as CardEffectPartGlimpse).lookAt).toBe('top');
+    expect((e.parts[1] as CardEffectPartGlimpse).amount).toBe(3);
+    expect((e.parts[1] as CardEffectPartGlimpse).lookAt).toBe('bot');
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses nL as drawLimit part', () => {
+    const s = 'SOLO? 9L';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.Solo]);
+    expect(e.parts.map((p) => p.type)).toEqual(['drawLimit']);
+    expect((e.parts[0] as CardEffectPartDrawLimit).amount).toBe(9);
     expect(cardEffectToString(e)).toBe(s);
   });
 

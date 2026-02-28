@@ -6,10 +6,14 @@
   margin-top: -6px;
   display: flex;
   flex-direction: row;
-  gap: 6px;
+  flex-wrap: wrap;
+  column-gap: 6px;
 }
 
 .cardPart,
+.cardPartPlus,
+.glimpsePart,
+.drawLimitPart,
 .damagePart,
 .flipPart,
 .scrappedPart,
@@ -22,6 +26,9 @@
 }
 
 .cardPartSymbol,
+.cardPartPlusSymbol,
+.glimpsePartSymbol,
+.drawLimitPartSymbol,
 .damagePartSymbol,
 .flipPartSymbol,
 .scrappedPartSymbol,
@@ -33,6 +40,13 @@
   background-size: contain;
   background-repeat: no-repeat;
   pointer-events: none;
+}
+
+.cardPart .numberPart,
+.cardPartPlus .numberPart,
+.glimpsePart .numberPart,
+.drawLimitPart .numberPart {
+  color: black;
 }
 
 .numberPart {
@@ -48,8 +62,16 @@
   width: 22px;
 }
 
-.cardPart .numberPart {
-  color: black;
+.cardPartPlusSymbol {
+  aspect-ratio: 39 / 43;
+}
+
+.cardPartPlus {
+  width: 28px;
+}
+
+.cardPartPlus .numberPart {
+  margin-right: 6px;
 }
 
 .damagePartSymbol {
@@ -72,25 +94,22 @@
 
 .scrappedPartSymbol {
   aspect-ratio: 36 / 48;
-  margin-top: -24px;
 }
 
 .scrappedPart {
-  width: 26px;
+  width: 22px;
 }
 
 .flipPartSymbol {
   aspect-ratio: 45 / 51;
-  margin-top: -28px;
 }
 
 .flipPart {
-  width: 33px;
+  width: 28px;
 }
 
 .aspectPartSymbol {
   aspect-ratio: 35 / 40;
-  margin-top: -22px;
 }
 
 .aspectPart {
@@ -99,4 +118,35 @@
 
 .numberPart.one {
   margin-left: -1.5px;
+}
+
+.punctuationPart {
+  margin-left: -5px;
+}
+
+.tagPart {
+  margin-left: 6px;
+  margin-right: -4px;
+}
+
+.glimpsePartSymbol {
+  aspect-ratio: 42 / 69;
+  margin-top: -8px;
+}
+
+.glimpsePartSymbol.bump {
+  margin-top: -6.5px;
+}
+
+.glimpsePart {
+  width: 28px;
+}
+
+.drawLimitPartSymbol {
+  aspect-ratio: 42 / 42;
+  margin-top: 1.5px;
+}
+
+.drawLimitPart {
+  width: 28px;
 }

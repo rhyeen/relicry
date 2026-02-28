@@ -8,6 +8,11 @@ type Props = {
 
 export default function DrawLimitCardPart({ drawLimit }: Props) { 
   return (
-    <div aria-label='Draw Limit' className={styles.drawLimit}>{drawLimit}</div>
+    <div
+      aria-label='Draw Limit'
+      className={styles.drawLimit}
+    >
+      <span className={`${drawLimit === 5 ? styles.drawLimit5 : ''} ${drawLimit === 7 ? styles.drawLimit7 : ''}`}>{drawLimit}</span>
+    </div>
   );
 }
