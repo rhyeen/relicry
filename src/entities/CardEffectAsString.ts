@@ -349,7 +349,8 @@ export function stringToCardEffect(text: string, options?: {
       core !== 'PVP?' &&
       core !== 'SOLO?' &&
       core !== 'INF?' &&
-      core !== 'REACT' &&
+      // @NOTE: Can be a tag if used in a card effect.
+      // core !== 'REACT' &&
       core !== 'FLIP' &&
       core !== 'SCRAPPED' &&
       core !== 'TURNEND?' &&

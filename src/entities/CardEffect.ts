@@ -33,10 +33,6 @@ export type CardEffectPartCard = CardEffectPart & {
   orMore?: true;
 }
 
-export type CardEffectPartDownCard = CardEffectPart & {
-  type: 'downCard';
-}
-
 export type CardEffectPartTag = CardEffectPart & {
   type: 'tag';
   tag: Tag;
