@@ -18,7 +18,16 @@ export function cardEffectToString(effect: CardEffect, options?: {
   permitEndingSpace?: boolean;
 }): string {
   const conditionalsString = effect.conditionals.map(conditionalToString).join(' ');
-  const partsString = effect.parts.map(part => cardPartToString(part)).join(' ');
+  const partsString = effect.parts
+    .map((part) => cardPartToString(part))
+    .reduce((result, partText, index) => {
+      if (index === 0) return partText;
+      // Keep punctuation tokens attached to the previous token (e.g. "3D.")
+      if (/^[.,;:!?'"%)}\]]+$/.test(partText)) {
+        return `${result}${partText}`;
+      }
+      return `${result} ${partText}`;
+    }, '');
   const auraString = auraToString(effect.aura);
   let result = [conditionalsString, auraString, partsString]
     .filter((part) => part.length > 0)
