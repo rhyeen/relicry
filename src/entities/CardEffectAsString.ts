@@ -205,6 +205,7 @@ export function stringToCardEffect(text: string, options?: {
       text: value,
     } as CardEffectPartText);
   };
+  const startsWithOpeningDelimiter = (value: string): boolean => /^[()\[\]{}"'`<>]/.test(value);
   const pushPartWithDelimiters = (rawToken: string, parsedToken: string, part: CardEffectPart) => {
     const start = rawToken.indexOf(parsedToken);
     if (start === -1) {
@@ -272,7 +273,7 @@ export function stringToCardEffect(text: string, options?: {
       pushPartWithDelimiters(
         t,
         basic.match(/^(\d+|\*)D$/) ? basic : core,
-        { type: 'damage', amount: Number(dm[1]) } as CardEffectPartDamage,
+        { type: 'damage', amount: dm[1] === '*' ? '*' : Number(dm[1]) } as CardEffectPartDamage,
       );
       continue;
     }
@@ -282,7 +283,7 @@ export function stringToCardEffect(text: string, options?: {
       pushPartWithDelimiters(
         t,
         basic.match(/^(\d+|\*)Q$/) ? basic : core,
-        { type: 'quell', amount: Number(qm[1]) } as CardEffectPartQuell,
+        { type: 'quell', amount: qm[1] === '*' ? '*' : Number(qm[1]) } as CardEffectPartQuell,
       );
       continue;
     }
@@ -290,7 +291,7 @@ export function stringToCardEffect(text: string, options?: {
     // Card part: "C", "+C", "2C", "2+C"
     const cm = basic.match(/^(\d+|\*)?(\+)?C$/) ?? core.match(/^(\d+|\*)?(\+)?C$/);
     if (cm) {
-      const amount = cm[1] ? Number(cm[1]) : undefined;
+      const amount = cm[1] === '*' ? '*' : cm[1] ? Number(cm[1]) : undefined;
       const orMore = !!cm[2];
       pushPartWithDelimiters(
         t,
@@ -319,7 +320,7 @@ export function stringToCardEffect(text: string, options?: {
         basic.match(/^(\d+|\*)(T|B)$/) ? basic : core,
         {
           type: 'glimpse',
-          amount: Number(gm[1]),
+          amount: gm[1] === '*' ? '*' : Number(gm[1]),
           lookAt: gm[2] === 'T' ? 'top' : 'bot',
         } as CardEffectPartGlimpse,
       );
@@ -334,7 +335,7 @@ export function stringToCardEffect(text: string, options?: {
         basic.match(/^(\d+|\*)(?:D?L)$/) ? basic : core,
         {
           type: 'drawLimit',
-          amount: Number(dlm[1]),
+          amount: dlm[1] === '*' ? '*' : Number(dlm[1]),
         } as CardEffectPartDrawLimit,
       );
       continue;
@@ -366,9 +367,17 @@ export function stringToCardEffect(text: string, options?: {
 
     // Default: treat as plain text token
     // Add back in ending space, to account for typing
+    const textToken = text.endsWith(' ') && options?.permitEndingSpace ? t + ' ' : t;
+    if (startsWithOpeningDelimiter(textToken) && parts.length > 0) {
+      const prev = parts[parts.length - 1];
+      if (prev.type === 'text') {
+        (prev as CardEffectPartText).text += ` ${textToken}`;
+        continue;
+      }
+    }
     parts.push({
       type: 'text',
-      text: text.endsWith(' ') && options?.permitEndingSpace ? t + ' ' : t,
+      text: textToken,
     } as CardEffectPartText);
   }
 

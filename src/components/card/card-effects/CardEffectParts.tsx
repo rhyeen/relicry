@@ -2,6 +2,7 @@ import { CardEffectPart, CardEffectPartAspect, CardEffectPartCard, CardEffectPar
 import styles from './CardEffectParts.module.css';
 import CardTag from './CardTag';
 import { assetURL, CardContext } from '@/entities/CardContext';
+import { hasAttachedPunctuation } from './punctuation';
 
 type Props = {
   parts: CardEffectPart[];
@@ -11,7 +12,7 @@ type Props = {
 export default function CardEffectParts({
   parts, ctx,
 }: Props) {
-  const getNumberPart = (amount: number | undefined) => {
+  const getNumberPart = (amount: number | '*' | undefined) => {
     const classNames = [styles.numberPart];
     if (amount === 1) {
       classNames.push(styles.one);
@@ -23,8 +24,8 @@ export default function CardEffectParts({
     switch (part.type) {
       case 'text':
         const text = (part as CardEffectPartText).text;
-        // If text starts with punctuation, render it in a span to avoid weird spacing issues
-        if (text.length > 0 && /[.,\/#!$%\^&\*;:{}=\-_`~()]/.test(text[0])) {
+        // If punctuation is attached without a leading space, render in a span to avoid spacing issues
+        if (hasAttachedPunctuation(text)) {
           return (
             <span className={styles.punctuationPart}>
               {text}

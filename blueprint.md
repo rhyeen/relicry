@@ -66,6 +66,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Draw limit effect on card is not built yet (Brave)
 - [x] Awakened art on back is not set to front if undefined.
 - [x] Remove QR from awakened art
+- [ ] Aura 1 needs to be pushed left
 - [ ] Fulfill all extra cases mentioned in notes document (up/down arrow, augmenting, etc.)
 - [ ] Create 200+ cards: at least 50 for each aspect (with some shared aspects), 4 gambits, and 3 of each focus aspects.
 - [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website. Need a way to generate X number of these quests for a given event, then iterate through them to print out the cards.
