@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Aspect } from '../Aspect';
 import { auraToString, conditionalToString, cardPartToString, cardEffectToString, stringToCardEffect } from '../CardEffectAsString';
 import { Conditional } from '../Conditional';
-import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartDrawLimit, CardEffectPartGlimpse, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
+import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartDrawLimit, CardEffectPartGlimpse, CardEffectPartQuell, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
 
 describe('card effect string helpers', () => {
   it('auraToString() handles undefined, number, and range', () => {
@@ -117,6 +117,22 @@ describe('card effect string helpers', () => {
     expect(e.parts.map((p) => p.type)).toEqual(['drawLimit']);
     expect((e.parts[0] as CardEffectPartDrawLimit).amount).toBe(9);
     expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses star-prefixed shorthand numeric parts', () => {
+    const s = 'REACT *D *Q *C *T *B *DL';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.React]);
+    expect(e.parts.map((p) => p.type)).toEqual(['damage', 'quell', 'card', 'glimpse', 'glimpse', 'drawLimit']);
+    expect((e.parts[0] as CardEffectPartDamage).amount).toBeNaN();
+    expect((e.parts[1] as CardEffectPartQuell).amount).toBeNaN();
+    expect((e.parts[2] as CardEffectPartCard).amount).toBeNaN();
+    expect((e.parts[3] as CardEffectPartGlimpse).amount).toBeNaN();
+    expect((e.parts[3] as CardEffectPartGlimpse).lookAt).toBe('top');
+    expect((e.parts[4] as CardEffectPartGlimpse).amount).toBeNaN();
+    expect((e.parts[4] as CardEffectPartGlimpse).lookAt).toBe('bot');
+    expect((e.parts[5] as CardEffectPartDrawLimit).amount).toBeNaN();
   });
 
   it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as text', () => {
