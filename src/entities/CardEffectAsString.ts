@@ -206,6 +206,8 @@ export function stringToCardEffect(text: string, options?: {
     } as CardEffectPartText);
   };
   const startsWithOpeningDelimiter = (value: string): boolean => /^[()\[\]{}"'`<>]/.test(value);
+  const isStandalonePunctuationToken = (value: string): boolean =>
+    /^[.,\/#!$%\^&\*;:{}=\-_`~()"]+$/.test(value);
   const pushPartWithDelimiters = (rawToken: string, parsedToken: string, part: CardEffectPart) => {
     const start = rawToken.indexOf(parsedToken);
     if (start === -1) {
@@ -368,6 +370,18 @@ export function stringToCardEffect(text: string, options?: {
     // Default: treat as plain text token
     // Add back in ending space, to account for typing
     const textToken = text.endsWith(' ') && options?.permitEndingSpace ? t + ' ' : t;
+    if (isStandalonePunctuationToken(textToken) && parts.length > 0) {
+      const prev = parts[parts.length - 1];
+      if (prev.type === 'text') {
+        (prev as CardEffectPartText).text += ` ${textToken}`;
+      } else {
+        parts.push({
+          type: 'text',
+          text: ` ${textToken}`,
+        } as CardEffectPartText);
+      }
+      continue;
+    }
     if (startsWithOpeningDelimiter(textToken) && parts.length > 0) {
       const prev = parts[parts.length - 1];
       if (prev.type === 'text') {
