@@ -17,7 +17,7 @@ export default function TagsCardPart({
   const sortedTags = orderTags(tags);
   const firstTag = sortedTags[0];
   const topRowTags = sortedTags.slice(6);
-  const bottomRowTags = [ firstTag, ...sortedTags.slice(1, 6) ];
+  const bottomRowTags = sortedTags.length === 0 ? [] : [ firstTag, ...sortedTags.slice(1, 6) ];
 
   return (
     <div className={`${styles.tagsContainer} ${twoAspects ? styles.tagsWithTwoAspects : ''}`}>

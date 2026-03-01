@@ -125,14 +125,23 @@ describe('card effect string helpers', () => {
 
     expect(e.conditionals).toEqual([Conditional.React]);
     expect(e.parts.map((p) => p.type)).toEqual(['damage', 'quell', 'card', 'glimpse', 'glimpse', 'drawLimit']);
-    expect((e.parts[0] as CardEffectPartDamage).amount).toBeNaN();
-    expect((e.parts[1] as CardEffectPartQuell).amount).toBeNaN();
-    expect((e.parts[2] as CardEffectPartCard).amount).toBeNaN();
-    expect((e.parts[3] as CardEffectPartGlimpse).amount).toBeNaN();
+    expect((e.parts[0] as CardEffectPartDamage).amount).toBe('*');
+    expect((e.parts[1] as CardEffectPartQuell).amount).toBe('*');
+    expect((e.parts[2] as CardEffectPartCard).amount).toBe('*');
+    expect((e.parts[3] as CardEffectPartGlimpse).amount).toBe('*');
     expect((e.parts[3] as CardEffectPartGlimpse).lookAt).toBe('top');
-    expect((e.parts[4] as CardEffectPartGlimpse).amount).toBeNaN();
+    expect((e.parts[4] as CardEffectPartGlimpse).amount).toBe('*');
     expect((e.parts[4] as CardEffectPartGlimpse).lookAt).toBe('bot');
-    expect((e.parts[5] as CardEffectPartDrawLimit).amount).toBeNaN();
+    expect((e.parts[5] as CardEffectPartDrawLimit).amount).toBe('*');
+  });
+
+  it('stringToCardEffect() preserves a space before opening quotes in text', () => {
+    const s = '"Deal 3D" and "Deal *D"';
+    const e = stringToCardEffect(s);
+
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'damage', 'text', 'text', 'damage', 'text']);
+    expect((e.parts[3] as CardEffectPartText).text).toBe('and "Deal');
+    expect(cardEffectToString(e)).toContain('and "Deal');
   });
 
   it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as text', () => {

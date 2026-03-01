@@ -19,17 +19,17 @@ export type CardEffectPartText = CardEffectPart & {
 
 export type CardEffectPartDamage = CardEffectPart & {
   type: 'damage';
-  amount: number;
+  amount: number | '*';
 }
 
 export type CardEffectPartQuell = CardEffectPart & {
   type: 'quell';
-  amount: number;
+  amount: number | '*';
 }
 
 export type CardEffectPartCard = CardEffectPart & {
   type: 'card';
-  amount?: number;
+  amount?: number | '*';
   orMore?: true;
 }
 
@@ -45,13 +45,13 @@ export type CardEffectPartAspect = CardEffectPart & {
 
 export type CardEffectPartGlimpse = CardEffectPart & {
   type: 'glimpse';
-  amount: number;
+  amount: number | '*';
   lookAt: 'top' | 'bot';
 }
 
 export type CardEffectPartDrawLimit = CardEffectPart & {
   type: 'drawLimit';
-  amount: number;
+  amount: number | '*';
 }
 
 export type CardEffectPart = {
