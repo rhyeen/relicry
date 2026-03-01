@@ -144,6 +144,16 @@ describe('card effect string helpers', () => {
     expect(cardEffectToString(e)).toContain('and "Deal');
   });
 
+  it('stringToCardEffect() preserves spacing before punctuation after numeric text', () => {
+    const a = stringToCardEffect('by 1.');
+    const b = stringToCardEffect('by 1"');
+    const c = stringToCardEffect('by 1 .');
+
+    expect(cardEffectToString(a)).toBe('by 1.');
+    expect(cardEffectToString(b)).toBe('by 1"');
+    expect(cardEffectToString(c)).toBe('by 1 .');
+  });
+
   it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as text', () => {
     const s = 'REACT AURA (1) ABILITY Deal 2D NOW';
     const e = stringToCardEffect(s);

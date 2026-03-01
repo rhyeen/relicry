@@ -1,15 +1,9 @@
-const PUNCTUATION_REGEX = /[.,\/#!$%\^&\*;:{}=\-_`~()"]/;
+const LEADING_PUNCTUATION_REGEX = /^[.,\/#!$%\^&\*;:{}=\-_`~()"]/;
 
 /**
- * Returns true when text contains punctuation that is attached to the
- * previous character (no whitespace before it).
+ * Returns true when a text token starts with punctuation.
+ * This is used to pull delimiter-only tokens (e.g. "," or "\"") tight to the previous part.
  */
 export function hasAttachedPunctuation(text: string): boolean {
-  for (let i = 0; i < text.length; i += 1) {
-    if (!PUNCTUATION_REGEX.test(text[i])) continue;
-    if (i === 0) return true;
-    if (!/\s/.test(text[i - 1])) return true;
-  }
-  return false;
+  return LEADING_PUNCTUATION_REGEX.test(text);
 }
-
