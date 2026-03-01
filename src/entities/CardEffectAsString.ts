@@ -8,7 +8,6 @@ import {
   CardEffectPartCard,
   CardEffectPartTag,
   CardEffectPartAspect,
-  CardEffectPartDownCard,
   CardEffectPartGlimpse,
   CardEffectPartDrawLimit,
 } from './CardEffect';
@@ -307,7 +306,7 @@ export function stringToCardEffect(text: string, options?: {
       pushPartWithDelimiters(
         t,
         basic.match(/^DC$/) ? basic : core,
-        { type: 'downCard' } as CardEffectPartDownCard,
+        { type: 'downCard' } as CardEffectPart,
       );
       continue;
     }
