@@ -17,6 +17,9 @@ export default function CardEffectParts({
     if (amount === 1) {
       classNames.push(styles.one);
     }
+    if (amount === '*') {
+      classNames.push(styles.star);
+    }
     return <span className={classNames.join(' ')}>{amount}</span>;
   };
 

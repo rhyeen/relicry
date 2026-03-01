@@ -120,6 +120,10 @@
   margin-left: -1.5px;
 }
 
+.numberPart.star {
+  margin-top: 5.5px;
+}
+
 .punctuationPart {
   margin-left: -5px;
 }
