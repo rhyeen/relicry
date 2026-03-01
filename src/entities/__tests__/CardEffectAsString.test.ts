@@ -154,6 +154,14 @@ describe('card effect string helpers', () => {
     expect(cardEffectToString(c)).toBe('by 1 .');
   });
 
+  it('stringToCardEffect() keeps punctuation attached to damage shorthand', () => {
+    const a = stringToCardEffect('Deal 3D.');
+    const b = stringToCardEffect('Deal *D.');
+
+    expect(cardEffectToString(a)).toBe('Deal 3D.');
+    expect(cardEffectToString(b)).toBe('Deal *D.');
+  });
+
   it('stringToCardEffect() treats unknown tokens as text and ALLCAPS as text', () => {
     const s = 'REACT AURA (1) ABILITY Deal 2D NOW';
     const e = stringToCardEffect(s);
