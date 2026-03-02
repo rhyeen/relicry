@@ -12,7 +12,9 @@ export default function DrawLimitCardPart({ drawLimit }: Props) {
       aria-label='Draw Limit'
       className={styles.drawLimit}
     >
-      <span className={`${drawLimit === 5 ? styles.drawLimit5 : ''} ${drawLimit === 7 ? styles.drawLimit7 : ''}`}>{drawLimit}</span>
+      <span
+        className={`${drawLimit === 5 ? styles.drawLimit5 : ''} ${drawLimit === 7 ? styles.drawLimit7 : ''} ${drawLimit === -1 ? styles.drawLimitStar : ''}`}
+      >{drawLimit === -1 ? '*' : drawLimit}</span>
     </div>
   );
 }

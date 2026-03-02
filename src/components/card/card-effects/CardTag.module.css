@@ -93,6 +93,14 @@
   position: relative;
 }
 
+.auraNumber1 {
+  margin-left: 2px;
+}
+
+.auraNumber9 {
+  margin-left: 1px;
+}
+
 .addHalf {
   font-size: 13px;
   font-weight: 800;
