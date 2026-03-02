@@ -40,6 +40,7 @@ describe('card effect string helpers', () => {
 
     expect(cardPartToString({ type: 'flip' } as CardEffectPart)).toBe('FLIP');
     expect(cardPartToString({ type: 'scrapped' } as CardEffectPart)).toBe('SCRAPPED');
+    expect(cardPartToString({ type: 'voided' } as CardEffectPart)).toBe('VOIDED');
     expect(cardPartToString({ type: 'downCard' } as CardEffectPart)).toBe('DC');
     expect(cardPartToString({ type: 'glimpse', amount: 9, lookAt: 'top' } as CardEffectPart)).toBe('9T');
     expect(cardPartToString({ type: 'glimpse', amount: 3, lookAt: 'bot' } as CardEffectPart)).toBe('3B');
@@ -93,6 +94,15 @@ describe('card effect string helpers', () => {
 
     expect(e.conditionals).toEqual([Conditional.React]);
     expect(e.parts.map((p) => p.type)).toEqual(['downCard']);
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses VOIDED as voided', () => {
+    const s = 'REACT VOIDED';
+    const e = stringToCardEffect(s);
+
+    expect(e.conditionals).toEqual([Conditional.React]);
+    expect(e.parts.map((p) => p.type)).toEqual(['voided']);
     expect(cardEffectToString(e)).toBe(s);
   });
 

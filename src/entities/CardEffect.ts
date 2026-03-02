@@ -55,7 +55,7 @@ export type CardEffectPartDrawLimit = CardEffectPart & {
 }
 
 export type CardEffectPart = {
-  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect' | 'downCard' | 'glimpse' | 'drawLimit';
+  type: 'text' | 'damage' | 'quell' | 'card' | 'tag' | 'flip' | 'scrapped' | 'aspect' | 'downCard' | 'glimpse' | 'drawLimit' | 'voided';
 }
 
 export function defaultHideCardEffect(effect: CardEffect): CardEffect {
