@@ -79,7 +79,7 @@ export default function CardTagLike({
             }}
             aria-hidden="true"
           />
-          <span className={styles.auraNumber}>
+          <span className={`${styles.auraNumber} ${auraNumber === 1 ? styles.auraNumber1 : ''} ${auraNumber === 9 ? styles.auraNumber9 : ''}`}>
             {auraNumber}
           </span>
         </span>

@@ -430,6 +430,8 @@ function EditCardInner({
       setLoading(false);
     }
   };
+  
+  console.log('drawLimit:', card.type === 'deck' ? (card as VersionedDeckCard).drawLimit : 'N/A');
 
   return (
     <DSSection>
@@ -531,7 +533,7 @@ function EditCardInner({
         {card.type === "deck" &&
           <DSSelect
             label="Draw Limit"
-            options={[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ label: n.toString(), value: n }))}
+            options={[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ label: n === -1 ? "*" : n.toString(), value: n }))}
             value={card.drawLimit}
             onChange={(value) => update("drawLimit", value)}
           />
