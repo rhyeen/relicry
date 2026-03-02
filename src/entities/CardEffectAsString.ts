@@ -100,6 +100,8 @@ export function cardPartToString(part: CardEffectPart): string {
       return 'FLIP';
     case 'scrapped':
       return 'SCRAPPED';
+    case 'voided':
+      return 'VOIDED';
     case 'downCard':
       return 'DC';
     case 'glimpse': {
@@ -124,7 +126,7 @@ export function cardPartToString(part: CardEffectPart): string {
  * - Optional aura:
  *    AURA (N) | AURA (FROM-TO)
  * - Parts (rest of tokens):
- *    <text> | <n>D | <n>Q | <n>C | <n>+C | C | +C | FLIP | SCRAPPED | (R)|(G)|(B)|(Y) | <TAG>
+ *    <text> | <n>D | <n>Q | <n>C | <n>+C | C | +C | FLIP | SCRAPPED | VOIDED | (R)|(G)|(B)|(Y) | <TAG>
  *
  * Notes:
  * - "text" parts are any tokens not matching other patterns.
@@ -267,6 +269,14 @@ export function stringToCardEffect(text: string, options?: {
       );
       continue;
     }
+    if (basic === 'VOIDED' || core === 'VOIDED') {
+      pushPartWithDelimiters(
+        t,
+        basic === 'VOIDED' ? basic : core,
+        { type: 'voided' } as CardEffectPart,
+      );
+      continue;
+    }
 
     const aspectToken = aspectFromToken(t) ? t : (aspectFromToken(basic) ? basic : undefined);
     const asp = aspectToken ? aspectFromToken(aspectToken) : undefined;
@@ -364,6 +374,7 @@ export function stringToCardEffect(text: string, options?: {
       // core !== 'REACT' &&
       core !== 'FLIP' &&
       core !== 'SCRAPPED' &&
+      core !== 'VOIDED' &&
       core !== 'TURNEND?' &&
       core !== 'DRAWEND?';
 

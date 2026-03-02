@@ -101,6 +101,14 @@ export default function CardEffectParts({
             }} />
           </span>
         );
+      case 'voided':
+        return (
+          <span className={styles.voidedPart}>
+            <span className={styles.voidedPartSymbol} style={{
+              backgroundImage: `url(${assetURL(ctx, 'part/voided.1.png')})`,
+            }} />
+          </span>
+        );
       case 'scrapped':
         return (
           <span className={styles.scrappedPart}>

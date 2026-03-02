@@ -17,6 +17,7 @@
 .damagePart,
 .flipPart,
 .scrappedPart,
+.voidedPart,
 .quellPart,
 .aspectPart {
   position: relative;
@@ -32,6 +33,7 @@
 .damagePartSymbol,
 .flipPartSymbol,
 .scrappedPartSymbol,
+.voidedPartSymbol,
 .quellPartSymbol,
 .aspectPartSymbol {
   content: '';
@@ -98,6 +100,15 @@
 
 .scrappedPart {
   width: 22px;
+}
+
+.voidedPartSymbol {
+  aspect-ratio: 50 / 61;
+  margin-top: -3px;
+}
+
+.voidedPart {
+  width: 32px;
 }
 
 .flipPartSymbol {
