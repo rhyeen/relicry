@@ -1,7 +1,7 @@
 // cardEffectString.test.ts
 import { describe, expect, it } from 'vitest';
 import { Aspect } from '../Aspect';
-import { auraToString, conditionalToString, cardPartToString, cardEffectToString, stringToCardEffect } from '../CardEffectAsString';
+import { auraToString, rageToString, conditionalToString, cardPartToString, cardEffectToString, stringToCardEffect } from '../CardEffectAsString';
 import { Conditional } from '../Conditional';
 import { CardEffect, CardEffectPart, CardEffectPartCard, CardEffectPartDamage, CardEffectPartDrawLimit, CardEffectPartGlimpse, CardEffectPartQuell, CardEffectPartTag, CardEffectPartText } from '../CardEffect';
 
@@ -12,6 +12,12 @@ describe('card effect string helpers', () => {
     expect(auraToString({ from: 2, to: 5 })).toBe('AURA (2-5)');
   });
 
+  it('rageToString() handles undefined, number, and range', () => {
+    expect(rageToString(undefined)).toBe('');
+    expect(rageToString(3)).toBe('RAGE (3)');
+    expect(rageToString({ from: 2, to: 5 })).toBe('RAGE (2-5)');
+  });
+
   it('conditionalToString() formats known conditionals', () => {
     expect(conditionalToString(Conditional.Pvp)).toBe('PVP?');
     expect(conditionalToString(Conditional.Solo)).toBe('SOLO?');
@@ -19,6 +25,7 @@ describe('card effect string helpers', () => {
     expect(conditionalToString(Conditional.React)).toBe('REACT');
     expect(conditionalToString(Conditional.TurnEnd)).toBe('TURNEND?');
     expect(conditionalToString(Conditional.DrawEnd)).toBe('DRAWEND?');
+    expect(conditionalToString(Conditional.Scrap)).toBe('S?');
   });
 
   it('cardPartToString() formats all part types', () => {
@@ -72,6 +79,18 @@ describe('card effect string helpers', () => {
 
     // Round-trip
     expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() parses rage number and range', () => {
+    const numberText = 'RAGE (4) 2D';
+    const rangeText = 'RAGE (1-3) FLIP';
+    const numberEffect = stringToCardEffect(numberText);
+    const rangeEffect = stringToCardEffect(rangeText);
+
+    expect(numberEffect.rage).toBe(4);
+    expect(rangeEffect.rage).toEqual({ from: 1, to: 3 });
+    expect(cardEffectToString(numberEffect)).toBe(numberText);
+    expect(cardEffectToString(rangeEffect)).toBe(rangeText);
   });
 
   it('stringToCardEffect() parses multi-token conditionals and aura range', () => {

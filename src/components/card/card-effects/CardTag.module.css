@@ -53,6 +53,17 @@
   background-position: top right;
 }
 
+.prependImage {
+  content: '';
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  display: inline-block;
+  height: 15px;
+  margin-bottom: -1px;
+  margin-right: 1.5px;
+}
+
 .whiteText {
   color: white;
 }
@@ -64,11 +75,13 @@
   font-weight: 400;
 }
 
-.tagAuraNumberSpacer {
+.tagAuraNumberSpacer,
+.tagRageNumberSpacer {
   padding-left: 22px;
 }
 
-.tagAuraNumber {
+.tagAuraNumber,
+.tagRageNumber {
   position: absolute;
   right: 15px;
   bottom: -1px;
@@ -78,7 +91,8 @@
   color: black;
 }
 
-.auraNumberIcon {
+.auraNumberIcon,
+.rageNumberIcon {
   position: absolute;
   width: 28px;
   left: -8.5px;
@@ -89,15 +103,18 @@
   pointer-events: none;
 }
 
-.auraNumber {
+.auraNumber,
+.rageNumber {
   position: relative;
 }
 
-.auraNumber1 {
+.auraNumber1,
+.rageNumber1 {
   margin-left: 2px;
 }
 
-.auraNumber9 {
+.auraNumber9,
+.rageNumber9 {
   margin-left: 1px;
 }
 

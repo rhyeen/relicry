@@ -431,8 +431,6 @@ function EditCardInner({
     }
   };
   
-  console.log('drawLimit:', card.type === 'deck' ? (card as VersionedDeckCard).drawLimit : 'N/A');
-
   return (
     <DSSection>
       <DSLoadingOverlay loading={loading} error={saveError} dismissError={setSaveError} />

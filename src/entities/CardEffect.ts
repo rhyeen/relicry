@@ -9,6 +9,11 @@ export type CardEffect = {
     from: number;
     to: number;
   };
+  rage?: number | {
+    // @NOTE: These are only used for Apex.type === 'hidden'
+    from: number;
+    to: number;
+  };
   parts: CardEffectPart[];
 }
 
@@ -60,9 +65,11 @@ export type CardEffectPart = {
 
 export function defaultHideCardEffect(effect: CardEffect): CardEffect {
   const auraRange = typeof effect.aura === 'number' ? defaultAuraRange(effect.aura) : effect.aura;
+  const rageRange = typeof effect.rage === 'number' ? defaultAuraRange(effect.rage) : effect.rage;
   return {
     conditionals: [...effect.conditionals],
     aura: auraRange,
+    rage: rageRange,
     parts: [],
   };
 }

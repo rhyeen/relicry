@@ -10,6 +10,10 @@
   column-gap: 6px;
 }
 
+.part {
+  height: 32px;
+}
+
 .cardPart,
 .cardPartPlus,
 .glimpsePart,

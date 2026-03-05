@@ -9,6 +9,14 @@
     #e7f9bd 55%,
     #f9fcde 80%
   );
+  
+  --rageGradient: linear-gradient(
+    90deg,
+    #ff834a 0%,
+    #fd6ae7 30%,
+    #f550a0 55%,
+    #d13a32 80%
+  );
 
   --soloGradient: linear-gradient(
     90deg,
@@ -73,6 +81,19 @@
     115deg,
     #2d440b 0%,
     #71a101 60%
+  );
+
+  --scrapGradient: linear-gradient(
+    90deg,
+    #a19e85 0%,
+    #cabea2 30%,
+    #e5e0d2 70%,
+    #F4F3F2 100%
+  );
+  --scrapGradientLeft: linear-gradient(
+    115deg,
+    #8c8a7a 0%,
+    #a19e85 60%
   );
 
   --turnEndGradient: linear-gradient(
