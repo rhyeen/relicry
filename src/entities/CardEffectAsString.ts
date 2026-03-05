@@ -29,7 +29,8 @@ export function cardEffectToString(effect: CardEffect, options?: {
       return `${result} ${partText}`;
     }, '');
   const auraString = auraToString(effect.aura);
-  let result = [conditionalsString, auraString, partsString]
+  const rageString = rageToString(effect.rage);
+  let result = [conditionalsString, auraString, rageString, partsString]
     .filter((part) => part.length > 0)
     .join(' ');
   if (!options?.permitEndingSpace) {
@@ -48,6 +49,16 @@ export function auraToString(
   return `AURA (${aura.from}-${aura.to})`;
 }
 
+export function rageToString(
+  rage: number | { from: number; to: number } | undefined,
+): string {
+  if (!rage) return '';
+  if (typeof rage === 'number') {
+    return `RAGE (${rage})`;
+  }
+  return `RAGE (${rage.from}-${rage.to})`;
+}
+
 export function conditionalToString(conditional: Conditional): string {
   switch (conditional) {
     case Conditional.Pvp:
@@ -62,6 +73,8 @@ export function conditionalToString(conditional: Conditional): string {
       return 'DRAWEND?';
     case Conditional.React:
       return 'REACT';
+    case Conditional.Scrap:
+      return 'S?';
     default:
       return '???';
   }
@@ -122,9 +135,11 @@ export function cardPartToString(part: CardEffectPart): string {
  *
  * Grammar (whitespace-separated tokens):
  * - Conditionals (prefix, repeatable):
- *    PVP? | SOLO? | INF? | REACT | TURNEND? | DRAWEND?
+ *    PVP? | SOLO? | INF? | REACT | TURNEND? | DRAWEND? | S?
  * - Optional aura:
  *    AURA (N) | AURA (FROM-TO)
+ * - Optional rage:
+ *    RAGE (N) | RAGE (FROM-TO)
  * - Parts (rest of tokens):
  *    <text> | <n>D | <n>Q | <n>C | <n>+C | C | +C | FLIP | SCRAPPED | VOIDED | (R)|(G)|(B)|(Y) | <TAG>
  *
@@ -137,7 +152,7 @@ export function stringToCardEffect(text: string, options?: {
 }): CardEffect {
   text = text.trim();
   if (!text) {
-    return { conditionals: [], aura: undefined, parts: [] } as CardEffect;
+    return { conditionals: [], aura: undefined, rage: undefined, parts: [] } as CardEffect;
   }
 
   const tokens = text.split(/\s+/);
@@ -180,6 +195,11 @@ export function stringToCardEffect(text: string, options?: {
       i += 1;
       return true;
     }
+    if (t === 'S?') {
+      conditionals.push(Conditional.Scrap);
+      i += 1;
+      return true;
+    }
 
     return false;
   };
@@ -202,6 +222,23 @@ export function stringToCardEffect(text: string, options?: {
     } else {
       // "AURA" present but malformed; treat as text to avoid data loss
       // (and do not consume it as aura)
+    }
+  }
+
+  // Optional rage
+  let rage: number | { from: number; to: number } | undefined;
+
+  if (tokens[i] === 'RAGE') {
+    const next = tokens[i + 1] ?? '';
+    const m = next.match(/^\((\d+)(?:-(\d+))?\)$/);
+    if (m) {
+      const from = Number(m[1]);
+      const to = m[2] ? Number(m[2]) : undefined;
+      rage = typeof to === 'number' ? { from, to } : from;
+      i += 2;
+    } else {
+      // "RAGE" present but malformed; treat as text to avoid data loss
+      // (and do not consume it as rage)
     }
   }
 
@@ -376,7 +413,8 @@ export function stringToCardEffect(text: string, options?: {
       core !== 'SCRAPPED' &&
       core !== 'VOIDED' &&
       core !== 'TURNEND?' &&
-      core !== 'DRAWEND?';
+      core !== 'DRAWEND?' &&
+      core !== 'S?';
 
     if (isAllCaps && Object.values(Tag).includes(core.toLowerCase() as Tag)) {
       pushPartWithDelimiters(
@@ -415,5 +453,5 @@ export function stringToCardEffect(text: string, options?: {
     } as CardEffectPartText);
   }
 
-  return { conditionals, aura, parts } as CardEffect;
+  return { conditionals, aura, rage, parts } as CardEffect;
 }

@@ -5,6 +5,7 @@ import { CardEffect } from '@/entities/CardEffect';
 import CardEffectParts from './CardEffectParts';
 import { CardContext } from '@/entities/CardContext';
 import { cardEffectToString } from '@/entities/CardEffectAsString';
+import CardRage from './CardRage';
 
 type Props = {
   effect: CardEffect;
@@ -37,6 +38,9 @@ export default function CardEffectLine({
         ))}
         {effect.aura !== undefined && (
           <CardAura aura={effect.aura} ctx={ctx} />
+        )}
+        {effect.rage !== undefined && (
+          <CardRage rage={effect.rage} ctx={ctx} />
         )}
       </div>
       <div className={styles.effectParts}>

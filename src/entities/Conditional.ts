@@ -5,6 +5,7 @@ export enum Conditional {
   TurnEnd = 'turnEnd',
   DrawEnd = 'drawEnd',
   React = 'react',
+  Scrap = 'scrap',
 }
 
 const conditionalOrder = [
@@ -14,6 +15,7 @@ const conditionalOrder = [
   Conditional.TurnEnd,
   Conditional.DrawEnd,
   Conditional.React,
+  Conditional.Scrap,
 ];
 
 export function orderConditionals(conditionals: Conditional[]): Conditional[] {

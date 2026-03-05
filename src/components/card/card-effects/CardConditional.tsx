@@ -1,4 +1,4 @@
-import { CardContext } from '@/entities/CardContext';
+import { assetURL, CardContext } from '@/entities/CardContext';
 import CardTagLike from './CardTagLike';
 import { Conditional } from '@/entities/Conditional';
 
@@ -15,6 +15,7 @@ const tagLocaleEn = {
   [Conditional.TurnEnd]: 'Turn End?',
   [Conditional.DrawEnd]: 'Draw End?',
   [Conditional.React]: 'React',
+  [Conditional.Scrap]: '?',
 }
 
 export default function CardConditional({
@@ -34,6 +35,8 @@ export default function CardConditional({
         return 'var(--drawEndGradient)';
       case Conditional.React:
         return 'var(--reactGradient)';
+      case Conditional.Scrap:
+        return 'var(--scrapGradient)';
       default:
         throw new Error(`Unknown conditional: ${conditional}`);
     }
@@ -53,6 +56,8 @@ export default function CardConditional({
         return 'var(--drawEndGradientLeft)';
       case Conditional.React:
         return 'var(--reactGradientLeft)';
+      case Conditional.Scrap:
+        return 'var(--scrapGradientLeft)';
       default:
         throw new Error(`Unknown conditional: ${conditional}`);
     }
@@ -65,6 +70,13 @@ export default function CardConditional({
       straightLeftLong={straightLeft}
       backgroundColor={getBackgroundColor()}
       straightLeftColor={getStraightLeftColor()}
+      prependImage={
+        conditional === Conditional.Scrap ? {
+          url: assetURL(ctx, 'scrap/scrap-condition.1.png'),
+          width: 20,
+          height: 28,
+        } : undefined
+      }
       ctx={ctx}
     />
   );

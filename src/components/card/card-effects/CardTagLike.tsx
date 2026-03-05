@@ -10,6 +10,12 @@ type Props = {
   straightLeftColor?: string;
   whiteText?: boolean;
   auraNumber?: number;
+  rageNumber?: number;
+  prependImage?: {
+    url: string;
+    width: number;
+    height: number;
+  };
   add?: '0' | '1/2';
   ctx: CardContext;
 }
@@ -23,6 +29,8 @@ export default function CardTagLike({
   straightLeftColor,
   whiteText = false,
   auraNumber,
+  rageNumber,
+  prependImage,
   add,
   ctx,
 }: Props) {
@@ -56,6 +64,16 @@ export default function CardTagLike({
           }}
           aria-hidden="true"
         />
+        {prependImage &&
+          <span
+            className={styles.prependImage}
+            style={{
+              backgroundImage: `url(${prependImage.url})`,
+              aspectRatio: `${prependImage.width} / ${prependImage.height}`,
+            }}
+            aria-hidden="true"
+          />
+        }
         {locale}
         {add === '1/2' &&
           <span className={styles.addHalf} aria-label=" ½">
@@ -67,6 +85,7 @@ export default function CardTagLike({
         }
         {(add === '0') && <span className={styles.addZero} aria-label=" 0"> 0</span>}
         {auraNumber !== undefined && <span className={styles.tagAuraNumberSpacer} />}
+        {rageNumber !== undefined && <span className={styles.tagRageNumberSpacer} />}
       </span>
       {auraNumber !== undefined &&
         <span
@@ -81,6 +100,22 @@ export default function CardTagLike({
           />
           <span className={`${styles.auraNumber} ${auraNumber === 1 ? styles.auraNumber1 : ''} ${auraNumber === 9 ? styles.auraNumber9 : ''}`}>
             {auraNumber}
+          </span>
+        </span>
+      }
+      {rageNumber !== undefined &&
+        <span
+          className={styles.tagRageNumber}
+        >
+          <span
+            className={styles.rageNumberIcon}
+            style={{
+              backgroundImage: `url(${assetURL(ctx, 'rage.1.png')})`,
+            }}
+            aria-hidden="true"
+          />
+          <span className={`${styles.rageNumber} ${rageNumber === 1 ? styles.rageNumber1 : ''} ${rageNumber === 9 ? styles.rageNumber9 : ''}`}>
+            {rageNumber}
           </span>
         </span>
       }
