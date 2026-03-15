@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "npm run dev:next",
-    "local": "concurrently -n NEXT,EMU \"npm run dev:next\" \"npm run emulators:start\"",
+    "local": "concurrently -n NEXT,EMU \"npm run dev:next:local\" \"npm run emulators:start\"",
     "dev:next": "next dev",
+    "dev:next:local": "NEXT_PUBLIC_USE_FIREBASE_EMULATORS=1 npm run dev:next",
     "print": "NEXT_PUBLIC_DISABLE_DEV_INDICATOR=1 npm run local:devbackend",
     "local:devbackend": "NEXT_PUBLIC_NO_EMULATOR=1 npm run dev:next",
     "build": "next build",
