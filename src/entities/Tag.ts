@@ -15,9 +15,11 @@ export enum Tag {
   Weapon = 'weapon',
   Armor = 'armor',
   React = 'react',
+  Rage = 'rage',
+  Aura = 'aura',
 }
 
-const tagOrder = [
+const tagOrder: readonly Tag[] = [
   Tag.Focus,
   Tag.Gambit,
   Tag.Item,
@@ -33,11 +35,16 @@ const tagOrder = [
   Tag.Favor,
   Tag.Weapon,
   Tag.Armor,
-  // @NOTE: React is intentionally not included as its only shown in card effects, like Force Field.
+  // @NOTE: React, rage, aura are intentionally not included as its only shown in card effects, like Force Field.
 ];
+
+const notTags: readonly Tag[] = [Tag.React, Tag.Rage, Tag.Aura];
 
 export function orderTags(tags?: Tag[], cardType?: "deck" | "focus" | "gambit"): Tag[] {
   return (tags ?? Object.values(Tag)).filter(tag => {
+    if (notTags.includes(tag)) {
+      return false;
+    }
     if (cardType === 'deck') {
       return tag !== Tag.Focus && tag !== Tag.Gambit;
     } else if (cardType === 'focus') {

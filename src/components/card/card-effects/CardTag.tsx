@@ -25,6 +25,8 @@ const tagLocaleEn = {
   [Tag.Weapon]: 'Weapon',
   [Tag.Armor]: 'Armor',
   [Tag.React]: 'React',
+  [Tag.Rage]: 'Rage',
+  [Tag.Aura]: 'Aura',
 }
 
 export default function CardTag({
@@ -64,6 +66,10 @@ export default function CardTag({
         return '#fe5fcc';
       case Tag.React:
         return 'var(--reactGradient)';
+      case Tag.Rage:
+        return 'var(--rageGradient)';
+      case Tag.Aura:
+        return 'var(--auraGradient)';
       default:
         throw new Error(`Unknown tag: ${tag}`);
     }

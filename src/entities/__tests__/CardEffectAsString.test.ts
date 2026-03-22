@@ -221,6 +221,32 @@ describe('card effect string helpers', () => {
     expect(cardEffectToString(e)).toBe(s);
   });
 
+  it('stringToCardEffect() treats AURA and RAGE as tags outside their prefix slots', () => {
+    const s = 'Deal AURA RAGE 2D';
+    const e = stringToCardEffect(s);
+
+    expect(e.aura).toBeUndefined();
+    expect(e.rage).toBeUndefined();
+    expect(e.parts.map((p) => p.type)).toEqual(['text', 'tag', 'tag', 'damage']);
+    expect((e.parts[1] as CardEffectPartTag).tag).toBe('aura');
+    expect((e.parts[2] as CardEffectPartTag).tag).toBe('rage');
+
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('stringToCardEffect() treats malformed leading AURA and RAGE as tags', () => {
+    const auraEffect = stringToCardEffect('AURA ABILITY');
+    const rageEffect = stringToCardEffect('RAGE WEAPON');
+
+    expect(auraEffect.aura).toBeUndefined();
+    expect(auraEffect.parts.map((p) => p.type)).toEqual(['tag', 'tag']);
+    expect((auraEffect.parts[0] as CardEffectPartTag).tag).toBe('aura');
+
+    expect(rageEffect.rage).toBeUndefined();
+    expect(rageEffect.parts.map((p) => p.type)).toEqual(['tag', 'tag']);
+    expect((rageEffect.parts[0] as CardEffectPartTag).tag).toBe('rage');
+  });
+
   it('stringToCardEffect() trims and normalizes whitespace', () => {
     const s = '  PVP?   AURA (3)   2D   FLIP  ';
     const e = stringToCardEffect(s);
