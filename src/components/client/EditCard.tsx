@@ -5,6 +5,7 @@ import { Aspect, orderAspects, orderComboAspects } from "@/entities/Aspect";
 import { orderRarities, Rarity } from "@/entities/Rarity";
 import { orderTags, Tag } from "@/entities/Tag";
 import { getCardDocId, Card as ExtendableCard, VersionedCard, VersionedDeckCard, VersionedFocusCard, Version, VersionedGambitCard } from "@/entities/Card";
+import { canHaveCardSubtitle, getCardSubtitleError, getCardTitleError, requiresCardSubtitle, shouldPersistCardSubtitle } from "@/entities/CardValidation";
 import DSForm from "@/components/ds/DSForm";
 import DSSection from "@/components/ds/DSSection";
 import DSField, { fromDateOnlyString, toDateOnlyString } from "@/components/ds/DSField";
@@ -44,18 +45,6 @@ const FormErrors = {
       error = undefined;
     }
     return error;
-  },
-  getSubtitleError: (rarity: Rarity, subTitle: string | undefined): string | undefined => {
-    if ([Rarity.Epic, Rarity.Legendary].includes(rarity) && !subTitle?.trim()) {
-      return "SubTitle is required for Epic and Legendary cards.";
-    }
-    return undefined;
-  },
-  getTitleError: (title: string): string | undefined => {
-    if (!title.trim()) {
-      return "Title is required.";
-    }
-    return undefined;
   },
   getVersionError: (version: number): string | undefined => {
     if (isNaN(version) || !Number.isInteger(version)) {
@@ -356,6 +345,7 @@ function EditCardInner({
   };
 
   const getFinalVersion = (card: VersionedCard): Version => {
+    const trimmedSubtitle = card.subTitle?.trim();
     return {
       version: card.version,
       season: card.isSample ? card.season * -1 : card.season,
@@ -375,8 +365,8 @@ function EditCardInner({
           }
         : undefined,
       subTitle:
-        [Rarity.Epic, Rarity.Legendary].includes(card.rarity) && card.subTitle?.trim()
-          ? card.subTitle
+        shouldPersistCardSubtitle(card) && trimmedSubtitle
+          ? trimmedSubtitle
           : undefined,
       revealedAt: card.revealedAt ? new Date(card.revealedAt) : null,
       revealedContext: card.revealedContext?.trim() ? card.revealedContext : undefined,
@@ -390,11 +380,13 @@ function EditCardInner({
 
   const onSave = async () => {
     if (!authUser.ready || !authUser.user || loading) return;
+    const hasIdentityErrors =
+      !!getCardTitleError(card) ||
+      !!getCardSubtitleError(card);
     const hasErrors = card.isSample
-      ? false
+      ? !!getCardTitleError(card)
       : !!FormErrors.tagsError(card.tags) ||
-        !!FormErrors.getTitleError(card.title) ||
-        !!FormErrors.getSubtitleError(card.rarity, card.subTitle) ||
+        hasIdentityErrors ||
         !!FormErrors.getVersionError(card.version);
 
     if (hasErrors) {
@@ -644,16 +636,16 @@ function EditCardInner({
           value={card.title}
           onChange={(value) => update("title", value)}
           required={!card.isSample}
-          error={saveAttempted ? FormErrors.getTitleError(card.title) : undefined}
+          error={saveAttempted ? getCardTitleError(card) : undefined}
         />
 
-        {[Rarity.Epic, Rarity.Legendary].includes(card.rarity) && (
+        {canHaveCardSubtitle(card) && (
           <DSField
             label="Subtitle"
             value={card.subTitle || ""}
             onChange={(value) => update("subTitle", value)}
-            required={!card.isSample}
-            error={saveAttempted ? FormErrors.getSubtitleError(card.rarity, card.subTitle) : undefined}
+            required={!card.isSample && requiresCardSubtitle(card)}
+            error={saveAttempted ? getCardSubtitleError(card) : undefined}
           />
         )}
 

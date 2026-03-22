@@ -1,9 +1,10 @@
 import { AdminRole } from '@/entities/AdminRole';
 import { VersionedCard } from '@/entities/Card';
+import { getCardSubtitleError, getCardTitleError } from '@/entities/CardValidation';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { invalidateCardSoon } from '@/server/cache/card.cache';
 import { CardDB } from '@/server/db/card.db';
-import { authenticateUser, handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
+import { authenticateUser, handleJsonResponse, handleRouteError, NextResponseError } from '@/server/routeHelpers';
 
 export async function POST(req: Request) {
   try {
@@ -12,6 +13,14 @@ export async function POST(req: Request) {
     });
     const body = await req.json();
     const card = body.card as VersionedCard;
+    const titleError = getCardTitleError(card);
+    if (!card.isSample && titleError) {
+      throw new NextResponseError(titleError, 400);
+    }
+    const subtitleError = getCardSubtitleError(card);
+    if (!card.isSample && subtitleError) {
+      throw new NextResponseError(subtitleError, 400);
+    }
     const db = new CardDB(getFirestoreAdmin());
     if (!card.id) {
       card.id = await db.generateId(card.isSample);

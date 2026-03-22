@@ -77,6 +77,12 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] AURA for damage
 - [x] Multiline rowgap for TURN END? of Arcane Focus is too wide when the line wraps like that.
 - [x] Fulfill all extra cases mentioned in notes document (up/down arrow, augmenting, etc.)
+- [ ] Versatile (up to 10D). isn't spaced correctly because of the period.
+- [ ] RAGE (1) isn't centered. Check the other numbers too
+- [ ] Make "stashed" an icon like SCRAPPED, and VOIDED (no because there is also buried, glimpsed, drawn and many others)
+- [ ] Make AURA and RAGE tags like REACT then update the card effects that use them.
+- [ ] Fix gambits so they all have title/subtitle (fix Potion of Clarity as well) then make the rest of the gambits.
+- [ ] Determining if to center something should be more about if the period exists at the end or not and if only one line is present without condition.
 - [ ] Create 200+ cards: at least 50 for each aspect (with some shared aspects), 4 gambits, and 3 of each focus aspects.
 - [ ] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify their personal pin code when they scan to ensure it isn't a fake QR code leading to a phishing website. Need a way to generate X number of these quests for a given event, then iterate through them to print out the cards.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
