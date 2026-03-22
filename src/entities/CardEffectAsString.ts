@@ -400,15 +400,18 @@ export function stringToCardEffect(text: string, options?: {
     }
 
     // Tag part heuristic: all-caps word (A-Z/0-9/_/-), not a known keyword.
+    // Keywords that are only special in the leading conditional/aura/rage slots
+    // can still be treated as tags once they appear in the effect body.
     // Store lowercased because cardPartToString uppercases it.
     const isAllCaps =
       /^[A-Z0-9][A-Z0-9_-]*$/.test(core) &&
-      core !== 'AURA' &&
       core !== 'PVP?' &&
       core !== 'SOLO?' &&
       core !== 'INF?' &&
       // @NOTE: Can be a tag if used in a card effect.
       // core !== 'REACT' &&
+      // core !== 'RAGE' &&
+      // core !== 'AURA' &&
       core !== 'FLIP' &&
       core !== 'SCRAPPED' &&
       core !== 'VOIDED' &&
