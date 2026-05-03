@@ -294,5 +294,13 @@ describe('card effect string helpers', () => {
     expect((e.parts[6] as CardEffectPartText).text).toBe(');');
     expect((e.parts[8] as CardEffectPartDamage).amount).toBe(5);
     expect((e.parts[9] as CardEffectPartText).text).toBe('.');
+    expect(cardEffectToString(e)).toBe(s);
+  });
+
+  it('cardEffectToString() preserves parenthetical damage clauses without extra spaces', () => {
+    const s = 'TURNEND? For every (B), (Y), or (G) you have, deal 2D (up to 10D).';
+    const e = stringToCardEffect(s);
+
+    expect(cardEffectToString(e)).toBe(s);
   });
 });

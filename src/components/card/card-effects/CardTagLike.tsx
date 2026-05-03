@@ -98,7 +98,7 @@ export default function CardTagLike({
             }}
             aria-hidden="true"
           />
-          <span className={`${styles.auraNumber} ${auraNumber === 1 ? styles.auraNumber1 : ''} ${auraNumber === 9 ? styles.auraNumber9 : ''}`}>
+          <span className={`${styles.auraNumber} ${styles['auraNumber' + auraNumber]}`}>
             {auraNumber}
           </span>
         </span>
@@ -114,7 +114,7 @@ export default function CardTagLike({
             }}
             aria-hidden="true"
           />
-          <span className={`${styles.rageNumber} ${rageNumber === 1 ? styles.rageNumber1 : ''} ${rageNumber === 9 ? styles.rageNumber9 : ''}`}>
+          <span className={`${styles.rageNumber} ${styles['rageNumber' + rageNumber]}`}>
             {rageNumber}
           </span>
         </span>

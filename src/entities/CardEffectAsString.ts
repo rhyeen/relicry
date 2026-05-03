@@ -18,12 +18,15 @@ export function cardEffectToString(effect: CardEffect, options?: {
   permitEndingSpace?: boolean;
 }): string {
   const conditionalsString = effect.conditionals.map(conditionalToString).join(' ');
+  const isAttachedSuffix = (value: string): boolean => /^[.,;:!?'"%)}\]]+$/.test(value);
+  const endsWithOpeningDelimiter = (value: string): boolean => /[(\[{'"`<]$/.test(value);
   const partsString = effect.parts
     .map((part) => cardPartToString(part))
     .reduce((result, partText, index) => {
       if (index === 0) return partText;
-      // Keep punctuation tokens attached to the previous token (e.g. "3D.")
-      if (/^[.,;:!?'"%)}\]]+$/.test(partText)) {
+      // Keep suffix punctuation attached to the previous token (e.g. "3D.")
+      // and keep tokens attached after an opening delimiter (e.g. "(WEAPON").
+      if (isAttachedSuffix(partText) || endsWithOpeningDelimiter(result)) {
         return `${result}${partText}`;
       }
       return `${result} ${partText}`;
