@@ -18,6 +18,7 @@ import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { Aspect } from '@/entities/Aspect';
 import { Suspense } from 'react';
+import { connection } from 'next/server';
 import CardsToolbarClient from './CardsToolbar';
 import styles from './page.module.css';
 
@@ -85,6 +86,7 @@ async function CardsToolbar({ searchParams }: CardsPageProps) {
 }
 
 async function CardsPageData({ searchParams }: CardsPageProps) {
+  await connection();
   const [cards, resolvedSearchParams] = await Promise.all([getCards(), searchParams]);
   const filters = parseCardsFilters(resolvedSearchParams);
   const result = filterAndPaginateCards(cards, filters);

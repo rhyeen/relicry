@@ -2,6 +2,9 @@ import "server-only";
 import admin from "firebase-admin";
 import { isEmulated } from './environment';
 
+const FIREBASE_PROJECT_ID = 'relicry-prod';
+const FIREBASE_STORAGE_BUCKET = 'relicry-prod.firebasestorage.app';
+
 type FirebaseAdminAppParams = {
   projectId: string;
   clientEmail: string;
@@ -23,19 +26,44 @@ function formatPrivateKey(key: string) {
   return key.replace(/\\n/g, "\n");
 }
 
+function hasEnvValue(value: string | undefined): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function getFirebaseAdminAppParams(): FirebaseAdminAppParams {
+  const clientEmail = process.env.RC_FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.RC_FIREBASE_PRIVATE_KEY;
+  const missing: string[] = [];
+
+  if (!hasEnvValue(clientEmail)) {
+    missing.push('RC_FIREBASE_CLIENT_EMAIL');
+  }
+
+  if (!hasEnvValue(privateKey)) {
+    missing.push('RC_FIREBASE_PRIVATE_KEY');
+  }
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing Firebase Admin environment variable${missing.length === 1 ? '' : 's'}: ${missing.join(', ')}. ` +
+      'If this is happening during deploy, make sure Firebase-backed pages render at request time rather than during the Next.js build.'
+    );
+  }
+
+  return {
+    projectId: FIREBASE_PROJECT_ID,
+    clientEmail: (clientEmail || '').trim(),
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    privateKey: (privateKey || '').trim(),
+  };
+}
+
 // Singleton pattern to ensure the app is initialized only once
 let firebaseAdminApp: admin.app.App | null = null;
 
 function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
-  const privateKey = formatPrivateKey(params.privateKey);
-
   if (!firebaseAdminApp) {
     ensureEmulatorEnv();
-    const cert = admin.credential.cert({
-      projectId: params.projectId,
-      clientEmail: params.clientEmail,
-      privateKey,
-    });
 
     // if already initialized, use that one
     if (admin.apps.length > 0) {
@@ -43,11 +71,20 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
       return firebaseAdminApp;
     }
 
-    firebaseAdminApp = admin.initializeApp({
-      credential: cert,
+    const appOptions: admin.AppOptions = {
       projectId: params.projectId,
       storageBucket: params.storageBucket,
-    });
+    };
+
+    if (!isEmulated) {
+      appOptions.credential = admin.credential.cert({
+        projectId: params.projectId,
+        clientEmail: params.clientEmail,
+        privateKey: formatPrivateKey(params.privateKey),
+      });
+    }
+
+    firebaseAdminApp = admin.initializeApp(appOptions);
   }
 
   return firebaseAdminApp;
@@ -55,14 +92,16 @@ function initializeFirebaseAdminApp(params: FirebaseAdminAppParams) {
 
 // Initialize Firebase Admin app with environment variables
 function initAdmin() {
-  const params = {
-    projectId: "relicry-prod",
-    clientEmail: process.env.RC_FIREBASE_CLIENT_EMAIL as string || '',
-    storageBucket: "relicry-prod.firebasestorage.app",
-    privateKey: process.env.RC_FIREBASE_PRIVATE_KEY as string || '',
-  };
+  if (isEmulated) {
+    return initializeFirebaseAdminApp({
+      projectId: FIREBASE_PROJECT_ID,
+      clientEmail: '',
+      storageBucket: FIREBASE_STORAGE_BUCKET,
+      privateKey: '',
+    });
+  }
 
-  return initializeFirebaseAdminApp(params);
+  return initializeFirebaseAdminApp(getFirebaseAdminAppParams());
 }
 
 export function getAppAdmin(): admin.app.App {
