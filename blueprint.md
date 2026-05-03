@@ -77,10 +77,12 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] AURA for damage
 - [x] Multiline rowgap for TURN END? of Arcane Focus is too wide when the line wraps like that.
 - [x] Fulfill all extra cases mentioned in notes document (up/down arrow, augmenting, etc.)
-- [ ] Versatile (up to 10D). isn't spaced correctly because of the period.
+- [ ] Versatile (up to 10D). isn't spaced correctly because of the period. Even the `deal 2D(up...` looks wrong with no space between the D and paranthesis.
+
+TURNEND? For every (B), (Y), or (G) you have, deal 2D (up to 10D).
+
 - [ ] RAGE (1) isn't centered. Check the other numbers too
-- [ ] Make "stashed" an icon like SCRAPPED, and VOIDED (no because there is also buried, glimpsed, drawn and many others)
-- [ ] Make AURA and RAGE tags like REACT then update the card effects that use them.
+- [x] Make AURA and RAGE tags like REACT then update the card effects that use them.
 - [ ] Fix gambits so they all have title/subtitle (fix Potion of Clarity as well) then make the rest of the gambits.
 - [ ] Determining if to center something should be more about if the period exists at the end or not and if only one line is present without condition.
 - [ ] Create 200+ cards: at least 50 for each aspect (with some shared aspects), 4 gambits, and 3 of each focus aspects.

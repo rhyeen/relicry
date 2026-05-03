@@ -3,6 +3,8 @@ import { RootDB } from './root.db';
 import { generateCardId, getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
 
 export class CardDB extends RootDB<VersionedCard> {
+  private static readonly FEATURED_BATCH_SIZE = 200;
+
   constructor(
     firestoreAdmin: FirebaseFirestore.Firestore,
   ) {
@@ -17,11 +19,23 @@ export class CardDB extends RootDB<VersionedCard> {
     entities: VersionedCard[];
     index: number;
   }> {
-    const entities = await this.getBy({
-      where: [ { field: 'isFeatured', op: '==', value: true } ],
-      sortBy: { field: 'revealedAt', direction: 'desc' },
-      limit: 100,
-    });
+    const entities: VersionedCard[] = [];
+    let offset = 0;
+
+    while (true) {
+      const page = await this.getBy({
+        where: [{ field: 'isFeatured', op: '==', value: true }],
+        sortBy: { field: 'revealedAt', direction: 'desc' },
+        limit: CardDB.FEATURED_BATCH_SIZE,
+        offset,
+      });
+      entities.push(...page);
+      if (page.length < CardDB.FEATURED_BATCH_SIZE) {
+        break;
+      }
+      offset += page.length;
+    }
+
     return { entities, index: index + 1 };
   }
 

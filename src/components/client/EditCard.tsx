@@ -12,6 +12,7 @@ import DSField, { fromDateOnlyString, toDateOnlyString } from "@/components/ds/D
 import DSSelect from "@/components/ds/DSSelect";
 import DSSwitch from "@/components/ds/DSSwitch";
 import DSButton from "@/components/ds/DSButton";
+import DSText from "@/components/ds/DSText";
 import DSToggleGroup from "@/components/ds/DSToggleGroup";
 import CardEffectLine from "@/components/card/card-effects/CardEffectLine";
 import { CardType } from "@/entities/CardContext";
@@ -816,7 +817,7 @@ function EditCardInner({
 
         {card.type === "focus" &&
           <>
-            <h1>Awakened Version</h1>
+            <DSText.Heading as="h2" size="xl">Awakened Version</DSText.Heading>
             {card.awakened.effects.map((effect, index) => (
               <Fragment key={index}>
                 <DSField

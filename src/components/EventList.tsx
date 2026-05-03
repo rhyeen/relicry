@@ -1,3 +1,4 @@
+import DSText from './ds/DSText';
 import styles from './EventList.module.css';
 
 const events = [
@@ -30,10 +31,12 @@ export default function EventList() {
       {events.map(event => (
         <div key={event.id} className={styles.eventCard}>
           <div className="flex-grow">
-            <h2 className={styles.eventTitle}>{event.title}</h2>
-            <p className={styles.eventDate}>{new Date(event.date).toLocaleString()}</p>
-            <p className={styles.eventDescription}>{event.description}</p>
-            <p className={styles.eventLocation}>Location: <span className={styles.locationText}>{event.location}</span></p>
+            <DSText.Heading as="h2" size="xl" font="serif" className={styles.eventTitle}>{event.title}</DSText.Heading>
+            <DSText.Caption className={styles.eventDate}>{new Date(event.date).toLocaleString()}</DSText.Caption>
+            <DSText.Body tone="muted" className={styles.eventDescription}>{event.description}</DSText.Body>
+            <DSText.Body weight="medium" className={styles.eventLocation}>
+              Location: <DSText.Body as="span" tone="accent" weight="medium" className={styles.locationText}>{event.location}</DSText.Body>
+            </DSText.Body>
           </div>
         </div>
       ))}

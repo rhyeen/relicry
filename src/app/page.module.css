@@ -37,21 +37,16 @@
   gap: 24px;
 }
 
-.intro h1 {
+.introTitle {
   max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
   line-height: 48px;
   letter-spacing: -2.4px;
-  text-wrap: balance;
   color: var(--text-primary);
 }
 
-.intro p {
+.introCopy {
   max-width: 440px;
-  font-size: 18px;
   line-height: 32px;
-  text-wrap: balance;
   color: var(--text-secondary);
 }
 
@@ -115,7 +110,7 @@ a.secondary {
     gap: 16px;
   }
 
-  .intro h1 {
+  .introTitle {
     font-size: 32px;
     line-height: 40px;
     letter-spacing: -1.92px;

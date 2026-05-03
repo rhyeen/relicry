@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getApex } from '@/server/cache/apex.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { version: string; id: string };
 
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
 export default async function ApexPage({ params }: { params: Promise<Params> }) {
   return (
     <div>
-      <h1>Apex Details</h1>
+      <DSText.Heading as="h1">Apex Details</DSText.Heading>
       <Suspense fallback={<div>Loading apex data...</div>}>
         <ApexPageData params={params} />
       </Suspense>
@@ -44,9 +45,9 @@ async function ApexPageData({ params }: { params: Promise<Params> }) {
 
   return (
     <div>
-      <p>ID: {apex.id}</p>
-      <p>Version: {apex.version}</p>
-      <p>Name: {apex.hidden.title}</p>
+      <DSText.Body tone="muted">ID: {apex.id}</DSText.Body>
+      <DSText.Body tone="muted">Version: {apex.version}</DSText.Body>
+      <DSText.Body tone="muted">Name: {apex.hidden.title}</DSText.Body>
     </div>
   );
 }

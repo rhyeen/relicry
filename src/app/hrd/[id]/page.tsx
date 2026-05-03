@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getHerald } from '@/server/cache/herald.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function HeraldPage(
 ) {
   return (
     <div>
-      <h1>Herald Details</h1>
+      <DSText.Heading as="h1">Herald Details</DSText.Heading>
       <Suspense fallback={<div>Loading herald data...</div>}>
         <HeraldPageData params={params} />
       </Suspense>
@@ -48,8 +49,8 @@ async function HeraldPageData(
 
   return (
     <div>
-      <h1>{herald.userId}</h1>
-      <p>ID: {herald.id}</p>
+      <DSText.Heading as="h2">{herald.userId}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {herald.id}</DSText.Body>
     </div>
   );
 }

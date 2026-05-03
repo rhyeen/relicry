@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getArtist } from '@/server/cache/artist.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function ArtistPage(
 ) {
   return (
     <div>
-      <h1>Artist Details</h1>
+      <DSText.Heading as="h1">Artist Details</DSText.Heading>
       <Suspense fallback={<div>Loading artist data...</div>}>
         <ArtistPageData params={params} />
       </Suspense>
@@ -47,8 +48,8 @@ async function ArtistPageData(
 
   return (
     <div>
-      <h1>{artist.name}</h1>
-      <p>ID: {artist.id}</p>
+      <DSText.Heading as="h2">{artist.name}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {artist.id}</DSText.Body>
     </div>
   );
 }

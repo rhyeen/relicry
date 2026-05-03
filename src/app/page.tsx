@@ -1,4 +1,5 @@
 import Image from "next/image";
+import DSText from "@/components/ds/DSText";
 import styles from "./page.module.css";
 
 export default async function Home() {
@@ -14,8 +15,10 @@ export default async function Home() {
           priority
         />
         <div className={styles.intro}>
-          <h1>Welcome to Relicry</h1>
-          <p>
+          <DSText.Heading as="h1" size="display" className={styles.introTitle}>
+            Welcome to Relicry
+          </DSText.Heading>
+          <DSText.Body size="lg" tone="muted" className={styles.introCopy}>
             Looking for a starting point or more instructions? Head over to{" "}
             <a
               href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
@@ -33,7 +36,7 @@ export default async function Home() {
               Learning
             </a>{" "}
             center.
-          </p>
+          </DSText.Body>
         </div>
         <div className={styles.ctas}>
           <a

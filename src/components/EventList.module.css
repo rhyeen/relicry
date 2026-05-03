@@ -3,14 +3,6 @@
     padding: 2rem 1rem;
 }
 
-.title {
-    font-size: 2.25rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 2rem;
-    font-family: var(--font-pirata-one);
-}
-
 .eventList {
   display: flex;
   flex-direction: column;
@@ -27,23 +19,15 @@
 }
 
 .eventTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  font-family: var(--font-bree-serif);
   margin-bottom: 0.5rem;
 }
 
 .eventDate {
-  color: #9ca3af; /* gray-400 */
   margin-bottom: 1rem;
 }
 
 .eventDescription {
   margin-bottom: 1rem;
-}
-
-.eventLocation {
-  font-weight: bold;
 }
 
 .locationText {

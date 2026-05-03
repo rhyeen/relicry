@@ -1,5 +1,7 @@
 'use client';
 
+import DSButton from "@/components/ds/DSButton";
+import DSText from "@/components/ds/DSText";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo } from "react";
 import styles from './page.module.css';
@@ -41,17 +43,19 @@ function LoginClient() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Welcome to Relicry</h1>
-        <p className={styles.subtitle}>Sign in to continue your adventure.</p>
-        <button
+        <DSText.Heading as="h1" size="display" align="center" className={styles.title}>
+          Welcome to Relicry
+        </DSText.Heading>
+        <DSText.Body tone="muted" align="center" className={styles.subtitle}>
+          Sign in to continue your adventure.
+        </DSText.Body>
+        <DSButton
           onClick={async () => {
             await signInWithGoogle();
             // No redirect here; the effect will run once `user` becomes non-null.
           }}
-          className={`${styles.button} ${styles.goldButton}`}
-        >
-          Sign in with Google
-        </button>
+          label="Sign in with Google"
+        />
       </div>
     </div>
   );

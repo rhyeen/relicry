@@ -5,6 +5,7 @@ import { connection } from 'next/server';
 import FullQuestCard from '@/components/quest/FullQuestCard';
 import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import { CardType } from '@/entities/CardContext';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string, season: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -33,7 +34,7 @@ export default async function QuestPage(
 ) {
   return (
     <div>
-      <h1>Quest Details</h1>
+      <DSText.Heading as="h1">Quest Details</DSText.Heading>
       <Suspense fallback={<div>Loading quest data...</div>}>
         <QuestPageData params={params} searchParams={searchParams} />
       </Suspense>

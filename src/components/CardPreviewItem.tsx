@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import DSText from "@/components/ds/DSText";
 import { Art } from "@/entities/Art";
 import { VersionedCard, VersionedDeckCard } from "@/entities/Card";
 import { ImageSize, ImageStorage } from "@/entities/Image";
 import StoredImage from "@/components/client/StoredImage";
+import styles from "./PreviewItem.module.css";
 
 type CardPreviewItemProps = Readonly<{
   card: VersionedCard;
@@ -29,20 +31,8 @@ export default function CardPreviewItem({ card, art, href }: CardPreviewItemProp
   const subTitle = card.subTitle?.trim();
 
   return (
-    <Link
-      href={href}
-      style={{
-        display: "flex",
-        gap: "12px",
-        padding: "12px",
-        borderRadius: "12px",
-        border: "1px solid #333333",
-        textDecoration: "none",
-        color: "inherit",
-        background: "#000000",
-      }}
-    >
-      <div style={{ width: 60, height: 60, flex: "0 0 60px" }}>
+    <Link href={href} className={styles.root}>
+      <div className={styles.imageWrap}>
         {previewImage ? (
           <StoredImage
             image={previewImage}
@@ -50,34 +40,22 @@ export default function CardPreviewItem({ card, art, href }: CardPreviewItemProp
             alt={title}
           />
         ) : (
-          <div
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: "8px",
-              background: "#19191b",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              color: "#dadada",
-            }}
-          >
-            No art
+          <div className={styles.fallback}>
+            <DSText.Caption>No art</DSText.Caption>
           </div>
         )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ fontWeight: 600 }}>
+      <div className={styles.content}>
+        <DSText.Body as="div" weight="semibold" className={styles.title}>
           {title}
-          {subTitle ? <span style={{ fontWeight: 400 }}> — {subTitle}</span> : null}
-        </div>
-        <div style={{ fontSize: "12px", color: "#555" }}>
+          {subTitle ? <DSText.Body as="span" tone="muted" className={styles.subtitle}>— {subTitle}</DSText.Body> : null}
+        </DSText.Body>
+        <DSText.Caption>
           Rarity: {card.rarity}
-        </div>
-        <div style={{ fontSize: "12px", color: "#555" }}>
+        </DSText.Caption>
+        <DSText.Caption>
           Draw Limit: {drawLimit ?? "—"}
-        </div>
+        </DSText.Caption>
       </div>
     </Link>
   );

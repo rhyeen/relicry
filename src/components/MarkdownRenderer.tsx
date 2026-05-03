@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import DSText from './ds/DSText';
 import styles from './MarkdownRenderer.module.css';
 
 type Props = Readonly<{
@@ -97,12 +98,12 @@ function renderMarkdown(markdown: string): ReactNode[] {
     if (heading) {
       const level = heading[1].length;
       const content = renderInlineMarkdown(heading[2], nextKey('h-inline'));
-      if (level === 1) blocks.push(<h1 key={nextKey('h1')} className={styles.h1}>{content}</h1>);
-      if (level === 2) blocks.push(<h2 key={nextKey('h2')} className={styles.h2}>{content}</h2>);
-      if (level === 3) blocks.push(<h3 key={nextKey('h3')} className={styles.h3}>{content}</h3>);
-      if (level === 4) blocks.push(<h4 key={nextKey('h4')} className={styles.h4}>{content}</h4>);
-      if (level === 5) blocks.push(<h5 key={nextKey('h5')} className={styles.h5}>{content}</h5>);
-      if (level === 6) blocks.push(<h6 key={nextKey('h6')} className={styles.h6}>{content}</h6>);
+      if (level === 1) blocks.push(<DSText.Heading as="h1" key={nextKey('h1')} className={styles.h1}>{content}</DSText.Heading>);
+      if (level === 2) blocks.push(<DSText.Heading as="h2" key={nextKey('h2')} className={styles.h2}>{content}</DSText.Heading>);
+      if (level === 3) blocks.push(<DSText.Heading as="h3" key={nextKey('h3')} className={styles.h3}>{content}</DSText.Heading>);
+      if (level === 4) blocks.push(<DSText.Heading as="h4" key={nextKey('h4')} className={styles.h4}>{content}</DSText.Heading>);
+      if (level === 5) blocks.push(<DSText.Heading as="h5" key={nextKey('h5')} className={styles.h5}>{content}</DSText.Heading>);
+      if (level === 6) blocks.push(<DSText.Heading as="h6" key={nextKey('h6')} className={styles.h6}>{content}</DSText.Heading>);
       i += 1;
       continue;
     }
@@ -135,9 +136,9 @@ function renderMarkdown(markdown: string): ReactNode[] {
     }
     const paragraphText = paragraphLines.join(' ');
     blocks.push(
-      <p key={nextKey('p')} className={styles.paragraph}>
+      <DSText.Body key={nextKey('p')} className={styles.paragraph}>
         {renderInlineMarkdown(paragraphText, nextKey('p-inline'))}
-      </p>,
+      </DSText.Body>,
     );
   }
 

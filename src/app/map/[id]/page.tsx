@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getEventMap } from '@/server/cache/eventMap.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function MapPage(
 ) {
   return (
     <div>
-      <h1>Map Details</h1>
+      <DSText.Heading as="h1">Map Details</DSText.Heading>
       <Suspense fallback={<div>Loading map data...</div>}>
         <MapPageData params={params} />
       </Suspense>
@@ -48,8 +49,8 @@ async function MapPageData(
 
   return (
     <div>
-      <p>ID: {map.id}</p>
-      <p>Event: {map.eventId}</p>
+      <DSText.Body tone="muted">ID: {map.id}</DSText.Body>
+      <DSText.Body tone="muted">Event: {map.eventId}</DSText.Body>
     </div>
   );
 }

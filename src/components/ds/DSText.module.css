@@ -1,0 +1,109 @@
+.root {
+  margin: 0;
+  color: var(--color-gray-900);
+}
+
+.heading {
+  line-height: 1.2;
+}
+
+.body {
+  line-height: 1.6;
+}
+
+.eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.toneDefault {
+  color: var(--color-gray-900);
+}
+
+.toneMuted {
+  color: var(--color-gray-600);
+}
+
+.toneAccent {
+  color: var(--color-blue);
+}
+
+.toneSuccess {
+  color: color-mix(in srgb, var(--color-gray-900) 75%, #4ade80);
+}
+
+.toneDanger {
+  color: color-mix(in srgb, var(--color-gray-900) 75%, var(--color-red));
+}
+
+.sizeXs {
+  font-size: 0.75rem;
+}
+
+.sizeSm {
+  font-size: 0.875rem;
+}
+
+.sizeMd {
+  font-size: 1rem;
+}
+
+.sizeLg {
+  font-size: 1.125rem;
+}
+
+.sizeXl {
+  font-size: 1.375rem;
+}
+
+.size2xl {
+  font-size: 1.625rem;
+}
+
+.sizeDisplay {
+  font-size: 2rem;
+}
+
+.weightRegular {
+  font-weight: 400;
+}
+
+.weightMedium {
+  font-weight: 500;
+}
+
+.weightSemibold {
+  font-weight: 600;
+}
+
+.weightBold {
+  font-weight: 700;
+}
+
+.fontInherit {
+  font-family: inherit;
+}
+
+.fontSerif {
+  font-family: var(--font-bree-serif), serif;
+}
+
+.fontDisplay {
+  font-family: var(--font-pirata-one), serif;
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.balance {
+  text-wrap: balance;
+}

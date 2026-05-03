@@ -1,4 +1,5 @@
 import { conformDocId } from '@/lib/firestoreConform';
+import { stripUndefinedDeep } from '@/lib/firestoreSanitize';
 import { DocumentData, Firestore, GeoPoint, Timestamp } from 'firebase-admin/firestore';
 
 export type WhereValue = string | number | boolean | Date;
@@ -22,14 +23,16 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
   public async batchSet(items: T[]): Promise<void> {
     if (items.length === 0) return;
     const collection = this.firestoreAdmin.collection(this.collectionName);
-    const batch = this.firestoreAdmin.batch();
-    items.forEach((item) => {
-      batch.set(
-        collection.doc(conformDocId(this.prefixId(this.getUnsafeDocId(item)))),
-        this.conformItemSet(item)
-      );
-    });
-    await batch.commit();
+    for (const chunk of chunkItems(items, 450)) {
+      const batch = this.firestoreAdmin.batch();
+      chunk.forEach((item) => {
+        batch.set(
+          collection.doc(conformDocId(this.prefixId(this.getUnsafeDocId(item)))),
+          stripUndefinedDeep(this.conformItemSet(item))
+        );
+      });
+      await batch.commit();
+    }
   }
 
   /**
@@ -51,11 +54,13 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
   public async batchDelete(docIds: string[]): Promise<void> {
     if (docIds.length === 0) return;
     const collection = this.firestoreAdmin.collection(this.collectionName);
-    const batch = this.firestoreAdmin.batch();
-    docIds.forEach((docId) => {
-      batch.delete(collection.doc(conformDocId(this.prefixId(docId))));
-    });
-    await batch.commit();
+    for (const chunk of chunkItems(docIds, 450)) {
+      const batch = this.firestoreAdmin.batch();
+      chunk.forEach((docId) => {
+        batch.delete(collection.doc(conformDocId(this.prefixId(docId))));
+      });
+      await batch.commit();
+    }
   }
 
   public refresh(item: T): Promise<T | null> {
@@ -107,7 +112,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     await this.firestoreAdmin
       .collection(this.collectionName)
       .doc(conformDocId(this.prefixId(this.getUnsafeDocId(item))))
-      .set(this.conformItemSet(item));
+      .set(stripUndefinedDeep(this.conformItemSet(item)));
     return item;
   }
 
@@ -119,7 +124,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     await this.firestoreAdmin
       .collection(this.collectionName)
       .doc(conformDocId(this.prefixId(docId)))
-      .update(data);
+      .update(stripUndefinedDeep(data));
   }
 
   protected abstract getUnsafeDocId(item: T): string;
@@ -137,6 +142,7 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     where: { field: string; op: FirebaseFirestore.WhereFilterOp; value: WhereValue }[];
     sortBy?: { field: string; direction: FirebaseFirestore.OrderByDirection };
     limit?: number,
+    offset?: number,
   }): Promise<T[]> {
     let query: FirebaseFirestore.Query = this.firestoreAdmin.collection(this.collectionName);
     params.where.forEach((condition) => {
@@ -144,6 +150,9 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     });
     if (params.sortBy) {
       query = query.orderBy(params.sortBy.field, params.sortBy.direction);
+    }
+    if (params.offset !== undefined) {
+      query = query.offset(params.offset);
     }
     if (params.limit !== undefined) {
       query = query.limit(params.limit);
@@ -233,4 +242,12 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
     // Ensure we always return an object
     return (data ? (convertToJson(data) as Record<string, unknown>) : {});
   }
+}
+
+function chunkItems<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
 }

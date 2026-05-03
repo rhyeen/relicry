@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getScene } from '@/server/cache/scene.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function ScenePage(
 ) {
   return (
     <div>
-      <h1>Scene Details</h1>
+      <DSText.Heading as="h1">Scene Details</DSText.Heading>
       <Suspense fallback={<div>Loading scene data...</div>}>
         <ScenePageData params={params} />
       </Suspense>
@@ -48,9 +49,9 @@ async function ScenePageData(
 
   return (
     <div>
-      <h1>{scene.title}</h1>
-      <p>ID: {scene.id}</p>
-      <p>Description: {scene.description}</p>
+      <DSText.Heading as="h2">{scene.title}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {scene.id}</DSText.Body>
+      <DSText.Body tone="muted">Description: {scene.description}</DSText.Body>
     </div>
   );
 }

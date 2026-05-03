@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import DSText from './ds/DSText';
 import styles from './Footer.module.css';
 import FooterYear from './FooterYear';
 
@@ -16,7 +17,7 @@ export default function Footer() {
           Discord
         </a>
       </div>
-      <p className={styles.copyright}>&copy; <FooterYear /> Relicry. All rights reserved.</p>
+      <DSText.Caption className={styles.copyright}>&copy; <FooterYear /> Relicry. All rights reserved.</DSText.Caption>
     </footer>
   );
 }

@@ -1,5 +1,6 @@
 import notFound from '@/app/not-found';
 import EditArtSlot from '@/components/client/EditArt.slot';
+import DSText from '@/components/ds/DSText';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { ArtDB } from '@/server/db/art.db';
 import { connection } from 'next/server';
@@ -31,7 +32,7 @@ export default async function EditArtPage(
 ) {
   return (
     <div>
-      <h1>Edit Art</h1>
+      <DSText.Heading as="h1">Edit Art</DSText.Heading>
       <Suspense fallback={<div>Loading art data...</div>}>
         <EditArtPageData params={params} />
       </Suspense>

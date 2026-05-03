@@ -1,5 +1,7 @@
 'use client';
 
+import DSButton from '@/components/ds/DSButton';
+import DSText from '@/components/ds/DSText';
 import { saveFeedback } from './actions';
 import styles from './page.module.css';
 import { useActionState } from 'react';
@@ -15,8 +17,12 @@ export default function FeedbackPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Leave Feedback</h1>
-        <p className={styles.subtitle}>We&apos;d love to hear your thoughts on Relicry!</p>
+        <DSText.Heading as="h1" size="display" align="center" className={styles.title}>
+          Leave Feedback
+        </DSText.Heading>
+        <DSText.Body tone="muted" align="center" className={styles.subtitle}>
+          We&apos;d love to hear your thoughts on Relicry!
+        </DSText.Body>
         <form action={formAction} className={styles.form}>
           <textarea
             name="feedback"
@@ -25,15 +31,10 @@ export default function FeedbackPage() {
             className={styles.textarea}
             required
           />
-          <button
-            type="submit"
-            className={`${styles.button} goldButton`}
-          >
-            Submit Feedback
-          </button>
+          <DSButton label="Submit Feedback" />
         </form>
         {state?.message && (
-          <p className={styles.message}>{state.message}</p>
+          <DSText.Body tone="success" className={styles.message}>{state.message}</DSText.Body>
         )}
       </div>
     </div>

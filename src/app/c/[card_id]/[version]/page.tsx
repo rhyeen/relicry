@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CardCollectionActionSlot from '@/components/client/CardCollectionAction.slot';
+import DSText from '@/components/ds/DSText';
 import { getCard } from '@/server/cache/card.cache';
 import { Suspense } from 'react';
 import { getArt } from '@/server/cache/art.cache';
@@ -38,7 +39,7 @@ export default async function CardPage(
 ) {
   return (
     <>
-      <h1>Card Details</h1>
+      <DSText.Heading as="h1">Card Details</DSText.Heading>
       <Suspense fallback={<div>Loading card data...</div>}>
         <CardPageData params={params} searchParams={searchParams} />
       </Suspense>

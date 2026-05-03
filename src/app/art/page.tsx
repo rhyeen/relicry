@@ -5,6 +5,7 @@ import ArtPreviewItem from '@/components/ArtPreviewItem';
 import { ArtDB } from '@/server/db/art.db';
 import { cacheLife, cacheTag } from 'next/cache';
 import DSButton from '@/components/ds/DSButton';
+import DSText from '@/components/ds/DSText';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 import DSSection from '@/components/ds/DSSection';
@@ -34,7 +35,7 @@ export function generateMetadata() {
 export default async function ArtPage() {
   return (
     <DSSection>
-      <h1>Art</h1>
+      <DSText.Heading as="h1">Art</DSText.Heading>
       <DSButton href="/art/new" label="New Art" />
       <div
         style={{

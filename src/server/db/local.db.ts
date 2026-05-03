@@ -1,7 +1,8 @@
 import "server-only";
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { isEmulated } from '@/lib/environment';
-import { getExampleCard1, getExampleCard2, getExampleCard3 } from './test-data/card.data';
+import { DEFAULT_LOCAL_CARD_COUNT, MAX_LOCAL_CARD_COUNT, normalizeLocalCardCount } from '@/lib/localPopulate';
+import { getExampleCard1, getExampleCard2, getExampleCard3, getGeneratedExampleCard, getGeneratedLocalCardId } from './test-data/card.data';
 import { getExampleArt1, getExampleArt2, getExampleArt3, getExampleArt4 } from './test-data/art.data';
 import { getExampleArtist1, getExampleArtist2, getExampleArtist3 } from './test-data/artist.data';
 import { getExampleUser1, getExampleUser2, getExampleUser3 } from './test-data/user.data';
@@ -36,12 +37,15 @@ import { PlayerCardDB } from './playerCard.db';
 import { seedImage } from './seeds/image.seed';
 import { QuestTokenDB } from './questToken.db';
 
-export const populateLocal = async () => {
+export const populateLocal = async (options?: {
+  cardCount?: number;
+}) => {
   if (!isEmulated) {
-    return;
+    return { cardCount: DEFAULT_LOCAL_CARD_COUNT };
   }
+  const cardCount = normalizeLocalCardCount(options?.cardCount);
   await Promise.all([
-    populateLocalCards(),
+    populateLocalCards(cardCount),
     populateLocalArt(),
     populateLocalArtists(),
     populateLocalUsers(),
@@ -59,14 +63,28 @@ export const populateLocal = async () => {
     populateLocalTrackEventQuests(),
     populateLocalPlayerCards(),
   ]);
+  return { cardCount };
 };
 
-const populateLocalCards = async () => {
-  await new CardDB(getFirestoreAdmin()).batchSet([
+const populateLocalCards = async (cardCount: number) => {
+  const baseCards = [
     getExampleCard1(),
     getExampleCard2(),
     getExampleCard3(),
-  ]);
+  ];
+  const generatedCards = Array.from(
+    { length: Math.max(0, cardCount - DEFAULT_LOCAL_CARD_COUNT) },
+    (_, index) => getGeneratedExampleCard(DEFAULT_LOCAL_CARD_COUNT + index + 1),
+  );
+  const deleteStart = Math.max(DEFAULT_LOCAL_CARD_COUNT + 1, cardCount + 1);
+  const staleGeneratedCardIds = Array.from(
+    { length: Math.max(0, MAX_LOCAL_CARD_COUNT - deleteStart + 1) },
+    (_, index) => getGeneratedLocalCardId(deleteStart + index),
+  );
+
+  const db = new CardDB(getFirestoreAdmin());
+  await db.batchSet([...baseCards, ...generatedCards]);
+  await db.batchDelete(staleGeneratedCardIds);
 }
 
 const populateLocalArt = async () => {

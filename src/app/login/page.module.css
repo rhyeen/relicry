@@ -17,23 +17,9 @@
 }
 
 .title {
-  font-size: 1.875rem;
-  font-weight: bold;
   margin-bottom: 1rem;
 }
 
 .subtitle {
   margin-bottom: 1.5rem;
-}
-
-.button {
-  color: black;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  transition: opacity 0.3s;
-}
-
-.button:hover {
-  opacity: 0.9;
 }
