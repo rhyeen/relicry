@@ -8,7 +8,7 @@
     "dev:next": "next dev",
     "dev:next:local": "NEXT_PUBLIC_USE_FIREBASE_EMULATORS=1 npm run dev:next",
     "print": "NEXT_PUBLIC_DISABLE_DEV_INDICATOR=1 npm run local:devbackend",
-    "local:devbackend": "NEXT_PUBLIC_NO_EMULATOR=1 npm run dev:next",
+    "local:devbackend": "NEXT_PUBLIC_NO_EMULATOR=1 NEXT_PUBLIC_USE_FIREBASE_EMULATORS=0 npm run dev:next",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

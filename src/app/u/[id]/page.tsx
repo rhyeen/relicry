@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getUser } from '@/server/cache/user.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function UserPage(
 ) {
   return (
     <div>
-      <h1>User Details</h1>
+      <DSText.Heading as="h1">User Details</DSText.Heading>
       <Suspense fallback={<div>Loading user data...</div>}>
         <UserPageData params={params} />
       </Suspense>
@@ -48,9 +49,9 @@ async function UserPageData(
 
   return (
     <div>
-      <h1>{user.displayName}</h1>
-      <p>ID: {user.id}</p>
-      <p>Email: {user.email}</p>
+      <DSText.Heading as="h2">{user.displayName}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {user.id}</DSText.Body>
+      <DSText.Body tone="muted">Email: {user.email}</DSText.Body>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import DSText from "@/components/ds/DSText";
 import { Art } from "@/entities/Art";
 import { ImageSize, ImageStorage } from "@/entities/Image";
 import StoredImage from "@/components/client/StoredImage";
+import styles from "./PreviewItem.module.css";
 
 type ArtPreviewItemProps = Readonly<{
   art: Art;
@@ -25,20 +27,8 @@ export default function ArtPreviewItem({ art, href }: ArtPreviewItemProps) {
   const title = art.title?.trim() || "Untitled";
 
   return (
-    <Link
-      href={href}
-      style={{
-        display: "flex",
-        gap: "12px",
-        padding: "12px",
-        borderRadius: "12px",
-        border: "1px solid #333333",
-        textDecoration: "none",
-        color: "inherit",
-        background: "#000000",
-      }}
-    >
-      <div style={{ width: 60, height: 60, flex: "0 0 60px" }}>
+    <Link href={href} className={styles.root}>
+      <div className={styles.imageWrap}>
         {previewImage ? (
           <StoredImage
             image={previewImage}
@@ -46,27 +36,15 @@ export default function ArtPreviewItem({ art, href }: ArtPreviewItemProps) {
             alt={title}
           />
         ) : (
-          <div
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: "8px",
-              background: "#19191b",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              color: "#dadada",
-            }}
-          >
-            {art.type === "writing" ? "Text" : "No art"}
+          <div className={styles.fallback}>
+            <DSText.Caption>{art.type === "writing" ? "Text" : "No art"}</DSText.Caption>
           </div>
         )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ fontWeight: 600 }}>{title}</div>
-        <div style={{ fontSize: "12px", color: "#555" }}>Type: {art.type}</div>
-        <div style={{ fontSize: "12px", color: "#555" }}>Artist: {art.artistId || "—"}</div>
+      <div className={styles.content}>
+        <DSText.Body as="div" weight="semibold" className={styles.title}>{title}</DSText.Body>
+        <DSText.Caption>Type: {art.type}</DSText.Caption>
+        <DSText.Caption>Artist: {art.artistId || "—"}</DSText.Caption>
       </div>
     </Link>
   );

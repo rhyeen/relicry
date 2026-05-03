@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getPlayerCards } from '@/server/cache/playerCard.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { user_id: string };
 
@@ -29,7 +30,7 @@ export default async function PlayerCardPage(
 ) {
   return (
     <div>
-      <h1>Player Cards</h1>
+      <DSText.Heading as="h1">Player Cards</DSText.Heading>
       <Suspense fallback={<div>Loading player cards...</div>}>
         <PlayerCardPageData params={params} />
       </Suspense>
@@ -48,12 +49,12 @@ async function PlayerCardPageData(
 
   return (
     <div>
-      <p>User ID: {user_id}</p>
+      <DSText.Body tone="muted">User ID: {user_id}</DSText.Body>
       <ul>
         {playerCards.map((card) => (
-          <li key={`${card.cardId}_v${card.cardVersion}`}>
+          <DSText.Body as="li" key={`${card.cardId}_v${card.cardVersion}`}>
             Card ID: {card.cardId}, Version: {card.cardVersion}
-          </li>
+          </DSText.Body>
         ))}
       </ul>
     </div>

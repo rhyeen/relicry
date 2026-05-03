@@ -15,5 +15,7 @@
 }
 
 .largeAndCenter {
-  transform: translate(50%) scale(1.4);
+  justify-content: center;
+  column-gap: 0;
+  transform: scale(1.3);
 }

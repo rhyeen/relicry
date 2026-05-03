@@ -5,6 +5,7 @@ import { getAnyOfToken } from '@/server/cache/questToken.cache';
 import FullQuestTokenCard from '@/components/quest/FullQuestTokenCard';
 import { CardType } from '@/entities/CardContext';
 import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -33,7 +34,7 @@ export default async function QuestTokenPage(
 ) {
   return (
     <div>
-      <h1>Quest Token Details</h1>
+      <DSText.Heading as="h1">Quest Token Details</DSText.Heading>
       <Suspense fallback={<div>Loading quest token data...</div>}>
         <QuestTokenPageData params={params} searchParams={searchParams} />
       </Suspense>

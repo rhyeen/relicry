@@ -1,5 +1,6 @@
 'use client';
 
+import DSText from '@/components/ds/DSText';
 import { useEffect } from 'react';
 
 export default function Error({
@@ -17,8 +18,8 @@ export default function Error({
   return (
     <div>
       <div>
-        <h2>Something went wrong!</h2>
-        <p>{error.message}</p>
+        <DSText.Heading as="h2">Something went wrong!</DSText.Heading>
+        <DSText.Body tone="muted">{error.message}</DSText.Body>
         <button
           onClick={() => reset()}
         >

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getDeck } from '@/server/cache/deck.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function DeckPage(
 ) {
   return (
     <div>
-      <h1>Deck Details</h1>
+      <DSText.Heading as="h1">Deck Details</DSText.Heading>
       <Suspense fallback={<div>Loading deck data...</div>}>
         <DeckPageData params={params} />
       </Suspense>
@@ -48,10 +49,10 @@ async function DeckPageData(
 
   return (
     <div>
-      <h1>{deck.name}</h1>
-      <p>ID: {deck.id}</p>
-      <p>Description: {deck.userId}</p>
-      <p>Version: {deck.version}</p>
+      <DSText.Heading as="h2">{deck.name}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {deck.id}</DSText.Body>
+      <DSText.Body tone="muted">Description: {deck.userId}</DSText.Body>
+      <DSText.Body tone="muted">Version: {deck.version}</DSText.Body>
     </div>
   );
 }

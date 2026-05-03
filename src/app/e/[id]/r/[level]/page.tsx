@@ -6,6 +6,7 @@ import { normalizeSizeSP, normalizeSideSP } from '@/lib/normalizeSearchParams';
 import FullRewardCard from '@/components/quest/FullRewardCard';
 import { CardType } from '@/entities/CardContext';
 import { getEvent } from '@/server/cache/event.cache';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string, level: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -34,7 +35,7 @@ export default async function RewardPage(
 ) {
   return (
     <div>
-      <h1>Reward Details</h1>
+      <DSText.Heading as="h1">Reward Details</DSText.Heading>
       <Suspense fallback={<div>Loading reward data...</div>}>
         <RewardPageData params={params} searchParams={searchParams} />
       </Suspense>

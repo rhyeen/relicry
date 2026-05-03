@@ -18,8 +18,8 @@ export default function CardEffectLine({
   effect, single = false, variableSize = false, ctx
 }: Props) {
   const largeAndCenter = (
-    variableSize && single && !effect.aura && !effect.conditionals.length &&
-    cardEffectToString(effect).length < 15
+    variableSize && single && !effect.aura && !effect.rage && !effect.conditionals.length &&
+    cardEffectToString(effect).length < 35
   );
 
   return (

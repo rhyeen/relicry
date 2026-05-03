@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getEvent } from '@/server/cache/event.cache';
 import { connection } from 'next/server';
+import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
 
@@ -29,7 +30,7 @@ export default async function EventPage(
 ) {
   return (
     <div>
-      <h1>Event Details</h1>
+      <DSText.Heading as="h1">Event Details</DSText.Heading>
       <Suspense fallback={<div>Loading event data...</div>}>
         <EventPageData params={params} />
       </Suspense>
@@ -48,13 +49,13 @@ async function EventPageData(
 
   return (
     <div>
-      <h1>{event.title}</h1>
-      <p>ID: {event.id}</p>
-      <p>Description: {event.description}</p>
-      <p>
+      <DSText.Heading as="h2">{event.title}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {event.id}</DSText.Body>
+      <DSText.Body tone="muted">Description: {event.description}</DSText.Body>
+      <DSText.Body tone="muted">
         Running From: {event.running.from.toDateString()} To:{' '}
         {event.running.to.toDateString()}
-      </p>
+      </DSText.Body>
     </div>
   );
 }

@@ -108,14 +108,28 @@
   position: relative;
 }
 
-.auraNumber1,
+.rageNumber {
+  margin-left: -0.5px;
+}
+
+.auraNumber {
+  margin-left: 0.5px;
+}
+
 .rageNumber1 {
+  margin-left: 1px;
+}
+
+.rageNumber4 {
+  margin-left: -2px;
+}
+
+.auraNumber1 {
   margin-left: 2px;
 }
 
-.auraNumber9,
-.rageNumber9 {
-  margin-left: 1px;
+.auraNumber9 {
+  margin-left: 0.5px;
 }
 
 .addHalf {

@@ -1,5 +1,6 @@
 import { Form } from '@base-ui/react';
 import styles from "./DSForm.module.css";
+import DSText from './DSText';
 
 type DSFormRootProps = Readonly<{
   children: React.ReactNode;
@@ -24,17 +25,17 @@ function DSFormRoot({ children }: DSFormRootProps) {
 
 function Title({ children, className }: DSFormTextProps) {
   return (
-    <h1 className={[styles.title, className].filter(Boolean).join(" ")}>
+    <DSText.Heading as="h1" size="xl" className={[styles.title, className].filter(Boolean).join(" ")}>
       {children}
-    </h1>
+    </DSText.Heading>
   );
 }
 
 function Description({ children, className }: DSFormTextProps) {
   return (
-    <p className={[styles.description, className].filter(Boolean).join(" ")}>
+    <DSText.Body tone="muted" size="sm" className={[styles.description, className].filter(Boolean).join(" ")}>
       {children}
-    </p>
+    </DSText.Body>
   );
 }
 

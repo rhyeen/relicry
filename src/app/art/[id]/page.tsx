@@ -1,4 +1,5 @@
 import StoredImageSlot from '@/components/client/StoredImage.slot';
+import DSText from '@/components/ds/DSText';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { ImageSize } from '@/entities/Image';
 import { getArt } from '@/server/cache/art.cache';
@@ -32,7 +33,7 @@ export default async function ArtPage(
 ) {
   return (
     <div>
-      <h1>Art Details</h1>
+      <DSText.Heading as="h1">Art Details</DSText.Heading>
       <Suspense fallback={<div>Loading art data...</div>}>
         <ArtPageData params={params} />
       </Suspense>
@@ -50,13 +51,13 @@ async function ArtPageData(
 
   return (
     <div>
-      <h1>{art.title ?? 'Untitled Art'}</h1>
-      <p>ID: {art.id}</p>
-      <p>Type: {art.type}</p>
-      <p>Description: {art.description}</p>
+      <DSText.Heading as="h2">{art.title ?? 'Untitled Art'}</DSText.Heading>
+      <DSText.Body tone="muted">ID: {art.id}</DSText.Body>
+      <DSText.Body tone="muted">Type: {art.type}</DSText.Body>
+      <DSText.Body tone="muted">Description: {art.description}</DSText.Body>
       {art.type === 'writing' && art.markdown && (
         <section>
-          <h2>Markdown</h2>
+          <DSText.Heading as="h3">Markdown</DSText.Heading>
           <MarkdownRenderer markdown={art.markdown} />
         </section>
       )}
