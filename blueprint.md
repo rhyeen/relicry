@@ -89,10 +89,11 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [ ] QR code for 800dpi needs to not be localhost
 - [ ] Insatiable Thirst and Insatiable Urge are two different cards with the same effect. Check the Google Sheet to see if there was intended to be two different things.
 - [x] Build a way to iterate over all cards that are not published to quickly save as large-scale images.
-- [ ] Versatile is still broken, but I think it's just that the card's effects need to be fixed in the actual text editor.
-- [ ] False Treaty image looks blurry (lo-res).
-- [ ] Necrotic flavor text isn't grammatically correct.
+- [ ] CHECK AFTER CACHE: https://relicry.com/c/40qtt1fs9f7x/1?awakened=true Versatile is still broken, but I think it's just that the card's effects need to be fixed in the actual text editor.
+- [x] False Treaty image looks blurry (lo-res).
+- [x] Necrotic flavor text isn't grammatically correct.
 - [ ] Follow checklist to ensure all cards are useful for all scenarios.
+- [ ] Analyze all cards for grammatical and spelling issues (flavor text + title + card effects), then have it evaluate consistent language for deviations, then have it try to assertain if a card is not balanced, mechanically confusing, or could be abused. Have it print out the card IDs for the ones it has concerns on and explain why it's an issue.
 - [ ] Print cards
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
