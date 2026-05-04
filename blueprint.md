@@ -87,7 +87,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Add 800 DPI images for rarity, focus/gambit, quests folder
 - [x] Something is wrong with focus 800dpi banners—I don't think the images are coming through
 - [ ] QR code for 800dpi needs to not be localhost
-- [ ] Insatiable Thirst and Insatiable Urge are two different cards with the same effect. Check the Google Sheet to see if there was intended to be two different things.
+- [x] Insatiable Thirst and Insatiable Urge are two different cards with the same effect. Check the Google Sheet to see if there was intended to be two different things.
 - [x] Build a way to iterate over all cards that are not published to quickly save as large-scale images.
 - [ ] CHECK AFTER CACHE: https://relicry.com/c/40qtt1fs9f7x/1?awakened=true Versatile is still broken, but I think it's just that the card's effects need to be fixed in the actual text editor.
 - [x] False Treaty image looks blurry (lo-res).

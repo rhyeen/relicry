@@ -1,5 +1,7 @@
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
+import { connection } from 'next/server';
+import { Suspense } from 'react';
 import { isEmulated } from '@/lib/environment';
 import {
   buildDownloadUnpublishedCardHref,
@@ -18,6 +20,17 @@ type DownloadUnpublishedPageProps = {
 export default async function DownloadUnpublishedPage(
   { searchParams }: DownloadUnpublishedPageProps
 ) {
+  return (
+    <Suspense fallback={null}>
+      <DownloadUnpublishedPageData searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function DownloadUnpublishedPageData(
+  { searchParams }: DownloadUnpublishedPageProps
+) {
+  await connection();
   const hostHeader = (await headers()).get('host');
   if (!isEmulated && !isLocalRequestHost(hostHeader)) {
     notFound();
@@ -47,7 +60,7 @@ export default async function DownloadUnpublishedPage(
     redirect('/cards');
   }
 
-  redirect(buildDownloadUnpublishedCardHref({
+  return redirect(buildDownloadUnpublishedCardHref({
     cardId: result.card.id,
     version: result.card.version,
     cursor: result.cursor,
