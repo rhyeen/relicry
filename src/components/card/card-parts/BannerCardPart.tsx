@@ -162,7 +162,7 @@ export default function BannerCardPart({ aspect, rarity, focus, focusAwakened, c
         >
           {focusAwakened &&
             <div
-              className={`${styles.banner} ${styles.focus} ${styles.bottom} ${getColorStyle(false, false)}`}
+              className={`${styles.banner} ${styles.focus} ${styles.bottom} ${focusAwakened ? getColorStyle(false, false) : ''}`}
               aria-hidden="true"
               style={{
                 backgroundImage: `url(${assetURL(ctx, `focus/banner-awakened.${ASSET_VERSION}.png`)})`,
@@ -170,7 +170,7 @@ export default function BannerCardPart({ aspect, rarity, focus, focusAwakened, c
             />
           }
           <div
-            className={`${styles.banner} ${styles.focus} ${styles.top} ${getColorStyle(false, false)}`}
+            className={`${styles.banner} ${styles.focus} ${styles.top} ${focusAwakened ? getColorStyle(false, false) : ''}`}
             aria-hidden="true"
             style={{
               backgroundImage: `url(${assetURL(ctx, `focus/${focusAwakened ? 'banner-awakened' : 'banner'}.${ASSET_VERSION}.png`)})`,

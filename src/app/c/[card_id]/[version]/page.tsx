@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import CardCollectionActionSlot from '@/components/client/CardCollectionAction.slot';
+import DownloadUnpublishedAdvance from '@/components/client/DownloadUnpublishedAdvance';
 import DSText from '@/components/ds/DSText';
 import { getCard } from '@/server/cache/card.cache';
 import { Suspense } from 'react';
@@ -9,11 +10,21 @@ import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
 import Card from '@/components/card/Card';
 import { normalizeAwakenedSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import {
+  normalizeDownloadUnpublishedSP,
+  normalizeUnpublishedHistorySP,
+  normalizeUnpublishedCursorSP,
+} from '@/lib/unpublishedDownload';
 import { CardType } from '@/entities/CardContext';
 import { connection } from 'next/server';
 
 type Params = { version: string; card_id: string };
-type SearchParams = { size?: string | string[] };
+type SearchParams = {
+  size?: string | string[];
+  awakened?: string | string[];
+  downloadUnpublished?: string | string[];
+  unpublishedCursor?: string | string[];
+};
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -54,6 +65,9 @@ async function CardPageData(
   const [{ version, card_id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
   const awakened = normalizeAwakenedSP(sp);
+  const downloadUnpublished = normalizeDownloadUnpublishedSP(sp);
+  const unpublishedCursor = normalizeUnpublishedCursorSP(sp);
+  const unpublishedHistory = normalizeUnpublishedHistorySP(sp);
 
   const card = await getCard(card_id, version);
   if (!card) notFound();
@@ -84,6 +98,13 @@ async function CardPageData(
 
   return (
     <section>
+      <DownloadUnpublishedAdvance
+        enabled={downloadUnpublished}
+        awakened={awakened}
+        isFocus={card.type === 'focus'}
+        cursor={unpublishedCursor}
+        history={unpublishedHistory}
+      />
       <Card
         card={card}
         art={illustrationArt}

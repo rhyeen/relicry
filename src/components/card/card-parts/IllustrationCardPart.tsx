@@ -1,6 +1,6 @@
 import { Art, IllustrationArt } from '@/entities/Art';
 import styles from '../Card.module.css';
-import { assetURL, CardContext } from '@/entities/CardContext';
+import { assetURL, CardContext, CardSize } from '@/entities/CardContext';
 
 type Props = {
   art: Art | null;
@@ -16,8 +16,14 @@ const DEBUG_ALWAYS_SHOW_EXAMPLE = false;
 export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwakened, isSample, showWatermark }: Props) {
   const _art = focusAwakened ? (awakenedArt || art) : art;
   let backgroundImage = assetURL(ctx, 'example-illustration.ai.webp');
-  if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (_art && _art.image && (_art as IllustrationArt).image.card?.url)) {
-    backgroundImage = (_art as IllustrationArt).image.card?.url || '';
+  if (ctx.size === CardSize.PrintSize) {
+    if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (_art && _art.image && (_art as IllustrationArt).image.full?.url)) {
+      backgroundImage = (_art as IllustrationArt).image.full?.url || '';
+    }
+  } else {
+    if (!DEBUG_ALWAYS_SHOW_EXAMPLE && (_art && _art.image && (_art as IllustrationArt).image.card?.url)) {
+      backgroundImage = (_art as IllustrationArt).image.card?.url || '';
+    }
   }
 
   return (
