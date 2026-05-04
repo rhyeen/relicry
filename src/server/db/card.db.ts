@@ -1,6 +1,8 @@
 import 'server-only';
 import { RootDB } from './root.db';
 import { generateCardId, getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
+import { conformDocId } from '@/lib/firestoreConform';
+import { FieldPath } from 'firebase-admin/firestore';
 
 export class CardDB extends RootDB<VersionedCard> {
   private static readonly FEATURED_BATCH_SIZE = 200;
@@ -48,6 +50,50 @@ export class CardDB extends RootDB<VersionedCard> {
       sortBy: { field: 'revealedAt', direction: 'desc' },
       limit: 100,
     });
+  }
+
+  public async getByStoredDocId(docId: string): Promise<VersionedCard | null> {
+    return this.firestoreAdmin
+      .collection(this.collectionName)
+      .doc(docId)
+      .get()
+      .then((doc) => (doc.exists
+        ? this.conformItemGet(this.conformData(doc.data()) as VersionedCard)
+        : null));
+  }
+
+  public getStoredDocIdForCard(cardId: string, version: number): string {
+    return conformDocId(getCardDocId(cardId, version));
+  }
+
+  public async getNextUnpublishedAfter(cursor: string | null): Promise<{
+    card: VersionedCard | null;
+    cursor: string | null;
+  }> {
+    let query: FirebaseFirestore.Query = this.firestoreAdmin
+      .collection(this.collectionName)
+      .where('publishedAt', '==', null)
+      .orderBy(FieldPath.documentId())
+      .limit(1);
+
+    if (cursor) {
+      query = query.startAfter(cursor);
+    }
+
+    const querySnapshot = await query.get();
+    const [doc] = querySnapshot.docs;
+
+    if (!doc) {
+      return {
+        card: null,
+        cursor: null,
+      };
+    }
+
+    return {
+      card: this.conformItemGet(this.conformData(doc.data()) as VersionedCard),
+      cursor: doc.id,
+    };
   }
 
   public async feature(card: VersionedCard): Promise<void> {

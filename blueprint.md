@@ -85,7 +85,13 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Create 200+ cards: at least 50 for each aspect (with some shared aspects), 4 gambits, and 3 of each focus aspects.
 - [x] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify that the webpage redirects to their secret pin code that they know to ensure it isn't a fake QR code leading to a phishing website. Need a way to generate X number of these quests for a given event, then iterate through them to print out the cards.
 - [x] Add 800 DPI images for rarity, focus/gambit, quests folder
-- [ ] Build a way to iterate over all cards that are not published to quickly save as large-scale images.
+- [x] Something is wrong with focus 800dpi banners—I don't think the images are coming through
+- [ ] QR code for 800dpi needs to not be localhost
+- [ ] Insatiable Thirst and Insatiable Urge are two different cards with the same effect. Check the Google Sheet to see if there was intended to be two different things.
+- [x] Build a way to iterate over all cards that are not published to quickly save as large-scale images.
+- [ ] Versatile is still broken, but I think it's just that the card's effects need to be fixed in the actual text editor.
+- [ ] False Treaty image looks blurry (lo-res).
+- [ ] Necrotic flavor text isn't grammatically correct.
 - [ ] Follow checklist to ensure all cards are useful for all scenarios.
 - [ ] Print cards
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.

@@ -4,8 +4,9 @@ import DSButton from '@/components/ds/DSButton';
 import DSField from '@/components/ds/DSField';
 import DSSelect from '@/components/ds/DSSelect';
 import { buildCardsQueryString, CardListAspectFilter, CardListFilters, CardListTypeFilter } from '@/lib/cardsList';
+import { buildDownloadUnpublishedRedirectHref, isLocalHostname } from '@/lib/unpublishedDownload';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import styles from './page.module.css';
 
 type Props = Readonly<{
@@ -19,6 +20,11 @@ export default function CardsToolbar({ filters, typeOptions, aspectOptions }: Pr
   const [query, setQuery] = useState(filters.query);
   const [type, setType] = useState<CardListTypeFilter>(filters.type);
   const [aspect, setAspect] = useState<CardListAspectFilter>(filters.aspect);
+  const isLocal = useSyncExternalStore(
+    () => () => undefined,
+    () => isLocalHostname(window.location.hostname),
+    () => false,
+  );
 
   const applyFilters = () => {
     router.push(`/cards${buildCardsQueryString({
@@ -51,12 +57,18 @@ export default function CardsToolbar({ filters, typeOptions, aspectOptions }: Pr
         onChange={setType}
       />
       <DSSelect
-        label="Focus"
+        label="Aspect"
         options={aspectOptions}
         value={aspect}
         onChange={setAspect}
       />
       <div className={styles.toolbarActions}>
+        {isLocal && (
+          <DSButton
+            href={buildDownloadUnpublishedRedirectHref()}
+            label="Download Unpublished"
+          />
+        )}
         <DSButton onClick={applyFilters} label="Apply" />
         <DSButton onClick={clearFilters} label="Clear" />
       </div>

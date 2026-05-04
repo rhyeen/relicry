@@ -147,10 +147,10 @@ const CARD_TYPE_OPTIONS: { label: string; value: CardListTypeFilter }[] = [
 ];
 
 const CARD_ASPECT_OPTIONS: { label: string; value: CardListAspectFilter }[] = [
-  { label: 'All focuses', value: 'all' },
+  { label: 'All aspects', value: 'all' },
   { label: 'Brave', value: Aspect.Brave },
   { label: 'Cunning', value: Aspect.Cunning },
   { label: 'Wise', value: Aspect.Wise },
   { label: 'Charming', value: Aspect.Charming },
-  { label: 'Two focuses', value: 'dual' },
+  { label: 'Two aspects', value: 'dual' },
 ];

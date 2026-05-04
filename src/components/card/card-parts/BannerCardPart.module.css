@@ -77,7 +77,7 @@
   opacity: 0.33;
 }
 
-.banner.top.red {
+.banner.top.red:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(173, 0, 33, 0.67) 0%,
@@ -86,7 +86,7 @@
   );
 }
 
-.banner.bottom.red {
+.banner.bottom.red:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(202, 0, 38, 1.0) 20%,
@@ -96,7 +96,7 @@
   );
 }
 
-.banner.bottom.redBlue {
+.banner.bottom.redBlue:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(202, 0, 38, 1.0) 20%,
@@ -106,7 +106,7 @@
   );
 }
 
-.banner.bottom.redGreen {
+.banner.bottom.redGreen:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(202, 0, 38, 1.0) 20%,
@@ -116,7 +116,7 @@
   );
 }
 
-.banner.top.yellow {
+.banner.top.yellow:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(233, 203, 0, 0.67) 0%,
@@ -125,9 +125,9 @@
   );
 }
 
-.banner.bottom.yellow,
-.banner.bottom.yellowRed,
-.banner.bottom.yellowGreen {
+.banner.bottom.yellow:not(.focus),
+.banner.bottom.yellowRed:not(.focus),
+.banner.bottom.yellowGreen:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(178, 126, 0, 1.0) 20%,
@@ -137,7 +137,7 @@
   );
 }
 
-.banner.top.blue {
+.banner.top.blue:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(78, 49, 206, 0.67) 0%,
@@ -146,7 +146,7 @@
   );
 }
 
-.banner.bottom.blue {
+.banner.bottom.blue:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(62, 24, 242, 1.0) 20%,
@@ -156,7 +156,7 @@
   );
 }
 
-.banner.bottom.blueYellow {
+.banner.bottom.blueYellow:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(62, 24, 242, 1.0) 20%,
@@ -166,7 +166,7 @@
   );
 }
 
-.banner.top.green {
+.banner.top.green:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(0, 82, 44, 0.67) 0%,
@@ -175,7 +175,7 @@
   );
 }
 
-.banner.bottom.green {
+.banner.bottom.green:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(0, 93, 49, 1.0) 20%,
@@ -185,7 +185,7 @@
   );
 }
 
-.banner.bottom.greenBlue {
+.banner.bottom.greenBlue:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(0, 93, 49, 1.0) 20%,
@@ -199,10 +199,10 @@
   opacity: 0.33;
 }
 
-.banner.top.greenBlue,
-.banner.middle.greenBlue,
-.banner.top.redBlue,
-.banner.middle.redBlue {
+.banner.top.greenBlue:not(.focus),
+.banner.middle.greenBlue:not(.focus),
+.banner.top.redBlue:not(.focus),
+.banner.middle.redBlue:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(124, 100, 255, 0.15) 20%,
@@ -210,10 +210,10 @@
   );
 }
 
-.banner.top.redGreen,
-.banner.middle.redGreen,
-.banner.top.yellowGreen,
-.banner.middle.yellowGreen {
+.banner.top.redGreen:not(.focus),
+.banner.middle.redGreen:not(.focus),
+.banner.top.yellowGreen:not(.focus),
+.banner.middle.yellowGreen:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(5, 198, 63, 0) 20%,
@@ -222,8 +222,8 @@
   );
 }
 
-.banner.top.yellowRed,
-.banner.middle.yellowRed {
+.banner.top.yellowRed:not(.focus),
+.banner.middle.yellowRed:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(239, 78, 113, 0) 20%,
@@ -232,8 +232,8 @@
   );
 }
 
-.banner.top.blueYellow,
-.banner.middle.blueYellow {
+.banner.top.blueYellow:not(.focus),
+.banner.middle.blueYellow:not(.focus) {
   background: linear-gradient(
     110deg,
     rgba(77, 255, 0, 0) 20%,

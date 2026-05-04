@@ -2,7 +2,7 @@ import { conformDocId } from '@/lib/firestoreConform';
 import { stripUndefinedDeep } from '@/lib/firestoreSanitize';
 import { DocumentData, Firestore, GeoPoint, Timestamp } from 'firebase-admin/firestore';
 
-export type WhereValue = string | number | boolean | Date;
+export type WhereValue = string | number | boolean | Date | null;
 
 export abstract class RootDB<T extends { [key: string]: unknown }> {
   protected firestoreAdmin: Firestore;
@@ -131,7 +131,10 @@ export abstract class RootDB<T extends { [key: string]: unknown }> {
 
   public abstract getFromParts(...parts: unknown[]): Promise<T | null>;
 
-  protected conformWhereValue(value: WhereValue): string | number | boolean | FirebaseFirestore.Timestamp {
+  protected conformWhereValue(value: WhereValue): string | number | boolean | FirebaseFirestore.Timestamp | null {
+    if (value === null) {
+      return null;
+    }
     if (value instanceof Date) {
       return Timestamp.fromDate(value);
     }
