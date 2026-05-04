@@ -84,7 +84,8 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Determining if to center something should be more about if the period exists at the end or not and if only one line is present without condition.
 - [x] Create 200+ cards: at least 50 for each aspect (with some shared aspects), 4 gambits, and 3 of each focus aspects.
 - [x] Quest rewards should have a unique QR code so that heralds have to scan them in. This is how we track how many rewards we need to redeem with each vendor, but also the heralds have to verify that the webpage redirects to their secret pin code that they know to ensure it isn't a fake QR code leading to a phishing website. Need a way to generate X number of these quests for a given event, then iterate through them to print out the cards.
-- [ ] Add 800 DPI images for rarity, focus/gambit, quests folder
+- [x] Add 800 DPI images for rarity, focus/gambit, quests folder
+- [ ] Build a way to iterate over all cards that are not published to quickly save as large-scale images.
 - [ ] Follow checklist to ensure all cards are useful for all scenarios.
 - [ ] Print cards
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
