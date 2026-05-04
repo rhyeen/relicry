@@ -57,6 +57,33 @@ If the stop script does not work, you may need to stop the emulators manually (e
 
 ---
 
+## Downloading Card Metadata
+
+The repo now includes a metadata-only cards API at `/api/cards` plus a helper script that walks every paginated result used by the cards listing and writes the combined JSON locally.
+
+Start the app first so the route is available:
+
+```bash
+npm run local
+```
+
+Then, in another terminal, run:
+
+```bash
+npm run cards:metadata
+```
+
+By default this writes to `.local/cards/metadata.json`, which is gitignored.
+
+Optional environment variables:
+
+- `CARDS_BASE_URL` overrides the base URL to fetch from. Default: `http://127.0.0.1:3000`
+- `CARDS_METADATA_OUTPUT` overrides the output file path
+
+The downloaded payload contains only card metadata and excludes illustration, art, and artist references.
+
+---
+
 ## Generating Print-Version Images
 
 Only publication admins can do this.
