@@ -7,6 +7,8 @@ import FullRewardCard from '@/components/quest/FullRewardCard';
 import { CardType } from '@/entities/CardContext';
 import { getEvent } from '@/server/cache/event.cache';
 import DSText from '@/components/ds/DSText';
+import RewardUniqueRewardsManagerSlot from '@/components/client/RewardUniqueRewardsManager.slot';
+import { getUniqueRewards } from '@/server/cache/uniqueReward.cache';
 
 type Params = { id: string, level: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -50,20 +52,26 @@ async function RewardPageData(
   const [{ id, level }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
   const side = normalizeSideSP(sp);
-  const [ reward, event ] = await Promise.all([
+  const [ reward, event, uniqueRewards ] = await Promise.all([
     getReward(id, level),
     getEvent(id),
+    getUniqueRewards(id, level),
   ]);
 
   if (!reward) notFound();
   if (!event) notFound();
 
   return (
-    <section>
+    <section style={{ display: 'grid', gap: '1.5rem' }}>
       <FullRewardCard event={event} reward={reward} side={side} ctx={{
         type: CardType.Full,
         size,
       }} />
+      <RewardUniqueRewardsManagerSlot
+        eventId={event.id}
+        level={reward.level}
+        uniqueRewards={uniqueRewards}
+      />
     </section>
   );
 }

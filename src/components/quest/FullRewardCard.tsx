@@ -3,7 +3,7 @@ import cardStyles from '../card/Card.module.css';
 import styles from './RewardCard.module.css';
 import { ASSET_VERSION } from '../card/assetVersion';
 import { assetURL, CardContext } from '@/entities/CardContext';
-import { getRewardId, Reward } from '@/entities/Reward';
+import { getRewardId, Reward, UniqueReward } from '@/entities/Reward';
 import FooterCardPart from './card-parts/FooterCardPart';
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
   side: 'front' | 'back';
   event: Event;
   ctx: CardContext;
+  uniqueReward?: UniqueReward;
 }
 
 const localeEn = {
@@ -20,10 +21,11 @@ const localeEn = {
 };
 
 export default function FullRewardCard({
-  reward, side, ctx, event
+  reward, side, ctx, event, uniqueReward
 }: Props) {
   const yearOfEvent = new Date(event.running.from).getUTCFullYear();
-  const docId = getRewardId(reward.eventId, reward.level);
+  const docId = uniqueReward?.id ?? getRewardId(reward.eventId, reward.level);
+  const rewardId = getRewardId(reward.eventId, reward.level);
   const rewardLevelStyles = [
     styles.levelOne,
     styles.levelTwo,
@@ -47,7 +49,7 @@ export default function FullRewardCard({
           <div className={styles.toClaimAt}>{localeEn.toClaimAt}</div>
           <div className={styles.eventName}>{event.title}</div>
           <div className={styles.eventYear}>{yearOfEvent}</div>
-          <FooterCardPart color="white" ctx={ctx} id={getRewardId(reward.eventId, reward.level)} maxLength={13} />
+          <FooterCardPart color="white" ctx={ctx} id={rewardId} maxLength={13} />
         </>
       }
       {side === 'back' &&
