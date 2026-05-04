@@ -10,6 +10,7 @@ import { getExampleApex1, getExampleApex2, getExampleApex3 } from './test-data/a
 import { getExampleDeck1, getExampleDeck2, getExampleDeck3 } from './test-data/deck.data';
 import { getExampleEvent1, getExampleEvent2, getExampleEvent3 } from './test-data/event.data';
 import { getExampleReward1, getExampleReward2, getExampleReward3, getExampleReward4 } from './test-data/reward.data';
+import { getExampleUniqueReward1, getExampleUniqueReward2, getExampleUniqueReward3 } from './test-data/uniqueReward.data';
 import { getExampleEventMap1, getExampleEventMap2, getExampleEventMap3 } from './test-data/eventMap.data';
 import { getExampleHerald1, getExampleHerald2, getExampleHerald3 } from './test-data/herald.data';
 import { getExamplePromotedItem1, getExamplePromotedItem2, getExamplePromotedItem3 } from './test-data/promotedItem.data';
@@ -26,6 +27,7 @@ import { ApexDB } from './apex.db';
 import { DeckDB } from './deck.db';
 import { EventDB } from './event.db';
 import { RewardDB } from './reward.db';
+import { UniqueRewardDB } from './uniqueReward.db';
 import { EventMapDB } from './eventMap.db';
 import { HeraldDB } from './herald.db';
 import { PromotedItemDB } from './promotedItem.db';
@@ -53,6 +55,7 @@ export const populateLocal = async (options?: {
     populateLocalDecks(),
     populateLocalEvents(),
     populateLocalRewards(),
+    populateLocalUniqueRewards(),
     populateLocalEventMaps(),
     populateLocalHeralds(),
     populateLocalPromotedItems(),
@@ -148,6 +151,14 @@ const populateLocalRewards = async () => {
     getExampleReward2(),
     getExampleReward3(),
     getExampleReward4(),
+  ]);
+}
+
+const populateLocalUniqueRewards = async () => {
+  await new UniqueRewardDB(getFirestoreAdmin()).batchSet([
+    getExampleUniqueReward1(),
+    getExampleUniqueReward2(),
+    getExampleUniqueReward3(),
   ]);
 }
 

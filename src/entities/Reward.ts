@@ -1,4 +1,24 @@
-import { StoredRoot } from './Root';
+import { generateId } from '@/lib/idGenerator';
+import { prefixId, StoredRoot } from './Root';
+import { getEventId } from './Event';
+
+export type UniqueReward = StoredRoot & {
+  id: string;
+  level: number;
+  eventId: string;
+  claimed?: {
+    at: Date;
+    heraldId: string;
+  };
+  published?: {
+    at: Date;
+    context?: string;
+  };
+  archived?: {
+    at: Date;
+    context?: string;
+  };
+}
 
 export type Reward = StoredRoot & {
   eventId: string;
@@ -13,5 +33,17 @@ export type Reward = StoredRoot & {
 }
 
 export function getRewardId(eventId: string, level: number): string {
-  return `${eventId}/r/${level}`;
+  return `${getEventId(eventId)}/r/${level}`;
+}
+
+export function getUniqueRewardId(id: string): string {
+  return prefixId('ur', id);
+}
+
+export function getUniqueRewardDocId(id: string): string {
+  return getUniqueRewardId(id);
+}
+
+export function generateUniqueRewardId(level: number): string {
+  return getUniqueRewardId(level + generateId(17));
 }

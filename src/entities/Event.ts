@@ -23,3 +23,10 @@ export type Event = StoredRoot & {
 export function getEventId(id: string): string {
   return prefixId('e', id);
 }
+
+/**
+ * @deprecated event ids are fully customizable to allow for a more memorable URL and branding.
+ */
+export function generateEventId(): string {
+  throw new Error('Event IDs are now customizable and must be provided when creating an event. The generateEventId function is deprecated and should not be used.');
+}

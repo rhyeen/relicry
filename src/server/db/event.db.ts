@@ -1,6 +1,6 @@
 import 'server-only';
 import { RootDB } from './root.db';
-import { Event, getEventId } from '@/entities/Event';
+import { Event, generateEventId, getEventId } from '@/entities/Event';
 
 export class EventDB extends RootDB<Event> {
   constructor(
@@ -19,5 +19,9 @@ export class EventDB extends RootDB<Event> {
 
   protected getUnsafeDocId(item: Event): string {
     return item.id;
+  }
+
+  public async generateId(): Promise<string> {
+    return this.getUniqueId(generateEventId);
   }
 }
