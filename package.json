@@ -14,6 +14,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix .",
     "test": "vitest",
+    "cards:metadata": "node scripts/download-cards-metadata.mjs",
     "emulators:start": "firebase emulators:start",
     "force:kill": "kill -9 $(lsof -ti:3000,8087,9097,4000,9200,9300) || echo 'No processes to kill on specified ports'",
     "emulators:stop": "firebase emulators:stop || echo 'Stop the emulators manually if needed'"
