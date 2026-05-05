@@ -3,12 +3,15 @@ import path from 'node:path';
 
 const DEFAULT_BASE_URL = process.env.CARDS_BASE_URL
   ?? process.env.NEXT_PUBLIC_SITE_URL
+  // @NOTE: We assume the default of the prod instance so we can get actual cards from the prod database—even if running locally.
   ?? 'https://relicry.com';
 const DEFAULT_OUTPUT_PATH = path.join(process.cwd(), '.local', 'cards', 'metadata.json');
 
 async function fetchCardsPage(baseUrl, page) {
   const url = new URL('/api/cards', ensureTrailingSlash(baseUrl));
-  url.searchParams.set('page', String(page));
+  if (page) {
+    url.searchParams.set('cursor', page);
+  }
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -25,13 +28,15 @@ function ensureTrailingSlash(url) {
 async function main() {
   const baseUrl = DEFAULT_BASE_URL;
   const outputPath = path.resolve(process.env.CARDS_METADATA_OUTPUT ?? DEFAULT_OUTPUT_PATH);
-  const firstPage = await fetchCardsPage(baseUrl, 1);
-  const cards = [...firstPage.cards];
+  const cards = [];
+  let cursor = null;
+  let lastPage = null;
 
-  for (let page = 2; page <= firstPage.totalPages; page += 1) {
-    const nextPage = await fetchCardsPage(baseUrl, page);
-    cards.push(...nextPage.cards);
-  }
+  do {
+    lastPage = await fetchCardsPage(baseUrl, cursor);
+    cards.push(...lastPage.cards);
+    cursor = lastPage.nextCursor;
+  } while (cursor);
 
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(
@@ -40,7 +45,7 @@ async function main() {
       fetchedAt: new Date().toISOString(),
       source: `${ensureTrailingSlash(baseUrl)}api/cards`,
       totalCards: cards.length,
-      totalPages: firstPage.totalPages,
+      totalPages: lastPage?.totalPages ?? 1,
       cards,
     }, null, 2)}\n`,
     'utf8',

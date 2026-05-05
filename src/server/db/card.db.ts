@@ -2,7 +2,28 @@ import 'server-only';
 import { RootDB } from './root.db';
 import { generateCardId, getCardDocId, getCardId, VersionedCard } from '@/entities/Card';
 import { conformDocId } from '@/lib/firestoreConform';
-import { FieldPath } from 'firebase-admin/firestore';
+import { FieldPath, Timestamp } from 'firebase-admin/firestore';
+import { CardListAspectFilter, CardListTypeFilter, CARDS_PAGE_SIZE } from '@/lib/cardsList';
+import {
+  buildAspectFilterKeys,
+  buildCardAspectKey,
+  buildCardTitlePrefixes,
+  normalizeCardTitleQuery,
+} from '@/lib/cardQueryFields';
+
+type FeaturedCardsFilters = {
+  query: string;
+  type: CardListTypeFilter;
+  aspect: CardListAspectFilter;
+  cursor: string | null;
+};
+
+type FeaturedCardsPage = {
+  cards: VersionedCard[];
+  totalCards: number;
+  totalPages: number;
+  nextCursor: string | null;
+};
 
 export class CardDB extends RootDB<VersionedCard> {
   private static readonly FEATURED_BATCH_SIZE = 200;
@@ -15,6 +36,30 @@ export class CardDB extends RootDB<VersionedCard> {
 
   protected prefixId(id: string): string {
     return getCardId(id);
+  }
+
+  public async getFeaturedPage(filters: FeaturedCardsFilters): Promise<FeaturedCardsPage> {
+    const countQuery = this.applyFeaturedFilters(filters);
+    const pageQuery = this
+      .applyFeaturedSorting(this.applyFeaturedFilters(filters))
+      .limit(CARDS_PAGE_SIZE + 1);
+    const pagedQuery = this.applyFeaturedCursor(pageQuery, filters.cursor);
+
+    const [countSnapshot, querySnapshot] = await Promise.all([
+      countQuery.count().get(),
+      pagedQuery.get(),
+    ]);
+    const docs = querySnapshot.docs;
+    const hasNext = docs.length > CARDS_PAGE_SIZE;
+    const pageDocs = hasNext ? docs.slice(0, CARDS_PAGE_SIZE) : docs;
+    const totalCards = Number(countSnapshot.data().count);
+
+    return {
+      cards: pageDocs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as VersionedCard)),
+      totalCards,
+      totalPages: Math.max(1, Math.ceil(totalCards / CARDS_PAGE_SIZE)),
+      nextCursor: hasNext ? this.serializeCursor(pageDocs[pageDocs.length - 1]!) : null,
+    };
   }
 
   public async getAllFeatured(index: number): Promise<{
@@ -138,6 +183,11 @@ export class CardDB extends RootDB<VersionedCard> {
       });
       _item = { ..._item, scrapCost };
     }
+    _item = {
+      ..._item,
+      queryAspectKey: item.type === 'gambit' ? null : buildCardAspectKey(item.aspect),
+      queryTitlePrefixes: buildCardTitlePrefixes(item.title),
+    };
     return _item;
   }
 
@@ -155,5 +205,71 @@ export class CardDB extends RootDB<VersionedCard> {
    */
   public async generateId(isSample: boolean): Promise<string> {
     return this.getUniqueId(() => generateCardId(isSample));
+  }
+
+  private applyFeaturedCursor(
+    query: FirebaseFirestore.Query,
+    cursor: string | null,
+  ): FirebaseFirestore.Query {
+    if (!cursor) {
+      return query;
+    }
+
+    const { revealedAt, docId } = this.parseCursor(cursor);
+    return query.startAfter(revealedAt ? Timestamp.fromDate(revealedAt) : null, docId);
+  }
+
+  private applyFeaturedFilters(filters: FeaturedCardsFilters): FirebaseFirestore.Query {
+    let query: FirebaseFirestore.Query = this.firestoreAdmin
+      .collection(this.collectionName)
+      .where('isFeatured', '==', true);
+
+    if (filters.type !== 'all') {
+      query = query.where('type', '==', filters.type);
+    }
+
+    if (filters.aspect !== 'all') {
+      query = query.where('queryAspectKey', 'in', buildAspectFilterKeys(filters.aspect));
+    }
+
+    const normalizedTitle = normalizeCardTitleQuery(filters.query);
+    if (normalizedTitle) {
+      query = query.where('queryTitlePrefixes', 'array-contains', normalizedTitle);
+    }
+
+    return query;
+  }
+
+  private applyFeaturedSorting(query: FirebaseFirestore.Query): FirebaseFirestore.Query {
+    return query
+      .orderBy('revealedAt', 'desc')
+      .orderBy(FieldPath.documentId(), 'desc');
+  }
+
+  private parseCursor(cursor: string): { revealedAt: Date | null; docId: string } {
+    const [revealedAtValue, ...docIdParts] = cursor.split('::');
+    const docId = docIdParts.join('::').trim();
+    const revealedAt = revealedAtValue === 'null' ? null : new Date(revealedAtValue);
+
+    if (!docId) {
+      throw new Error(`Invalid cards cursor: ${cursor}`);
+    }
+
+    if (revealedAtValue !== 'null' && Number.isNaN(revealedAt?.getTime())) {
+      throw new Error(`Invalid cards cursor timestamp: ${cursor}`);
+    }
+
+    return { revealedAt, docId };
+  }
+
+  private serializeCursor(doc: FirebaseFirestore.QueryDocumentSnapshot): string {
+    const revealedAt = doc.get('revealedAt');
+    const timestamp = revealedAt instanceof Timestamp
+      ? revealedAt.toDate().toISOString()
+      : revealedAt instanceof Date
+        ? revealedAt.toISOString()
+        : 'null';
+
+    return `${timestamp}::${doc.id}`;
   }
 }

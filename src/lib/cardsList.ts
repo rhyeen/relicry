@@ -1,5 +1,7 @@
 import { Aspect } from '@/entities/Aspect';
 import { VersionedCard } from '@/entities/Card';
+import { decodeCardsHistoryEntry, encodeCardsHistoryEntry } from '@/lib/cardQueryFields';
+import type { ReadonlyURLSearchParams } from 'next/navigation';
 
 export const CARDS_PAGE_SIZE = 24;
 
@@ -7,75 +9,36 @@ export type CardListTypeFilter = 'all' | VersionedCard['type'];
 export type CardListAspectFilter = 'all' | Aspect | 'dual';
 
 export type CardListFilters = {
-  page: number;
   query: string;
   type: CardListTypeFilter;
   aspect: CardListAspectFilter;
+  cursor: string | null;
+  history: (string | null)[];
 };
 
-export type CardListResult = {
-  cards: VersionedCard[];
-  totalCards: number;
-  page: number;
-  totalPages: number;
+export const DEFAULT_CARDS_FILTERS: CardListFilters = {
+  query: '',
+  type: 'all',
+  aspect: 'all',
+  cursor: null,
+  history: [],
 };
 
 export function parseCardsFilters(
-  searchParams?: Record<string, string | string[] | undefined>,
+  searchParams?: Record<string, string | string[] | undefined> | URLSearchParams | ReadonlyURLSearchParams,
 ): CardListFilters {
-  const query = readSingle(searchParams?.query)?.trim() ?? '';
-  const page = parsePositiveInteger(readSingle(searchParams?.page));
-  const type = parseTypeFilter(readSingle(searchParams?.type));
-  const aspect = parseAspectFilter(readSingle(searchParams?.aspect));
+  const query = readSearchParam(searchParams, 'query')?.trim() ?? '';
+  const type = parseTypeFilter(readSearchParam(searchParams, 'type'));
+  const aspect = parseAspectFilter(readSearchParam(searchParams, 'aspect'));
+  const cursor = readSearchParam(searchParams, 'cursor')?.trim() || null;
+  const history = parseHistory(readSearchParam(searchParams, 'history'));
 
   return {
-    page,
     query,
     type,
     aspect,
-  };
-}
-
-export function filterAndPaginateCards(
-  cards: VersionedCard[],
-  filters: CardListFilters,
-): CardListResult {
-  const normalizedQuery = filters.query.trim().toLowerCase();
-  const filtered = cards.filter((card) => {
-    if (filters.type !== 'all' && card.type !== filters.type) {
-      return false;
-    }
-
-    if (normalizedQuery && !card.title.toLowerCase().includes(normalizedQuery)) {
-      return false;
-    }
-
-    if (filters.aspect === 'all') {
-      return true;
-    }
-
-    if (card.type === 'gambit') {
-      return false;
-    }
-
-    const aspects = normalizeCardAspects(card.aspect);
-    if (filters.aspect === 'dual') {
-      return aspects.length === 2;
-    }
-
-    return aspects.includes(filters.aspect);
-  });
-
-  const totalCards = filtered.length;
-  const totalPages = Math.max(1, Math.ceil(totalCards / CARDS_PAGE_SIZE));
-  const page = Math.min(filters.page, totalPages);
-  const start = (page - 1) * CARDS_PAGE_SIZE;
-
-  return {
-    cards: filtered.slice(start, start + CARDS_PAGE_SIZE),
-    totalCards,
-    page,
-    totalPages,
+    cursor,
+    history,
   };
 }
 
@@ -91,21 +54,48 @@ export function buildCardsQueryString(filters: Partial<CardListFilters>): string
   if (filters.aspect && filters.aspect !== 'all') {
     params.set('aspect', filters.aspect);
   }
-  if (filters.page && filters.page > 1) {
-    params.set('page', String(filters.page));
+  if (filters.cursor) {
+    params.set('cursor', filters.cursor);
+  }
+  if (filters.history && filters.history.length > 0) {
+    params.set('history', filters.history.map(encodeCardsHistoryEntry).join(','));
   }
 
   const serialized = params.toString();
   return serialized ? `?${serialized}` : '';
 }
 
-function readSingle(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
+export function getCardsPageNumber(filters: CardListFilters): number {
+  return filters.history.length + 1;
 }
 
-function parsePositiveInteger(value: string | undefined): number {
-  const parsed = Number.parseInt(value ?? '', 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+export function areCardsFiltersEqual(left: CardListFilters, right: CardListFilters): boolean {
+  return left.query === right.query
+    && left.type === right.type
+    && left.aspect === right.aspect
+    && left.cursor === right.cursor
+    && left.history.length === right.history.length
+    && left.history.every((value, index) => value === right.history[index]);
+}
+
+export function hasActiveCardsFilters(filters: CardListFilters): boolean {
+  return !areCardsFiltersEqual(filters, DEFAULT_CARDS_FILTERS);
+}
+
+function readSearchParam(
+  searchParams: Record<string, string | string[] | undefined> | URLSearchParams | ReadonlyURLSearchParams | undefined,
+  key: string,
+): string | undefined {
+  if (!searchParams) {
+    return undefined;
+  }
+
+  if (typeof searchParams === 'object' && 'get' in searchParams && typeof searchParams.get === 'function') {
+    return searchParams.get(key) ?? undefined;
+  }
+
+  const value = (searchParams as Record<string, string | string[] | undefined>)[key];
+  return Array.isArray(value) ? value[0] : value;
 }
 
 function parseTypeFilter(value: string | undefined): CardListTypeFilter {
@@ -125,6 +115,14 @@ function parseAspectFilter(value: string | undefined): CardListAspectFilter {
   return 'all';
 }
 
-function normalizeCardAspects(aspect: Aspect | [Aspect, Aspect]): Aspect[] {
-  return Array.isArray(aspect) ? [...aspect] : [aspect];
+function parseHistory(value: string | undefined): (string | null)[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map(decodeCardsHistoryEntry);
 }
