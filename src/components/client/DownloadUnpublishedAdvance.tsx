@@ -1,6 +1,9 @@
 'use client';
 
-import { buildDownloadUnpublishedRedirectHref } from '@/lib/unpublishedDownload';
+import {
+  buildDownloadUnpublishedRedirectHref,
+  DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY,
+} from '@/lib/unpublishedDownload';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -9,19 +12,43 @@ type Props = {
   awakened: boolean;
   isFocus: boolean;
   cursor: string | null;
-  history: string[];
 };
+
+function readUnpublishedHistory(): string[] {
+  try {
+    const raw = window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY);
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? parsed.filter((entry): entry is string => typeof entry === 'string' && entry.length > 0)
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeUnpublishedHistory(history: string[]) {
+  window.localStorage.setItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY, JSON.stringify(history));
+}
 
 export default function DownloadUnpublishedAdvance({
   enabled,
   awakened,
   isFocus,
   cursor,
-  history,
 }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY) === null) {
+      writeUnpublishedHistory([]);
+    }
+  }, [enabled]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -49,15 +76,16 @@ export default function DownloadUnpublishedAdvance({
       event.preventDefault();
 
       if (event.key === 'ArrowLeft') {
+        const history = readUnpublishedHistory();
         const previousCursor = history[history.length - 1] ?? null;
         if (!previousCursor) {
           return;
         }
 
+        writeUnpublishedHistory(history.slice(0, -1));
         window.location.assign(
           buildDownloadUnpublishedRedirectHref({
             cursor: previousCursor,
-            history: history.slice(0, -1),
             mode: 'current',
           })
         );
@@ -75,9 +103,9 @@ export default function DownloadUnpublishedAdvance({
         return;
       }
 
+      writeUnpublishedHistory([...readUnpublishedHistory(), cursor]);
       window.location.assign(buildDownloadUnpublishedRedirectHref({
         cursor,
-        history,
         mode: 'next',
       }));
     };
@@ -86,7 +114,7 @@ export default function DownloadUnpublishedAdvance({
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [awakened, cursor, enabled, history, isFocus, pathname, router, searchParams]);
+  }, [awakened, cursor, enabled, isFocus, pathname, router, searchParams]);
 
   return null;
 }

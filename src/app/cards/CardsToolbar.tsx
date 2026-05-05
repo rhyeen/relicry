@@ -4,7 +4,11 @@ import DSButton from '@/components/ds/DSButton';
 import DSField from '@/components/ds/DSField';
 import DSSelect from '@/components/ds/DSSelect';
 import { CardListAspectFilter, CardListTypeFilter } from '@/lib/cardsList';
-import { buildDownloadUnpublishedRedirectHref, isLocalHostname } from '@/lib/unpublishedDownload';
+import {
+  buildDownloadUnpublishedRedirectHref,
+  DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY,
+  isLocalHostname,
+} from '@/lib/unpublishedDownload';
 import { useSyncExternalStore } from 'react';
 import styles from './page.module.css';
 
@@ -41,6 +45,11 @@ export default function CardsToolbar({
     () => false,
   );
 
+  const handleDownloadUnpublished = () => {
+    window.localStorage.removeItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY);
+    window.location.assign(buildDownloadUnpublishedRedirectHref());
+  };
+
   return (
     <div className={styles.toolbar}>
       <DSField
@@ -67,7 +76,7 @@ export default function CardsToolbar({
       <div className={styles.toolbarActions}>
         {isLocal && (
           <DSButton
-            href={buildDownloadUnpublishedRedirectHref()}
+            onClick={handleDownloadUnpublished}
             label="Download Unpublished"
           />
         )}
