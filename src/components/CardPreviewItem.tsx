@@ -2,31 +2,17 @@
 
 import Link from "next/link";
 import DSText from "@/components/ds/DSText";
-import { Art } from "@/entities/Art";
-import { VersionedCard, VersionedDeckCard } from "@/entities/Card";
-import { ImageSize, ImageStorage } from "@/entities/Image";
 import StoredImage from "@/components/client/StoredImage";
+import { CardPreviewListItem } from "@/lib/cardsApi";
 import styles from "./PreviewItem.module.css";
 
 type CardPreviewItemProps = Readonly<{
-  card: VersionedCard;
-  art: Art | null;
-  href: string;
+  item: CardPreviewListItem;
 }>;
 
-function getPreviewImage(art: Art | null): ImageStorage | null {
-  if (!art || art.type !== "illustration") return null;
-  return (
-    art.image?.[ImageSize.CardPreview] ||
-    art.image?.[ImageSize.Card] ||
-    art.image?.[ImageSize.CardFull] ||
-    null
-  );
-}
-
-export default function CardPreviewItem({ card, art, href }: CardPreviewItemProps) {
-  const previewImage = getPreviewImage(art);
-  const drawLimit = "drawLimit" in card ? (card as VersionedDeckCard).drawLimit : undefined;
+export default function CardPreviewItem({ item }: CardPreviewItemProps) {
+  const { card, href, previewImage } = item;
+  const drawLimit = "drawLimit" in card ? card.drawLimit : undefined;
   const title = card.title?.trim() || "Untitled";
   const subTitle = card.subTitle?.trim();
 
