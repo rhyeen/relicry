@@ -57,10 +57,6 @@ If the stop script does not work, you may need to stop the emulators manually (e
 
 ---
 
-## Validating cards
-
-For instructions, see: https://docs.google.com/document/d/1v8Mc2iAXS1c6yIv_6QRK7YfnG8QFJWRvUOphmApTGOs/edit?tab=t.3mvxhhy6tavh
-
 ## Deploying Firestore Indexes
 
 Firestore indexes are defined in `firestore.indexes.json`.
@@ -80,6 +76,18 @@ firebase deploy --only firestore:indexes
 If you have not authenticated the Firebase CLI on your machine yet, run `firebase login` first.
 
 ---
+
+# Local Scripts
+
+## Validating cards
+
+For instructions, see: https://docs.google.com/document/d/1v8Mc2iAXS1c6yIv_6QRK7YfnG8QFJWRvUOphmApTGOs/edit?tab=t.3mvxhhy6tavh
+
+## Updating Google Sheet planning database
+
+Only super admins can do this.
+
+For instructions, see: https://docs.google.com/document/d/1v8Mc2iAXS1c6yIv_6QRK7YfnG8QFJWRvUOphmApTGOs/edit?tab=t.mjueotyaftyj
 
 ## Generating Print-Version Images
 

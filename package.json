@@ -15,6 +15,7 @@
     "lint:fix": "eslint --fix .",
     "test": "vitest",
     "download:cards:metadata": "node scripts/download-cards-metadata.mjs",
+    "export:cards:csv": "node --import tsx scripts/export-cards-csv.ts",
     "rename:card:screenshots": "node scripts/rename-card-screenshots.mjs",
     "firestore:indexes:deploy": "firebase deploy --only firestore:indexes",
     "emulators:start": "firebase emulators:start",
@@ -48,6 +49,7 @@
     "eslint-config-next": "^16.1.0",
     "firebase-tools": "^15.1.0",
     "jsdom": "^27.3.0",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.0.3",
     "vitest": "^4.0.16"

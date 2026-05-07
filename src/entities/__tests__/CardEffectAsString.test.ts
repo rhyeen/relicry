@@ -303,4 +303,11 @@ describe('card effect string helpers', () => {
 
     expect(cardEffectToString(e)).toBe(s);
   });
+
+  it('round-trips a quoted quell clause with a space before trailing text', () => {
+    const s = 'Choose an ally\'s C to trigger its printed "quell *Q" effect.';
+    const e = stringToCardEffect(s);
+
+    expect(cardEffectToString(e)).toBe(s);
+  });
 });

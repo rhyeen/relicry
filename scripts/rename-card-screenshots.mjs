@@ -87,24 +87,32 @@ async function main() {
     if ((targetCounts.get(rename.to) ?? 0) > 1) {
       throw new Error(`Multiple files would be renamed to ${rename.to}.`);
     }
+  }
 
+  for (const rename of plannedRenames) {
     const targetPath = path.join(screenshotsDir, rename.to);
+    let willOverwrite = false;
+
     try {
       await fs.access(targetPath);
-      throw new Error(`Target file already exists: ${rename.to}`);
+      willOverwrite = true;
     } catch (error) {
       if (error?.code !== 'ENOENT') {
         throw error;
       }
     }
-  }
 
-  for (const rename of plannedRenames) {
-    console.log(`${dryRun ? 'Would rename' : 'Renaming'} ${rename.from} -> ${rename.to}`);
+    console.log(
+      `${dryRun ? 'Would rename' : 'Renaming'} ${rename.from} -> ${rename.to}${willOverwrite ? ' (overwriting existing file)' : ''}`,
+    );
+
     if (!dryRun) {
+      if (willOverwrite) {
+        await fs.unlink(targetPath);
+      }
       await fs.rename(
         path.join(screenshotsDir, rename.from),
-        path.join(screenshotsDir, rename.to),
+        targetPath,
       );
     }
   }

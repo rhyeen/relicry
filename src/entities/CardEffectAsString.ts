@@ -19,7 +19,7 @@ export function cardEffectToString(effect: CardEffect, options?: {
 }): string {
   const conditionalsString = effect.conditionals.map(conditionalToString).join(' ');
   const isAttachedSuffix = (value: string): boolean => /^[.,;:!?'"%)}\]]+$/.test(value);
-  const endsWithOpeningDelimiter = (value: string): boolean => /[(\[{'"`<]$/.test(value);
+  const endsWithOpeningDelimiter = (value: string): boolean => /[(\[{<]$/.test(value);
   const partsString = effect.parts
     .map((part) => cardPartToString(part))
     .reduce((result, partText, index) => {

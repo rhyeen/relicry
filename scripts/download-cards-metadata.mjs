@@ -5,7 +5,7 @@ const DEFAULT_BASE_URL = process.env.CARDS_BASE_URL
   ?? process.env.NEXT_PUBLIC_SITE_URL
   // @NOTE: We assume the default of the prod instance so we can get actual cards from the prod database—even if running locally.
   ?? 'https://relicry.com';
-const DEFAULT_OUTPUT_PATH = path.join(process.cwd(), '.local', 'cards', 'metadata.json');
+const DEFAULT_OUTPUT_PATH = path.join(process.cwd(), '.local', 'cards', 'deck-metadata.json');
 
 async function fetchCardsPage(baseUrl, page) {
   const url = new URL('/api/cards', ensureTrailingSlash(baseUrl));

@@ -100,6 +100,32 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Create stickers for the starter deck packs
 - [x] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
 - [x] Create way to generate and print-ready the N QR codes for event quest rewards
+- [x] Redownload c/wgvnd5ya6tx5
+- [ ] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
+- [ ] Update a bunch of scrap costs to remove them from cards in all aspects
+    <!-- * c/tja8h733j8h5/1
+    * c/cuywioy2frna/1
+    * c/0kapb0afl73e/1
+    * c/vhbuw09bh6l5/1
+    * c/k9zp3kbxvfjm/1
+    * c/vbm3kdvellct/1
+    * c/e8vwzdawltp4/1
+    * c/m7s8z845mzyq/1
+    * c/61cfxtq6kvd8/1
+    * c/r7aahd46g84a/1
+    * c/gi9s8b7mmo1a/1
+    * c/ppo83an05ifl/1
+    * c/csrvvlhp2f4p/1
+    * c/lac2esxf3vfy/1
+    * c/1dfwuiaqksnq/1
+    * c/5zec3dpy8gie/1
+    * c/u1nmr56euvwo/1
+    * c/qn0uoen2x6ra/1
+    * c/qm03of4mjyp6/1
+    * c/q7hnfytkuh8n/1
+    * c/p3nyf2nbhdzu/1 -->
+    * c/mj1b7o22o7c7/1
+    * c/k2idyn3d6elt/1
 - [ ] Print cards & ~~stickers~~
 - [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
