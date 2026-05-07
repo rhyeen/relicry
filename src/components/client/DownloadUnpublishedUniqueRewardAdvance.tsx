@@ -1,22 +1,21 @@
 'use client';
 
 import {
-  buildDownloadUnpublishedRedirectHref,
-  DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY,
+  buildDownloadUnpublishedUniqueRewardRedirectHref,
+  DOWNLOAD_UNPUBLISHED_UNIQUE_REWARD_HISTORY_STORAGE_KEY,
 } from '@/lib/unpublishedDownload';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 type Props = {
   enabled: boolean;
-  awakened: boolean;
-  isFocus: boolean;
+  eventId: string;
+  level: number;
   cursor: string | null;
 };
 
 function readUnpublishedHistory(): string[] {
   try {
-    const raw = window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY);
+    const raw = window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_UNIQUE_REWARD_HISTORY_STORAGE_KEY);
     if (!raw) return [];
 
     const parsed = JSON.parse(raw);
@@ -29,23 +28,19 @@ function readUnpublishedHistory(): string[] {
 }
 
 function writeUnpublishedHistory(history: string[]) {
-  window.localStorage.setItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY, JSON.stringify(history));
+  window.localStorage.setItem(DOWNLOAD_UNPUBLISHED_UNIQUE_REWARD_HISTORY_STORAGE_KEY, JSON.stringify(history));
 }
 
-export default function DownloadUnpublishedAdvance({
+export default function DownloadUnpublishedUniqueRewardAdvance({
   enabled,
-  awakened,
-  isFocus,
+  eventId,
+  level,
   cursor,
 }: Props) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   useEffect(() => {
     if (!enabled) return;
 
-    if (window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY) === null) {
+    if (window.localStorage.getItem(DOWNLOAD_UNPUBLISHED_UNIQUE_REWARD_HISTORY_STORAGE_KEY) === null) {
       writeUnpublishedHistory([]);
     }
   }, [enabled]);
@@ -83,19 +78,12 @@ export default function DownloadUnpublishedAdvance({
         }
 
         writeUnpublishedHistory(history.slice(0, -1));
-        window.location.assign(
-          buildDownloadUnpublishedRedirectHref({
-            cursor: previousCursor,
-            mode: 'current',
-          })
-        );
-        return;
-      }
-
-      if (isFocus && !awakened) {
-        const nextParams = new URLSearchParams(searchParams.toString());
-        nextParams.set('awakened', 'true');
-        router.push(`${pathname}?${nextParams.toString()}`);
+        window.location.assign(buildDownloadUnpublishedUniqueRewardRedirectHref({
+          eventId,
+          level,
+          cursor: previousCursor,
+          mode: 'current',
+        }));
         return;
       }
 
@@ -104,7 +92,9 @@ export default function DownloadUnpublishedAdvance({
       }
 
       writeUnpublishedHistory([...readUnpublishedHistory(), cursor]);
-      window.location.assign(buildDownloadUnpublishedRedirectHref({
+      window.location.assign(buildDownloadUnpublishedUniqueRewardRedirectHref({
+        eventId,
+        level,
         cursor,
         mode: 'next',
       }));
@@ -114,7 +104,7 @@ export default function DownloadUnpublishedAdvance({
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [awakened, cursor, enabled, isFocus, pathname, router, searchParams]);
+  }, [cursor, enabled, eventId, level]);
 
   return null;
 }

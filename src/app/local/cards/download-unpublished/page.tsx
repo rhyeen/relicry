@@ -6,7 +6,6 @@ import { isEmulated } from '@/lib/environment';
 import {
   buildDownloadUnpublishedCardHref,
   isLocalRequestHost,
-  normalizeUnpublishedHistorySP,
   normalizeUnpublishedModeSP,
   normalizeUnpublishedCursorSP,
 } from '@/lib/unpublishedDownload';
@@ -38,7 +37,6 @@ async function DownloadUnpublishedPageData(
 
   const resolvedSearchParams = await searchParams;
   const cursor = normalizeUnpublishedCursorSP(resolvedSearchParams);
-  const history = normalizeUnpublishedHistorySP(resolvedSearchParams);
   const mode = normalizeUnpublishedModeSP(resolvedSearchParams);
   const db = new CardDB(getFirestoreAdmin());
 
@@ -46,15 +44,8 @@ async function DownloadUnpublishedPageData(
     ? {
       card: await db.getByStoredDocId(cursor),
       cursor,
-      history,
     }
-    : await (async () => {
-      const next = await db.getNextUnpublishedAfter(cursor);
-      return {
-        ...next,
-        history: cursor ? [...history, cursor] : history,
-      };
-    })();
+    : await db.getNextUnpublishedAfter(cursor);
 
   if (!result.card || !result.cursor) {
     redirect('/cards');
@@ -64,6 +55,5 @@ async function DownloadUnpublishedPageData(
     cardId: result.card.id,
     version: result.card.version,
     cursor: result.cursor,
-    history: result.history,
   }));
 }

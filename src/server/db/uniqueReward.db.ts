@@ -29,6 +29,33 @@ export class UniqueRewardDB extends RootDB<UniqueReward> {
     });
   }
 
+  public async getByStoredDocId(docId: string): Promise<UniqueReward | null> {
+    return this.firestoreAdmin
+      .collection(this.collectionName)
+      .doc(docId)
+      .get()
+      .then((doc) => (doc.exists
+        ? this.conformData(doc.data()) as UniqueReward
+        : null));
+  }
+
+  public async getNextUnpublishedByRewardAfter(eventId: string, level: number, cursor: string | null): Promise<{
+    uniqueReward: UniqueReward | null;
+    cursor: string | null;
+  }> {
+    const uniqueRewards = await this.getByReward(eventId, level);
+    const nextUniqueReward = uniqueRewards.find((uniqueReward) => (
+      !uniqueReward.published
+      && !uniqueReward.archived
+      && (!cursor || uniqueReward.id > cursor)
+    )) ?? null;
+
+    return {
+      uniqueReward: nextUniqueReward,
+      cursor: nextUniqueReward?.id ?? null,
+    };
+  }
+
   protected getUnsafeDocId(item: UniqueReward): string {
     return item.id;
   }

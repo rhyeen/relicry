@@ -15,6 +15,10 @@
   transform-origin: top left;
 }
 
+.printSizeEdgeToEdge .fullCard {
+  overflow: visible;
+}
+
 .foilOverlay {
   position: absolute;
   inset: 0;

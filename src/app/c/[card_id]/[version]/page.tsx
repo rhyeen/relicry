@@ -12,7 +12,6 @@ import Card from '@/components/card/Card';
 import { normalizeAwakenedSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import {
   normalizeDownloadUnpublishedSP,
-  normalizeUnpublishedHistorySP,
   normalizeUnpublishedCursorSP,
 } from '@/lib/unpublishedDownload';
 import { CardType } from '@/entities/CardContext';
@@ -67,7 +66,6 @@ async function CardPageData(
   const awakened = normalizeAwakenedSP(sp);
   const downloadUnpublished = normalizeDownloadUnpublishedSP(sp);
   const unpublishedCursor = normalizeUnpublishedCursorSP(sp);
-  const unpublishedHistory = normalizeUnpublishedHistorySP(sp);
 
   const card = await getCard(card_id, version);
   if (!card) notFound();
@@ -103,7 +101,6 @@ async function CardPageData(
         awakened={awakened}
         isFocus={card.type === 'focus'}
         cursor={unpublishedCursor}
-        history={unpublishedHistory}
       />
       <Card
         card={card}

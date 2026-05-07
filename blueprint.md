@@ -92,14 +92,48 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] CHECK AFTER CACHE: https://relicry.com/c/40qtt1fs9f7x/1?awakened=true Versatile is still broken, but I think it's just that the card's effects need to be fixed in the actual text editor.
 - [x] False Treaty image looks blurry (lo-res).
 - [x] Necrotic flavor text isn't grammatically correct.
-- [ ] Follow checklist to ensure all cards are useful for all scenarios.
-- [ ] Analyze all cards for grammatical and spelling issues (flavor text + title + card effects), then have it evaluate consistent language for deviations, then have it try to assertain if a card is not balanced, mechanically confusing, or could be abused. Have it print out the card IDs for the ones it has concerns on and explain why it's an issue.
-- [ ] Print cards
+- [x] Follow checklist to ensure all cards are useful for all scenarios.
+- [x] Analyze all cards for grammatical and spelling issues (flavor text + title + card effects), then have it evaluate consistent language for deviations, then have it try to assertain if a card is not balanced, mechanically confusing, or could be abused. Have it print out the card IDs for the ones it has concerns on and explain why it's an issue.
+- [x] Redo: c/8ttbe36zar8l/1
+- [x] Need to make "getting started" card(s) that go in starter packs to QR code and explain the game
+- [x] Create back of gambit card
+- [x] Create stickers for the starter deck packs
+- [x] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
+- [x] Create way to generate and print-ready the N QR codes for event quest rewards
+- [x] Redownload c/wgvnd5ya6tx5
+- [ ] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
+- [ ] Update a bunch of scrap costs to remove them from cards in all aspects
+    <!-- * c/tja8h733j8h5/1
+    * c/cuywioy2frna/1
+    * c/0kapb0afl73e/1
+    * c/vhbuw09bh6l5/1
+    * c/k9zp3kbxvfjm/1
+    * c/vbm3kdvellct/1
+    * c/e8vwzdawltp4/1
+    * c/m7s8z845mzyq/1
+    * c/61cfxtq6kvd8/1
+    * c/r7aahd46g84a/1
+    * c/gi9s8b7mmo1a/1
+    * c/ppo83an05ifl/1
+    * c/csrvvlhp2f4p/1
+    * c/lac2esxf3vfy/1
+    * c/1dfwuiaqksnq/1
+    * c/5zec3dpy8gie/1
+    * c/u1nmr56euvwo/1
+    * c/qn0uoen2x6ra/1
+    * c/qm03of4mjyp6/1
+    * c/q7hnfytkuh8n/1
+    * c/p3nyf2nbhdzu/1 -->
+    * c/mj1b7o22o7c7/1
+    * c/k2idyn3d6elt/1
+- [ ] Print cards & ~~stickers~~
+- [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
+- [ ] Build out /begin page
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization
