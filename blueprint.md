@@ -95,12 +95,19 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Follow checklist to ensure all cards are useful for all scenarios.
 - [x] Analyze all cards for grammatical and spelling issues (flavor text + title + card effects), then have it evaluate consistent language for deviations, then have it try to assertain if a card is not balanced, mechanically confusing, or could be abused. Have it print out the card IDs for the ones it has concerns on and explain why it's an issue.
 - [x] Redo: c/8ttbe36zar8l/1
-- [ ] Print cards
+- [x] Need to make "getting started" card(s) that go in starter packs to QR code and explain the game
+- [x] Create back of gambit card
+- [x] Create stickers for the starter deck packs
+- [ ] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
+- [ ] Create way to generate and print-ready the N QR codes for event quest rewards
+- [ ] Print cards & ~~stickers~~
+- [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
+- [ ] Build out /begin page
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization
