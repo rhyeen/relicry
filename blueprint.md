@@ -98,8 +98,8 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Need to make "getting started" card(s) that go in starter packs to QR code and explain the game
 - [x] Create back of gambit card
 - [x] Create stickers for the starter deck packs
-- [ ] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
-- [ ] Create way to generate and print-ready the N QR codes for event quest rewards
+- [x] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
+- [x] Create way to generate and print-ready the N QR codes for event quest rewards
 - [ ] Print cards & ~~stickers~~
 - [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.

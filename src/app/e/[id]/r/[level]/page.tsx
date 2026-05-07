@@ -7,6 +7,7 @@ import FullRewardCard from '@/components/quest/FullRewardCard';
 import { CardType } from '@/entities/CardContext';
 import { getEvent } from '@/server/cache/event.cache';
 import DSText from '@/components/ds/DSText';
+import RewardDownloadUnpublishedButton from '@/components/client/RewardDownloadUnpublishedButton';
 import RewardUniqueRewardsManagerSlot from '@/components/client/RewardUniqueRewardsManager.slot';
 import { getUniqueRewards } from '@/server/cache/uniqueReward.cache';
 
@@ -63,6 +64,9 @@ async function RewardPageData(
 
   return (
     <section style={{ display: 'grid', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+        <RewardDownloadUnpublishedButton eventId={event.id} level={reward.level} />
+      </div>
       <FullRewardCard event={event} reward={reward} side={side} ctx={{
         type: CardType.Full,
         size,

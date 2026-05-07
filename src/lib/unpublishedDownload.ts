@@ -1,5 +1,6 @@
 import { CardSize } from '@/entities/CardContext';
 import { getCardDocId } from '@/entities/Card';
+import { getUniqueRewardDocId } from '@/entities/Reward';
 import { conformDocId } from '@/lib/firestoreConform';
 import { SearchParams } from 'next/dist/server/request/search-params';
 import { ReadonlyURLSearchParams } from 'next/navigation';
@@ -8,6 +9,9 @@ export const DOWNLOAD_UNPUBLISHED_PARAM = 'downloadUnpublished';
 export const DOWNLOAD_UNPUBLISHED_CURSOR_PARAM = 'unpublishedCursor';
 export const DOWNLOAD_UNPUBLISHED_MODE_PARAM = 'unpublishedMode';
 export const DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY = 'relicry.unpublishedHistory';
+export const DOWNLOAD_UNPUBLISHED_UNIQUE_REWARD_HISTORY_STORAGE_KEY = 'relicry.unpublishedUniqueRewardHistory';
+export const DOWNLOAD_UNPUBLISHED_REWARD_EVENT_PARAM = 'rewardEventId';
+export const DOWNLOAD_UNPUBLISHED_REWARD_LEVEL_PARAM = 'rewardLevel';
 
 export type DownloadUnpublishedMode = 'next' | 'current';
 
@@ -67,6 +71,81 @@ export function buildDownloadUnpublishedRedirectHref(params?: {
 
 export function getUnpublishedCardCursor(cardId: string, version: number): string {
   return conformDocId(getCardDocId(cardId, version));
+}
+
+export function normalizeUnpublishedRewardEventIdSP(sp?: SupportedSearchParams): string | null {
+  const raw = readSearchParam(sp, DOWNLOAD_UNPUBLISHED_REWARD_EVENT_PARAM);
+  return raw?.trim() || null;
+}
+
+export function normalizeUnpublishedRewardLevelSP(sp?: SupportedSearchParams): number | null {
+  const raw = readSearchParam(sp, DOWNLOAD_UNPUBLISHED_REWARD_LEVEL_PARAM);
+  if (!raw) return null;
+
+  const level = Number.parseInt(raw, 10);
+  if (!Number.isInteger(level) || level < 1) {
+    return null;
+  }
+
+  return level;
+}
+
+export function buildDownloadUnpublishedUniqueRewardRedirectHref(params?: {
+  eventId?: string | null;
+  level?: number | null;
+  cursor?: string | null;
+  mode?: DownloadUnpublishedMode;
+}): string {
+  const searchParams = new URLSearchParams();
+
+  if (params?.eventId) {
+    searchParams.set(DOWNLOAD_UNPUBLISHED_REWARD_EVENT_PARAM, params.eventId);
+  }
+  if (typeof params?.level === 'number') {
+    searchParams.set(DOWNLOAD_UNPUBLISHED_REWARD_LEVEL_PARAM, `${params.level}`);
+  }
+  if (params?.cursor) {
+    searchParams.set(DOWNLOAD_UNPUBLISHED_CURSOR_PARAM, params.cursor);
+  }
+  if (params?.mode && params.mode !== 'next') {
+    searchParams.set(DOWNLOAD_UNPUBLISHED_MODE_PARAM, params.mode);
+  }
+
+  const queryString = searchParams.toString();
+  return queryString
+    ? `/local/unique-rewards/download-unpublished?${queryString}`
+    : '/local/unique-rewards/download-unpublished';
+}
+
+export function getUnpublishedUniqueRewardCursor(id: string): string {
+  return getUniqueRewardDocId(id);
+}
+
+export function buildDownloadUnpublishedUniqueRewardHref(params: {
+  id: string;
+  cursor: string;
+}): string {
+  const routeId = params.id.startsWith('ur/')
+    ? params.id.slice(3)
+    : params.id;
+  const searchParams = new URLSearchParams();
+  searchParams.set('size', CardSize.PrintSize);
+  searchParams.set('side', 'back');
+  searchParams.set(DOWNLOAD_UNPUBLISHED_PARAM, 'true');
+  searchParams.set(DOWNLOAD_UNPUBLISHED_CURSOR_PARAM, params.cursor);
+
+  return `/ur/${routeId}?${searchParams.toString()}`;
+}
+
+export function buildRewardHref(params: {
+  eventId: string;
+  level: number;
+}): string {
+  const routeEventId = params.eventId.startsWith('e/')
+    ? params.eventId.slice(2)
+    : params.eventId;
+
+  return `/e/${routeEventId}/r/${params.level}`;
 }
 
 export function buildDownloadUnpublishedCardHref(params: {

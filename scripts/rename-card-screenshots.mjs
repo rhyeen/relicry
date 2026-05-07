@@ -37,12 +37,21 @@ function getTargetFileName(fileName) {
   }
 
   const awakened = /\s\(1\)(?=\.png$)/i.test(fileName);
-  const match = fileName.match(/^localhost_\d+_(c_[a-z0-9]+_\d+)_/i);
-  if (!match) {
+  const cardMatch = fileName.match(/^localhost_\d+_(c_[a-z0-9]+_\d+)_/i);
+  if (cardMatch) {
+    return `${cardMatch[1]}${awakened ? '_awakened' : ''}.png`;
+  }
+
+  const uniqueRewardMatch = fileName.match(/^localhost_\d+_(ur_[a-z0-9]+)(?:_|(?=\.png$))/i);
+  if (!uniqueRewardMatch) {
     return null;
   }
 
-  return `${match[1]}${awakened ? '_awakened' : ''}.png`;
+  const sideSuffix = /(?:^|[&_])side=back(?:[&()]|$)/i.test(fileName)
+    ? '_back'
+    : '';
+
+  return `${uniqueRewardMatch[1]}${sideSuffix}.png`;
 }
 
 async function main() {

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { connection } from 'next/server';
+import DownloadUnpublishedUniqueRewardAdvance from '@/components/client/DownloadUnpublishedUniqueRewardAdvance';
 import DSText from '@/components/ds/DSText';
 import cardStyles from '@/components/card/Card.module.css';
 import FullRewardCard from '@/components/quest/FullRewardCard';
@@ -9,9 +10,18 @@ import { getEvent } from '@/server/cache/event.cache';
 import { getReward } from '@/server/cache/reward.cache';
 import { getUniqueReward } from '@/server/cache/uniqueReward.cache';
 import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
+import {
+  normalizeDownloadUnpublishedSP,
+  normalizeUnpublishedCursorSP,
+} from '@/lib/unpublishedDownload';
 
 type Params = { id: string };
-type SearchParams = { size?: string | string[]; side?: string | string[] };
+type SearchParams = {
+  size?: string | string[];
+  side?: string | string[];
+  downloadUnpublished?: string | string[];
+  unpublishedCursor?: string | string[];
+};
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -49,6 +59,8 @@ async function UniqueRewardPageData(
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
   const side = normalizeSideSP(sp);
+  const downloadUnpublished = normalizeDownloadUnpublishedSP(sp);
+  const unpublishedCursor = normalizeUnpublishedCursorSP(sp);
   const isPrintSize = size === CardSize.PrintSize;
   const uniqueReward = await getUniqueReward(id);
 
@@ -64,6 +76,12 @@ async function UniqueRewardPageData(
   return (
     <div>
       {!isPrintSize && <DSText.Heading as="h1">Printed Reward</DSText.Heading>}
+      <DownloadUnpublishedUniqueRewardAdvance
+        enabled={downloadUnpublished}
+        eventId={uniqueReward.eventId}
+        level={uniqueReward.level}
+        cursor={unpublishedCursor}
+      />
       <div
         className={[
           cardStyles.cardContainer,
