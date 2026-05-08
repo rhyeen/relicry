@@ -4,8 +4,9 @@ import { getQuest } from '@/server/cache/quest.cache';
 import { connection } from 'next/server';
 import FullQuestCard from '@/components/quest/FullQuestCard';
 import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
-import { CardType } from '@/entities/CardContext';
+import { CardSize, CardType } from '@/entities/CardContext';
 import DSText from '@/components/ds/DSText';
+import cardStyles from '@/components/card/Card.module.css';
 
 type Params = { id: string, season: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -33,12 +34,9 @@ export default async function QuestPage(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   return (
-    <div>
-      <DSText.Heading as="h1">Quest Details</DSText.Heading>
-      <Suspense fallback={<div>Loading quest data...</div>}>
-        <QuestPageData params={params} searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <Suspense fallback={null}>
+      <QuestPageData params={params} searchParams={searchParams} />
+    </Suspense>
   );
 }
 
@@ -49,16 +47,26 @@ async function QuestPageData(
   const [{ id, season }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
   const side = normalizeSideSP(sp);
+  const isPrintSize = size === CardSize.PrintSize;
   const quest = await getQuest(id, season);
 
   if (!quest) notFound();
 
   return (
-    <section>
-      <FullQuestCard quest={quest} side={side} ctx={{
-        type: CardType.Full,
-        size,
-      }} />
-    </section>
+    <div>
+      {!isPrintSize && <DSText.Heading as="h1">Quest Details</DSText.Heading>}
+      <div
+        className={[
+          cardStyles.cardContainer,
+          isPrintSize ? cardStyles.printSize : '',
+          isPrintSize ? cardStyles.printSizeEdgeToEdge : '',
+        ].filter(Boolean).join(' ')}
+      >
+        <FullQuestCard quest={quest} side={side} ctx={{
+          type: CardType.Full,
+          size,
+        }} />
+      </div>
+    </div>
   );
 }

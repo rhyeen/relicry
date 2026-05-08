@@ -1,7 +1,7 @@
 import cardStyles from '../card/Card.module.css';
 import styles from './QuestCard.module.css';
 import { ASSET_VERSION } from '../card/assetVersion';
-import { assetURL, CardContext } from '@/entities/CardContext';
+import { assetURL, CardContext, qrCodeApiURL } from '@/entities/CardContext';
 import { getQuestDocId, getQuestId, VersionedQuest } from '@/entities/Quest';
 import FactionName from './card-parts/FactionName';
 import FooterCardPart from './card-parts/FooterCardPart';
@@ -16,6 +16,10 @@ const localeEn = {
   'quest': 'Quest',
   'challengeLevel': 'Challenge Level',
   'scanForQuest': 'Scan for Quest',
+  'deckRequirement': 'Deck Requirement',
+  'requiresLevel1': '25-40 cards',
+  'requiresLevel2': '30-40 cards',
+  'requiresLevel3': '40 cards',
 };
 
 export default function FullQuestCard({
@@ -46,11 +50,15 @@ export default function FullQuestCard({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/api/qr-code?path=${encodeURIComponent(docId)}`}
+            src={qrCodeApiURL(ctx, docId)}
             alt={`QR Code for ${docId}`}
             className={styles.qrcode}
           />
           <div className={styles.scanForQuest}>{localeEn.scanForQuest}</div>
+          <div className={styles.requirement}>
+            <div className={styles.deckRequirement}>{localeEn.deckRequirement}:</div>
+            <div className={styles.requiresLevel}>{localeEn[`requiresLevel${quest.level >= 3 ? 3 : quest.level as 1 | 2}`]}</div>
+          </div>
         </>
       }
     </section>

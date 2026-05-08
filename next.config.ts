@@ -22,6 +22,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
+  },
   devIndicators: disableDevIndicator ? false : undefined,
   cacheComponents: true,
   cacheLife: {

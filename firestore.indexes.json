@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "questTokens",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "id", "order": "ASCENDING" },
+        { "fieldPath": "season", "order": "DESCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "quests",
       "queryScope": "COLLECTION",
       "fields": [
