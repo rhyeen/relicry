@@ -101,8 +101,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Create an "Alpha Test 1" event and an "Alpha Test 2" event, with unique quests/levels. Name them something more fancy.
 - [x] Create way to generate and print-ready the N QR codes for event quest rewards
 - [x] Redownload c/wgvnd5ya6tx5
-- [ ] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
-- [ ] Update a bunch of scrap costs to remove them from cards in all aspects
+- [x] Update a bunch of scrap costs to remove them from cards in all aspects
     <!-- * c/tja8h733j8h5/1
     * c/cuywioy2frna/1
     * c/0kapb0afl73e/1
@@ -123,9 +122,14 @@ The current plan is to get the scaffolding in place so that the developer can fo
     * c/qn0uoen2x6ra/1
     * c/qm03of4mjyp6/1
     * c/q7hnfytkuh8n/1
-    * c/p3nyf2nbhdzu/1 -->
+    * c/p3nyf2nbhdzu/1
     * c/mj1b7o22o7c7/1
-    * c/k2idyn3d6elt/1
+    * c/k2idyn3d6elt/1 -->
+- [ ] quest card should say how many cards are required in deck to play it
+- [ ] have a way to generate the quest cards (/q), maybe just adding it manually
+- [ ] have a way to generate the quest token cards (/t), maybe just adding it manually
+- [x] Wise starter needs some more Brave cards for Sword of Star-ice
+- [x] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
 - [ ] Print cards & ~~stickers~~
 - [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.

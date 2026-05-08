@@ -28,10 +28,11 @@ export type Quest = {
 }
 
 export type QuestToken = {
-  // t[1-9]/${questId, excluding the 'q/' prefix}
+  // t[1-99]/${questId, excluding the 'q/' prefix}
   id: string;
   faction: Faction;
-  // q/a1b/0
+  // q/a1b/0: @NOTE: the tokens are statically set and don't actually have the questId on the card,
+  // but this is how we associate a token to a quest.
   questId: string;
   season: number;
 }
