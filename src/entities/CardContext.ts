@@ -28,3 +28,8 @@ export function assetURL(ctx: CardContext, subPath: string): string {
   }
   return basePath + subPath;
 }
+
+export function qrCodeApiURL(ctx: CardContext, path: string): string {
+  const apiBaseUrl = ctx.size === CardSize.PrintSize ? 'https://relicry.com' : '';
+  return `${apiBaseUrl}/api/qr-code?path=${encodeURIComponent(path)}`;
+}

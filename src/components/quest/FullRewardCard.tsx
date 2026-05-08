@@ -2,7 +2,7 @@ import { Event } from '@/entities/Event';
 import cardStyles from '../card/Card.module.css';
 import styles from './RewardCard.module.css';
 import { ASSET_VERSION } from '../card/assetVersion';
-import { assetURL, CardContext } from '@/entities/CardContext';
+import { assetURL, CardContext, qrCodeApiURL } from '@/entities/CardContext';
 import { getRewardId, Reward, UniqueReward } from '@/entities/Reward';
 import FooterCardPart from './card-parts/FooterCardPart';
 
@@ -56,7 +56,7 @@ export default function FullRewardCard({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/api/qr-code?path=${encodeURIComponent(docId)}`}
+            src={qrCodeApiURL(ctx, docId)}
             alt={`QR Code for claiming reward with doc ID ${docId}`}
             className={styles.qrcode}
           />

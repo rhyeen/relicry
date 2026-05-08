@@ -125,12 +125,19 @@ The current plan is to get the scaffolding in place so that the developer can fo
     * c/p3nyf2nbhdzu/1
     * c/mj1b7o22o7c7/1
     * c/k2idyn3d6elt/1 -->
-- [ ] quest card should say how many cards are required in deck to play it
-- [ ] have a way to generate the quest cards (/q), maybe just adding it manually
-- [ ] have a way to generate the quest token cards (/t), maybe just adding it manually
+- [x] how does a quest relate to the event? When they scan the QR code, how does it bind to the event's actual quests? - EventQuest and we ensure that no two events have the same quest during the same to/from time.
+- [x] quest card should say how many cards are required in deck to play it
+- [x] have a way to generate the quest cards (/q), maybe just adding it manually
+- [x] have a way to generate the quest token cards (/t), maybe just adding it manually
 - [x] Wise starter needs some more Brave cards for Sword of Star-ice
 - [x] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
+- [x] ur/ (rewards) QR codes are LOCALHOST
+- [x] q QR codes are LOCALHOST
+- [ ] make sure q QR code doesn't have -1 in it.
 - [ ] Print cards & ~~stickers~~
+    <!-- * Rewards (ur/) reprint back
+    * Quest token cards -->
+    * Quest cards => front & back
 - [ ] Figure out starter deck box and booster packaging
 - [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.

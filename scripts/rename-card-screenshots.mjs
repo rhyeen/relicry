@@ -42,6 +42,11 @@ function getTargetFileName(fileName) {
     return `${cardMatch[1]}${awakened ? '_awakened' : ''}.png`;
   }
 
+  const questTokenMatch = fileName.match(/^localhost_\d+_(t_\d+)(?:_|(?=\.png$))/i);
+  if (questTokenMatch) {
+    return `${questTokenMatch[1]}.png`;
+  }
+
   const uniqueRewardMatch = fileName.match(/^localhost_\d+_(ur_[a-z0-9]+)(?:_|(?=\.png$))/i);
   if (!uniqueRewardMatch) {
     return null;

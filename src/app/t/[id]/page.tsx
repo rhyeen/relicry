@@ -3,9 +3,10 @@ import { Suspense } from 'react';
 import { connection } from 'next/server';
 import { getAnyOfToken } from '@/server/cache/questToken.cache';
 import FullQuestTokenCard from '@/components/quest/FullQuestTokenCard';
-import { CardType } from '@/entities/CardContext';
+import { CardSize, CardType } from '@/entities/CardContext';
 import { normalizeSideSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import DSText from '@/components/ds/DSText';
+import cardStyles from '@/components/card/Card.module.css';
 
 type Params = { id: string };
 type SearchParams = { size?: string | string[]; side?: string | string[] };
@@ -33,12 +34,9 @@ export default async function QuestTokenPage(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   return (
-    <div>
-      <DSText.Heading as="h1">Quest Token Details</DSText.Heading>
-      <Suspense fallback={<div>Loading quest token data...</div>}>
-        <QuestTokenPageData params={params} searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <Suspense fallback={null}>
+      <QuestTokenPageData params={params} searchParams={searchParams} />
+    </Suspense>
   );
 }
 
@@ -49,16 +47,26 @@ async function QuestTokenPageData(
   const [{ id }, sp] = await Promise.all([params, searchParams]);
   const size = normalizeSizeSP(sp);
   const side = normalizeSideSP(sp);
+  const isPrintSize = size === CardSize.PrintSize;
 
   const token = await getAnyOfToken(id);
   if (!token) notFound();
 
   return (
-    <section>
-      <FullQuestTokenCard token={token} side={side} ctx={{
-        type: CardType.Full,
-        size,
-      }} />
-    </section>
+    <div>
+      {!isPrintSize && <DSText.Heading as="h1">Quest Token Details</DSText.Heading>}
+      <div
+        className={[
+          cardStyles.cardContainer,
+          isPrintSize ? cardStyles.printSize : '',
+          isPrintSize ? cardStyles.printSizeEdgeToEdge : '',
+        ].filter(Boolean).join(' ')}
+      >
+        <FullQuestTokenCard token={token} side={side} ctx={{
+          type: CardType.Full,
+          size,
+        }} />
+      </div>
+    </div>
   );
 }
