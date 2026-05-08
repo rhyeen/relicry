@@ -1,0 +1,45 @@
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.emptyState {
+  padding: 2rem 0;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: var(--surface-raised, rgba(255, 255, 255, 0.04));
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cardHeader {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.questLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.questLink:hover {
+  text-decoration: underline;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

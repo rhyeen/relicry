@@ -16,6 +16,9 @@ export default function Header() {
           <Link href="/events" className={styles.navLink}>
             Events
           </Link>
+          <Link href="/quests" className={styles.navLink}>
+            Quests
+          </Link>
           <Link href="/art" className={styles.navLink}>
             Art
           </Link>

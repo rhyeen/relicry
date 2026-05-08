@@ -11,11 +11,9 @@ import DSSelect from "@/components/ds/DSSelect";
 import { AdminRole, hasRole } from "@/entities/AdminRole";
 import { Faction } from "@/entities/Faction";
 import {
-  defaultQuestTokenIdFactions,
   definedQuestTokenIds,
   definedRawQuestTokenIdsEn,
   extractTokenRawId,
-  getTokenId,
   QuestToken,
   VersionedQuest,
 } from "@/entities/Quest";
@@ -54,10 +52,26 @@ function getDefaultNewQuest(): VersionedQuest {
   };
 }
 
+function getFactionForTokenId(tokenId: string): Faction {
+  const rawId = Number.parseInt(extractTokenRawId(tokenId), 10);
+  const remainder = ((rawId - 1) % 4 + 4) % 4;
+
+  switch (remainder) {
+    case 0:
+      return Faction.IronbandGuild;
+    case 1:
+      return Faction.OrdoAether;
+    case 2:
+      return Faction.BridlewildKin;
+    case 3:
+      return Faction.NightglassCo;
+    default:
+      return Faction.IronbandGuild;
+  }
+}
+
 function getDefaultTokenIdsForFaction(faction: Faction): string[] {
-  const preferred = Object.entries(defaultQuestTokenIdFactions)
-    .filter(([, tokenFaction]) => tokenFaction === faction)
-    .map(([rawId]) => getTokenId(rawId));
+  const preferred = definedQuestTokenIds.filter((tokenId) => getFactionForTokenId(tokenId) === faction);
   const unique: string[] = [];
   for (const id of [...preferred, ...definedQuestTokenIds]) {
     if (!unique.includes(id)) unique.push(id);
@@ -67,7 +81,10 @@ function getDefaultTokenIdsForFaction(faction: Faction): string[] {
 }
 
 function getDefaultTokensForFaction(faction: Faction): EditableQuestToken[] {
-  return getDefaultTokenIdsForFaction(faction).map((id) => ({ id, faction }));
+  return getDefaultTokenIdsForFaction(faction).map((id) => ({
+    id,
+    faction: getFactionForTokenId(id),
+  }));
 }
 
 function withTokenCount(
@@ -81,7 +98,10 @@ function withTokenCount(
   const defaults = getDefaultTokensForFaction(questFaction);
   for (const token of [...defaults, ...definedQuestTokenIds.map((id) => ({ id, faction: questFaction }))]) {
     if (!used.has(token.id)) {
-      out.push(token);
+      out.push({
+        id: token.id,
+        faction: getFactionForTokenId(token.id),
+      });
       used.add(token.id);
     }
     if (out.length === nextCount) break;
@@ -93,7 +113,7 @@ function getInitialTokens(quest: VersionedQuest, questTokens?: QuestToken[]): Ed
   if (questTokens && questTokens.length > 0) {
     return questTokens.slice(0, 5).map((token) => ({
       id: token.id,
-      faction: token.faction,
+      faction: getFactionForTokenId(token.id),
     }));
   }
   return getDefaultTokensForFaction(quest.faction);
@@ -280,7 +300,7 @@ function EditQuestInner({
               options={tokenOptions}
               value={token.id}
               onChange={(id) => setQuestTokens((tokens) => tokens.map((current, i) => (
-                i === index ? { ...current, id } : current
+                i === index ? { ...current, id, faction: getFactionForTokenId(id) } : current
               )))}
               required
             />
@@ -288,15 +308,16 @@ function EditQuestInner({
               label={`Token ${index + 1} Faction`}
               options={factionOptions}
               value={token.faction}
-              onChange={(faction) => setQuestTokens((tokens) => tokens.map((current, i) => (
-                i === index ? { ...current, faction } : current
-              )))}
+              onChange={() => undefined}
+              disabled
               required
             />
           </div>
         ))}
 
-        <DSField.Error error={saveAttempted ? getTokensError() : undefined} />
+        <DSField.Root>
+          <DSField.Error error={saveAttempted ? getTokensError() : undefined} />
+        </DSField.Root>
 
         <DSButton
           label="Save Quest"

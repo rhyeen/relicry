@@ -8,6 +8,7 @@ import { QuestDB } from '@/server/db/quest.db';
 
 export const questTags = {
   data: (id: string, season?: string) => `d/quest/${id}/${season ?? 'latest'}`,
+  list: 'd/quest/list',
 };
 
 export const QUEST_LIFE = 'unlikelyChange';
@@ -22,6 +23,20 @@ export async function getQuest(id: string, season?: string): Promise<VersionedQu
     return new QuestDB(getFirestoreAdmin()).get(getQuestDocId(id, parseInt(season)));
   }
   return new QuestDB(getFirestoreAdmin()).getLatest(id);
+}
+
+export async function getQuests(): Promise<VersionedQuest[]> {
+  'use cache';
+
+  cacheLife(QUEST_LIFE);
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(questTags.list);
+
+  return new QuestDB(getFirestoreAdmin()).getBy({
+    where: [],
+    sortBy: { field: 'revealed.at', direction: 'desc' },
+    limit: 100,
+  });
 }
 
 export async function invalidateQuestNow(id: string, season?: string): Promise<void> {
