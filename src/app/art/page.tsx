@@ -6,6 +6,7 @@ import { ArtDB } from '@/server/db/art.db';
 import { cacheLife, cacheTag } from 'next/cache';
 import DSButton from '@/components/ds/DSButton';
 import DSText from '@/components/ds/DSText';
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import DSSection from '@/components/ds/DSSection';
 
@@ -52,6 +53,7 @@ export default async function ArtPage() {
 }
 
 async function ArtPageData() {
+  await connection();
   const arts = await getArts();
 
   return arts.map((art) => (
