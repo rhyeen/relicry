@@ -5,7 +5,6 @@ import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { Aspect } from '@/entities/Aspect';
 import { Suspense } from 'react';
-import { connection } from 'next/server';
 import CardsBrowserClient from './CardsBrowserClient';
 import styles from './page.module.css';
 import { getCardsPreviewPage } from '@/server/cardsPreview';
@@ -43,7 +42,6 @@ export default async function CardsPage() {
 }
 
 async function CardsPageData() {
-  await connection();
   const initialResponse = await getInitialCardsPage();
 
   return (

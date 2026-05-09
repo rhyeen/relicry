@@ -47,6 +47,14 @@ function getTargetFileName(fileName) {
     return `${questTokenMatch[1]}.png`;
   }
 
+  const questMatch = fileName.match(/^localhost_\d+_(q_[a-z0-9]+_\d+)(?:_|(?=\.png$))/i);
+  if (questMatch) {
+    const sideSuffix = /(?:^|[&_])side=back(?:[&()]|$)/i.test(fileName)
+      ? '_back'
+      : '';
+    return `${questMatch[1]}${sideSuffix}.png`;
+  }
+
   const uniqueRewardMatch = fileName.match(/^localhost_\d+_(ur_[a-z0-9]+)(?:_|(?=\.png$))/i);
   if (!uniqueRewardMatch) {
     return null;
