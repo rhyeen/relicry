@@ -86,3 +86,13 @@ export function SignOutIcon(props: IconProps) {
     </IconRoot>
   );
 }
+
+export function SignInIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M13.8 5.2h3.4A1.8 1.8 0 0 1 19 7v10a1.8 1.8 0 0 1-1.8 1.8h-3.4" />
+      <path d="M9.6 8.2 13.4 12l-3.8 3.8" />
+      <path d="M4.8 12h8.3" />
+    </IconRoot>
+  );
+}

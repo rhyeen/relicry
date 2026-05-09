@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import styles from './HeaderClient.module.css';
+import { SignInIcon } from '@/components/ds/DSNavIcons';
+import DSSpinner from '@/components/ds/DSSpinner';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import ProfileMenu from './ProfileMenu';
 
@@ -11,7 +13,15 @@ export default function Header() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <div className={styles.userContainer}>
+        <span className={styles.loadingIndicator}>
+          <DSSpinner size="sm" label="Loading account" />
+        </span>
+      </div>
+    );
+  }
 
   const currentPath = `${pathname}${searchParams?.toString() ? `?${searchParams}` : ''}`;
 
@@ -23,8 +33,10 @@ export default function Header() {
         <Link
           href={`/login?next=${encodeURIComponent(currentPath)}`}
           className={`${styles.button} goldButton`}
+          aria-label="Login"
+          title="Login"
         >
-          Login
+          <SignInIcon className={styles.buttonIcon} />
         </Link>
       )}
     </div>

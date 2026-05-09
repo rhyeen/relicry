@@ -1,5 +1,6 @@
 .header {
   position: relative;
+  box-sizing: border-box;
   padding: 0.625rem 0.75rem;
   display: flex;
   gap: 0.75rem;
@@ -12,7 +13,7 @@
 .logoContainer {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.625rem;
 }
 
@@ -70,7 +71,13 @@
 }
 
 @media (max-width: 680px) {
+  :global(.global-header) {
+    top: 0.75rem;
+    width: min(calc(100vw - 1rem), 24rem);
+  }
+
   .header {
+    width: 100%;
     gap: 0.375rem;
     padding: 0.375rem;
   }
