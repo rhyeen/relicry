@@ -1,0 +1,96 @@
+.root {
+  display: flex;
+  align-items: center;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+}
+
+.link {
+  position: relative;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: white;
+  outline: 0;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.icon {
+  width: 1.28rem;
+  height: 1.28rem;
+}
+
+.tooltip {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 50%;
+  z-index: 2;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.375rem;
+  background: rgba(13, 17, 23, 0.92);
+  color: #fbf6ea;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -0.25rem);
+  transition: opacity 140ms ease, transform 140ms ease;
+  white-space: nowrap;
+}
+
+.link:hover,
+.link:focus-visible,
+.link[data-active] {
+  border-color: rgba(245, 158, 11, 0.38);
+  background: rgba(245, 158, 11, 0.14);
+  color: #f7d695;
+}
+
+@media (max-width: 680px) {
+  .link {
+    width: 2.55rem;
+    height: 2.55rem;
+  }
+
+  .icon {
+    width: 1.18rem;
+    height: 1.18rem;
+  }
+
+  .tooltip {
+    display: none;
+  }
+}
+
+.link:hover,
+.link:focus-visible {
+  transform: translateY(-0.0625rem);
+}
+
+.link:hover .tooltip,
+.link:focus-visible .tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .tooltip {
+    transition: none;
+  }
+}

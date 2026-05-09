@@ -133,18 +133,19 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] /c/gi9s8b7mmo1a has issues with the " pushes against the `effects` due to asString bug. `Choose an ally's C to trigger its printed "quell *Q"effect.` Redownload when fixed
 - [x] ur/ (rewards) QR codes are LOCALHOST
 - [x] q QR codes are LOCALHOST
-- [ ] make sure q QR code doesn't have -1 in it.
-- [ ] Print cards & ~~stickers~~
+- [x] make sure q QR code doesn't have -1 in it.
+- [x] Print cards & ~~stickers~~
     <!-- * Rewards (ur/) reprint back
-    * Quest token cards -->
-    * Quest cards => front & back
-- [ ] Figure out starter deck box and booster packaging
-- [ ] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
+    * Quest token cards
+    * Quest cards => front & back -->
+- [x] Images are exporting WAAAY bigger than 2177x2961 - Don't export from a retina display!
+- [x] Figure out starter deck box and booster packaging
+- [x] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
+- [ ] Build out home page and /begin page
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
-- [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
-- [ ] Build out /begin page
+- [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 
 ### Localization

@@ -46,9 +46,9 @@ export default function RootLayout({
       <body
         className={`${barlowCondensed.variable} ${breeSerif.variable} ${pirataOne.variable} ${unifrakturCook.variable} ${styles.body}`}
       >
-        <div data-global-header className='global-header'><Header /></div>
         <ServiceWorkerRegister />
         <main data-global-main className={`${styles.main} global-main`}>{children}</main>
+        <div data-global-header className='global-header'><Header /></div>
         <div data-global-footer className='global-footer'><Footer /></div>
         <GlobalParamsSetterSlot />
       </body>
