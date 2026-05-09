@@ -50,7 +50,7 @@
   position: relative;
   display: flex;
   min-height: 92svh;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
   padding: clamp(6rem, 16svh, 10rem) clamp(1.25rem, 5vw, 4rem) clamp(5.25rem, 12svh, 8rem);
 }
@@ -64,13 +64,14 @@
 }
 
 .eyebrow {
-  margin: 0 0 0.75rem;
-  color: var(--ds-immersive-accent);
+  margin: 0 0 -1.75rem 0;
+  color: white;
   font-family: var(--font-bree-serif), serif;
   font-size: clamp(0.875rem, 2vw, 1rem);
   font-weight: 400;
   letter-spacing: 0;
   text-transform: uppercase;
+  text-shadow: 0 0.125rem 0.875rem rgba(0, 0, 0, 0.8);
 }
 
 .title {
@@ -84,6 +85,20 @@
   line-height: 0.84;
   text-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.72);
   text-wrap: balance;
+}
+
+.titleGraphic {
+  width: min(100%, 450px);
+  max-width: 100%;
+  line-height: 0;
+  text-shadow: none;
+}
+
+.titleImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.25rem 1.5rem rgba(0, 0, 0, 0.72));
 }
 
 .subtitle {
@@ -168,6 +183,10 @@
 
   .title {
     max-width: 9ch;
+  }
+
+  .titleGraphic {
+    width: min(100%, 450px);
   }
 
   .actions {

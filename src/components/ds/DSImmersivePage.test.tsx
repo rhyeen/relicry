@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
 import { createElement } from 'react';
 import type { ImgHTMLAttributes } from 'react';
 import DSImmersivePage from './DSImmersivePage';
@@ -13,6 +13,10 @@ vi.mock('next/image', () => ({
     return createElement('img', props);
   },
 }));
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('DSImmersivePage', () => {
   it('renders an immersive hero and scroll cue', () => {
@@ -35,5 +39,23 @@ describe('DSImmersivePage', () => {
     expect(screen.getByRole('link', { name: 'View Quests' }).getAttribute('href')).toBe('/quests');
     expect(screen.getByRole('link', { name: 'Scroll to content' }).getAttribute('href')).toBe('#content');
     expect(screen.getByText('Panel content')).toBeDefined();
+  });
+
+  it('renders an image hero title', () => {
+    render(
+      <DSImmersivePage image={{ src: '/hero.webp', width: 1200, height: 800 }}>
+        <DSImmersivePage.Hero
+          eyebrow="A TCG Adventure Game"
+          title={{ src: '/logo.webp', alt: 'Relicry', width: 1280, height: 480 }}
+          subtitle="Adventure through tactical cards."
+        />
+      </DSImmersivePage>,
+    );
+
+    const heading = screen.getByRole('heading', { level: 1, name: 'Relicry' });
+    const logo = screen.getByRole('img', { name: 'Relicry' });
+
+    expect(heading.contains(logo)).toBe(true);
+    expect(logo.getAttribute('src')).toBe('/logo.webp');
   });
 });

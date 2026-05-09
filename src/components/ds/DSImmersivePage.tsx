@@ -17,6 +17,12 @@ type Action = Readonly<{
   href: string;
 }>;
 
+type HeroTitleImage = DSImmersivePageImage & Readonly<{
+  alt: string;
+}>;
+
+type HeroTitle = string | HeroTitleImage;
+
 type RootProps = Readonly<HTMLAttributes<HTMLDivElement> & {
   image: DSImmersivePageImage;
   children: ReactNode;
@@ -24,8 +30,8 @@ type RootProps = Readonly<HTMLAttributes<HTMLDivElement> & {
 
 type HeroProps = Readonly<{
   eyebrow: string;
-  title: string;
-  subtitle: string;
+  title: HeroTitle;
+  subtitle?: string;
   primaryAction?: Action;
   secondaryAction?: Action;
   scrollTargetId?: string;
@@ -47,6 +53,10 @@ function toSafeObjectPosition(value?: string) {
   }
 
   return /^[\w\s.%+-]+$/.test(value) ? value : 'center';
+}
+
+function isHeroTitleImage(title: HeroTitle): title is HeroTitleImage {
+  return typeof title !== 'string';
 }
 
 function Root({ image, children, className, style, ...rest }: RootProps) {
@@ -86,14 +96,29 @@ function Hero({
   secondaryAction,
   scrollTargetId,
 }: HeroProps) {
+  const titleIsImage = isHeroTitleImage(title);
+
   return (
     <section className={styles.hero} aria-labelledby="immersive-page-title">
       <div className={styles.heroInner}>
         <p className={styles.eyebrow}>{eyebrow}</p>
-        <h1 className={styles.title} id="immersive-page-title">
-          {title}
+        <h1
+          className={[styles.title, titleIsImage ? styles.titleGraphic : undefined].filter(Boolean).join(' ')}
+          id="immersive-page-title"
+        >
+          {titleIsImage ? (
+            <Image
+              className={styles.titleImage}
+              src={title.src}
+              alt={title.alt}
+              width={title.width}
+              height={title.height}
+              priority={title.priority}
+              sizes="(max-width: 520px) calc(100vw - 2rem), 450px"
+            />
+          ) : title}
         </h1>
-        <p className={styles.subtitle}>{subtitle}</p>
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         {(primaryAction || secondaryAction) && (
           <div className={styles.actions} aria-label="Primary page links">
             {primaryAction && (

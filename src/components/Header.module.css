@@ -6,13 +6,7 @@
   justify-content: space-between;
   align-items: center;
   overflow: visible;
-  border-radius: 999px;
   pointer-events: auto;
-  color: white;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 4px -1px rgba(0, 0, 0, 0.25);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(48, 48, 48, 0.4));
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(50px);
 }
 
 .logoContainer {
@@ -51,21 +45,28 @@
 
 :global(.global-header) {
   position: fixed;
-  top: max(0.75rem, env(safe-area-inset-top));
-  right: max(0.75rem, env(safe-area-inset-right));
-  left: max(0.75rem, env(safe-area-inset-left));
+  transform: translateX(-50%);
+  left: 50%;
+  top: 2rem;
   z-index: 10;
   display: flex;
   justify-content: center;
   pointer-events: none;
   transition: opacity 180ms ease, transform 180ms ease;
+  backdrop-filter: blur(0.25rem);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 4px -1px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(48, 48, 48, 0.4));
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  width: fit-content;
   will-change: opacity, transform;
 }
 
 :global(.global-header[data-scroll-hidden='true']) {
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-100%);
+  transform: translateY(-100%) translateX(-50%);
 }
 
 @media (max-width: 680px) {

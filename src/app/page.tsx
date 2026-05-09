@@ -42,11 +42,14 @@ export default async function Home() {
       }}
     >
       <DSImmersivePage.Hero
-        eyebrow="A TCG Adventure Game"
-        title="Relicry"
-        subtitle="Gather relics, answer the call of strange quests, and turn every card into a choice that changes the story."
-        primaryAction={{ href: '/cards', label: 'Browse Cards' }}
-        secondaryAction={{ href: '/quests', label: 'View Quests' }}
+        eyebrow="Welcome to the"
+        title={{
+          src: '/assets/flavor/logo-full.1.webp',
+          alt: 'Relicry',
+          width: 1280,
+          height: 480,
+          priority: true,
+        }}
         scrollTargetId={contentId}
       />
 
