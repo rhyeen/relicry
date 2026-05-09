@@ -7,7 +7,7 @@ export default function ProfilePage() {
   return (
     <div className={styles.page}>
       <section className={styles.panel} aria-labelledby="profile-title">
-        <DSText.Eyebrow className={styles.eyebrow}>Player profile</DSText.Eyebrow>
+        <DSText.Eyebrow>Player profile</DSText.Eyebrow>
         <DSText.Heading as="h1" size="display" className={styles.title} id="profile-title">
           Your Relicry profile
         </DSText.Heading>

@@ -57,7 +57,9 @@ function Root({
 function Heading({
   as,
   size,
-  weight = 'semibold',
+  weight = 'medium',
+  font = 'serif',
+  tone= 'muted',
   balance = true,
   className,
   ...rest
@@ -71,6 +73,8 @@ function Heading({
       size={resolvedSize}
       weight={weight}
       balance={balance}
+      tone={tone}
+      font={font}
       className={[styles.heading, className].filter(Boolean).join(' ')}
       {...rest}
     />
@@ -99,7 +103,7 @@ function Caption(props: TypographyProps) {
 
 function Eyebrow({
   className,
-  weight = 'bold',
+  weight = 'regular',
   tone = 'accent',
   size = 'xs',
   ...rest

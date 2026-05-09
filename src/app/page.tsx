@@ -29,6 +29,14 @@ const featureLinks = [
   },
 ];
 
+const locales = {
+  panel: {
+    eyebrow: 'Join the adventure',
+    title: 'Find a local event, pick your deck, and become part of the story.',
+    copy: 'Relicry is a free-to-play collectible card game that you take part in by joining local events hosting a Relicry experience. You will obtain your starter deck and open booster packs by attending the event, fulfilling quests, and joining other players to face off against challenging foes. When victorious, you will be granted rewards that can be redeemed for prizes from event vendors. Take your deck home with you, bring it again to the next event, grow your collection, strengthen your team, and take on greater challenges for greater rewards. The adventure is waiting for you at your local game store, convention, or wherever players gather to share in the fun of Relicry.',
+  },
+}
+
 export default async function Home() {
   return (
     <DSImmersivePage
@@ -53,18 +61,10 @@ export default async function Home() {
         scrollTargetId={contentId}
       />
 
-      <DSImmersivePage.Panel id={contentId} width="wide" className={styles.panel}>
-        <div className={styles.panelIntro}>
-          <DSText.Eyebrow className={styles.eyebrow}>Start your run</DSText.Eyebrow>
-          <DSText.Heading as="h2" size="2xl" className={styles.panelTitle}>
-            A card game with an adventurer&apos;s sense of consequence.
-          </DSText.Heading>
-          <DSText.Body size="lg" className={styles.panelCopy}>
-            Relicry blends collectible card strategy with event-driven quests, player rewards,
-            and a living archive of art and lore. The home page stays cinematic up front, then
-            gets out of the way so players can move quickly into the parts of the game they need.
-          </DSText.Body>
-        </div>
+      <DSImmersivePage.Panel id={contentId} width="wide">
+        <DSText.Eyebrow>{locales.panel.eyebrow}</DSText.Eyebrow>
+        <DSText.Heading as="h2" size="2xl">{locales.panel.title}</DSText.Heading>
+        <DSText.Body size="lg">{locales.panel.copy}</DSText.Body>
 
         <div className={styles.featureGrid} aria-label="Relicry sections">
           {featureLinks.map((item) => (
