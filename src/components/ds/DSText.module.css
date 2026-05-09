@@ -1,10 +1,11 @@
 .root {
   margin: 0;
-  color: var(--color-gray-900);
 }
 
 .heading {
   line-height: 1.2;
+  margin-bottom: 1rem;
+  max-width: 30rem;
 }
 
 .body {
@@ -14,18 +15,19 @@
 .eyebrow {
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin-bottom: 0.5rem;
 }
 
 .toneDefault {
-  color: var(--color-gray-900);
+  color: var(--parchment-white);
 }
 
 .toneMuted {
-  color: var(--color-gray-600);
+  color: var(--parchment-gray);
 }
 
 .toneAccent {
-  color: var(--color-blue);
+  color: var(--accent-gold);
 }
 
 .toneSuccess {
@@ -81,7 +83,7 @@
 }
 
 .fontInherit {
-  font-family: inherit;
+  font-family: var(--font-bree-serif), serif;
 }
 
 .fontSerif {

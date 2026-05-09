@@ -17,7 +17,7 @@ export default function Header() {
           <Link href="/" className={styles.logo} aria-label="Relicry home">
             <Image
               className={styles.logoMark}
-              src="/assets/brand/relicry-icon-square.png"
+              src="/assets/brand/relicry-icon-square.1.png"
               alt=""
               width={148}
               height={148}

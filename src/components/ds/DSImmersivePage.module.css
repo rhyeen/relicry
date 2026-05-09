@@ -151,7 +151,10 @@
   border: 1px solid var(--ds-immersive-panel-border);
   background: var(--ds-immersive-panel);
   box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, 0.32);
+  border-radius: 6px;
   color: var(--ds-immersive-muted);
+  padding: clamp(2rem, 5vw, 4.5rem);
+  margin-bottom: clamp(2.5rem, 8svh, 5rem);
 }
 
 .panelNarrow {
@@ -198,6 +201,7 @@
   }
 
   .panel {
+    padding: 1.25rem;
     width: min(calc(100% - 1rem), 58rem);
   }
 }
