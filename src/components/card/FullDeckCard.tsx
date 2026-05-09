@@ -32,7 +32,9 @@ export default function FullDeckCard({
     throw new Error(`FullDeckCard can only render deck type cards, received: ${card.type}`);
   }
   return (
-    <section className={styles.fullCard}>
+    <section
+      className={`${styles.fullCard} ${ctx.hideCardPartInteractions ? styles.noInteractions : styles.interactions}`}
+    >
       <IllustrationCardPart art={art} ctx={ctx} isSample={card.isSample} />
       <RarityCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
       <BannerCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />

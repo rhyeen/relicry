@@ -14,6 +14,7 @@ export type CardContext = {
   type: CardType;
   size?: CardSize;
   language?: PlayerCardLanguage;
+  hideCardPartInteractions?: boolean;
 };
 
 export function assetURL(ctx: CardContext, subPath: string): string {

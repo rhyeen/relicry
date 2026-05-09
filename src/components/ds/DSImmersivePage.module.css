@@ -120,6 +120,11 @@
   margin-top: 1.75rem;
 }
 
+.heroSlot {
+  width: 100%;
+  margin-top: clamp(1.25rem, 3.5svh, 2.25rem);
+}
+
 .scrollCue {
   position: absolute;
   bottom: clamp(1.25rem, 4svh, 2rem);

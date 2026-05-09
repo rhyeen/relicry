@@ -31,6 +31,7 @@ type RootProps = Readonly<HTMLAttributes<HTMLDivElement> & {
 type HeroProps = Readonly<{
   eyebrow: string;
   title: HeroTitle;
+  children?: ReactNode;
   subtitle?: string;
   primaryAction?: Action;
   secondaryAction?: Action;
@@ -91,6 +92,7 @@ function Root({ image, children, className, style, ...rest }: RootProps) {
 function Hero({
   eyebrow,
   title,
+  children,
   subtitle,
   primaryAction,
   secondaryAction,
@@ -139,6 +141,7 @@ function Hero({
             )}
           </div>
         )}
+        {children && <div className={styles.heroSlot}>{children}</div>}
       </div>
       {scrollTargetId && <ScrollCue targetId={scrollTargetId} />}
     </section>

@@ -119,7 +119,7 @@
   height: 340px;
 }
 
-.illustration:has(.illustrationClickable:hover) {
+.interactions .illustration:has(.illustrationClickable:hover) {
   filter: brightness(1.2);
 }
 
@@ -168,8 +168,8 @@
   margin-top: -2px;
 }
 
-.drawLimit:hover,
-.qrcode:hover {
+.interactions .drawLimit:hover,
+.interactions .qrcode:hover {
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5);
 }
@@ -183,7 +183,7 @@
   transition: opacity 0.3s ease 0s;
 }
 
-.qrcodeImageHover:hover {
+.interactions .qrcodeImageHover:hover {
   z-index: 10;
   opacity: 1;
 }
@@ -234,9 +234,9 @@
     --hoverGradientColor2 0.3s ease 0s;
 }
 
-.titleContainer:hover,
-.flavorTextContainer:hover,
-.effectsContainer:hover {
+.interactions .titleContainer:hover,
+.interactions .flavorTextContainer:hover,
+.interactions .effectsContainer:hover {
   --hoverGradientColor1: rgba(255, 255, 255, 0.2);
   --hoverGradientColor2: rgba(255, 255, 255, 0);
 }
@@ -274,11 +274,11 @@
   color: black;
 }
 
-.typeTitle.focus:hover {
+.interactions .typeTitle.focus:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.typeTitle.gambit:hover {
+.interactions .typeTitle.gambit:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
@@ -392,8 +392,8 @@
   transition: text-shadow 0.3s ease 0s;
 }
 
-.headerLeft:hover,
-.headerRight:hover {
+.interactions .headerLeft:hover,
+.interactions .headerRight:hover {
   text-shadow: 0 0 3px rgba(255, 255, 255, 1);
 }
 
@@ -411,7 +411,7 @@
   transition: filter 0.3s ease 0s;
 }
 
-.rarity:has(.rarityClickable:hover) {
+.interactions .rarity:has(.rarityClickable:hover) {
   filter: brightness(1.2);
 }
 
@@ -476,7 +476,7 @@
   transition: filter 0.3s ease 0s;
 }
 
-.scrapCostContainer:hover {
+.interactions .scrapCostContainer:hover {
   filter: brightness(1.5) saturate(0.75);
 }
 
@@ -513,7 +513,7 @@
   transition: filter 0.3s ease 0s;
 }
 
-.aspectContainer:hover {
+.interactions .aspectContainer:hover {
   filter: brightness(1.5) saturate(0.75);
 }
 
@@ -564,7 +564,7 @@
   transition: filter 0.3s ease 0s;
 }
 
-.tagsContainer:hover {
+.interactions .tagsContainer:hover {
   filter: brightness(1.5);
 }
 
