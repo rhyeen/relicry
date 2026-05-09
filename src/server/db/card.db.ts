@@ -62,6 +62,20 @@ export class CardDB extends RootDB<VersionedCard> {
     };
   }
 
+  public async getLatestFeatured(limit: number): Promise<VersionedCard[]> {
+    const querySnapshot = await this
+      .applyFeaturedSorting(this.applyFeaturedFilters({
+        query: '',
+        type: 'all',
+        aspect: 'all',
+        cursor: null,
+      }))
+      .limit(limit)
+      .get();
+
+    return querySnapshot.docs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as VersionedCard));
+  }
+
   public async getAllFeatured(index: number): Promise<{
     entities: VersionedCard[];
     index: number;
