@@ -9,6 +9,7 @@ import CardsBrowserClient from './CardsBrowserClient';
 import styles from './page.module.css';
 import { getCardsPreviewPage } from '@/server/cardsPreview';
 import { cacheLife, cacheTag } from 'next/cache';
+import { connection } from 'next/server';
 
 async function getInitialCardsPage() {
   'use cache';
@@ -42,6 +43,7 @@ export default async function CardsPage() {
 }
 
 async function CardsPageData() {
+  await connection();
   const initialResponse = await getInitialCardsPage();
 
   return (
