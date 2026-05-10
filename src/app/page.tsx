@@ -23,22 +23,22 @@ const featureLinks = [
   {
     href: '/cards',
     title: 'Cards',
-    copy: 'Browse focus, gambit, and deck cards built for tactical turns and dramatic swings.',
+    copy: 'Browse all the different cards you may come across in your adventures.',
   },
   {
     href: '/events',
     title: 'Events',
-    copy: 'Find active adventures and limited-time challenges for your table or community.',
+    copy: 'Find active adventures and limited-time challenges near you.',
   },
   {
-    href: '/quests',
-    title: 'Quests',
-    copy: 'Follow season arcs, rewards, and objective-driven play across the world of Relicry.',
+    href: '/begin',
+    title: 'Begin',
+    copy: 'Start here if you have your starter deck & are looking for the next step!',
   },
   {
     href: '/art',
     title: 'Art',
-    copy: 'Explore the illustrations, symbols, and visual language shaping the game.',
+    copy: 'Explore the illustrations and artists behind the cards and the world of Relicry.',
   },
 ];
 
