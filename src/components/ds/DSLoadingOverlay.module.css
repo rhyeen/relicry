@@ -54,6 +54,7 @@
 .popup {
   box-sizing: border-box;
   position: fixed;
+  z-index: 101;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
