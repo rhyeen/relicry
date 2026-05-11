@@ -11,7 +11,9 @@
   font-family: inherit;
   font-weight: 500;
   line-height: 1.5;
+  cursor: pointer;
   color: var(--button-color, var(--color-gray-900));
+  gap: 0.45rem;
   user-select: none;
   text-decoration: none;
 
@@ -39,6 +41,18 @@
   }
 }
 
+.icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.icon svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
 .sizeMd {
   min-height: 2.5rem;
   padding: 0.4375rem 0.875rem;
@@ -52,10 +66,12 @@
 }
 
 .variantSecondary {
-  --button-background: var(--color-gray-50);
+  --button-background: var(--color-gray-300);
   --button-background-hover: var(--color-gray-100);
-  --button-background-active: var(--color-gray-200);
+  --button-background-active: var(--color-gray-300);
+  --button-border-hover: var(--color-gray-500);
   --button-color: var(--color-gray-900);
+  border-color: var(--color-gray-500);
 }
 
 .variantPrimary {
@@ -76,4 +92,15 @@
   --button-color: currentColor;
   border-color: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(0.5rem);
+}
+
+.variantSuccess {
+  --button-background: rgba(18, 122, 74, 0.3);
+  --button-background-hover: rgba(20, 138, 82, 0.38);
+  --button-background-active: rgba(18, 122, 74, 0.46);
+  --button-border-hover: rgba(48, 169, 101, 0.72);
+  --button-color: #d7f7df;
+  border-color: rgba(48, 169, 101, 0.58);
+  box-shadow: 0 0 0.85rem rgba(20, 138, 82, 0.18);
+  font-weight: 700;
 }

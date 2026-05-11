@@ -1,5 +1,6 @@
 import 'server-only';
 import { generateUserId, getUserId, User } from '@/entities/User';
+import { normalizeUserStarterFields } from '@/lib/starterDecks';
 import { RootDB } from './root.db';
 
 export class UserDB extends RootDB<User> {
@@ -51,5 +52,9 @@ export class UserDB extends RootDB<User> {
 
   protected getUnsafeDocId(item: User): string {
     return item.id;
+  }
+
+  protected conformItemGet(item: User): User {
+    return normalizeUserStarterFields(item) as User;
   }
 }

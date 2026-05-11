@@ -15,6 +15,7 @@ function defaultEvent(id: string, title: string, description: string, from: Date
       from,
       to,
     },
+    starterDeckFocusCardIds: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     archivedAt: null,

@@ -154,6 +154,8 @@ export async function authenticate(
         updatedAt: new Date(),
         archivedAt: null,
         adminRoles: [],
+        startersObtained: {},
+        activeEvent: null,
       };
       await db.set(user);
     }

@@ -26,6 +26,7 @@ export function fromDateOnlyString(s: string): Date | null {
 
 type DSFieldRootProps = Readonly<{
   label: string;
+  className?: string;
   value: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'url' | 'date';
   onChange: (newValue: string) => void;
@@ -41,6 +42,7 @@ type DSFieldRootProps = Readonly<{
 }>;
 
 function DSFieldRoot({
+  className,
   disabled,
   loading,
   error,
@@ -56,7 +58,7 @@ function DSFieldRoot({
   rows,
 }: DSFieldRootProps) {
   return (
-    <Root>
+    <Root className={className}>
       <Label required={required} label={label} />
       <Field.Control
         className={styles.control}
@@ -88,11 +90,12 @@ function DSFieldRoot({
 
 type RootProps = Readonly<{
   children: React.ReactNode;
+  className?: string;
 }>;
 
-function Root({ children }: RootProps) {
+function Root({ children, className }: RootProps) {
   return (
-    <Field.Root className={styles.root}>{children}</Field.Root>
+    <Field.Root className={[styles.root, className].filter(Boolean).join(' ')}>{children}</Field.Root>
   );
 }
 

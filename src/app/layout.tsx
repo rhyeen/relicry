@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Bree_Serif, Pirata_One, UnifrakturCook } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import styles from './layout.module.css';
 import ServiceWorkerRegister from '@/components/client/ServiceWorkerRegister';
 import GlobalParamsSetterSlot from '@/components/client/GlobalParamsSetter.slot';
@@ -47,9 +45,7 @@ export default function RootLayout({
         className={`${barlowCondensed.variable} ${breeSerif.variable} ${pirataOne.variable} ${unifrakturCook.variable} ${styles.body}`}
       >
         <ServiceWorkerRegister />
-        <main data-global-main className={`${styles.main} global-main`}>{children}</main>
-        <div data-global-header className='global-header'><Header /></div>
-        <div data-global-footer className='global-footer'><Footer /></div>
+        {children}
         <GlobalParamsSetterSlot />
       </body>
     </html>

@@ -1,0 +1,14 @@
+.root {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle 2000px at top center, rgba(245, 158, 11, 0.18), transparent 34%),
+    #111827;
+  padding: clamp(5rem, 10vw, 8rem) clamp(1rem, 5vw, 4rem) clamp(3rem, 8vw, 6rem);
+}
+
+.container {
+  width: min(100%, 68rem);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+}

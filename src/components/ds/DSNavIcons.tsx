@@ -96,3 +96,13 @@ export function SignInIcon(props: IconProps) {
     </IconRoot>
   );
 }
+
+export function HomeIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="m4.8 11.2 7.2-6.4 7.2 6.4" />
+      <path d="M6.8 10v8.8h10.4V10" />
+      <path d="M10 18.8v-5.2h4v5.2" />
+    </IconRoot>
+  );
+}

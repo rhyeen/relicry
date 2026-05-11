@@ -17,6 +17,8 @@ function defaultUser(id: string, displayName: string, email: string) : User {
     updatedAt: new Date(),
     archivedAt: null,
     adminRoles: [],
+    startersObtained: {},
+    activeEvent: null,
   };
 }
 
