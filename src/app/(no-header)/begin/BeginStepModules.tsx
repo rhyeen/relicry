@@ -6,7 +6,7 @@ import { HomeIcon } from '@/components/ds/DSNavIcons';
 import DSText from '@/components/ds/DSText';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { useEffect, useMemo, useState } from 'react';
-import styles from './page.module.css';
+import styles from './beginStepModules.module.css';
 
 export type BeginStep = {
   id: string;

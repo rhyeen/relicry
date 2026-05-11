@@ -1,8 +1,8 @@
 import DSButton from '@/components/ds/DSButton';
-import DSImmersivePage from '@/components/ds/DSImmersivePage';
 import DSText from '@/components/ds/DSText';
 import BeginStepModules, { BeginStep } from './BeginStepModules';
-import styles from './page.module.css';
+import DSPage from '@/components/ds/DSPage';
+import DSSection from '@/components/ds/DSSection';
 
 const contentId = 'relicry-begin-content';
 const discordUrl = 'https://discord.gg/wbbsUEpC';
@@ -91,68 +91,56 @@ const optionalLinks = [
 
 export default async function Begin() {
   return (
-    <DSImmersivePage
-      image={{
-        src: '/assets/flavor/main-hero.1.ai.webp',
-        alt: '',
-        width: 470,
-        height: 660,
-        objectPosition: 'center 42%',
-        priority: true,
-      }}
-    >
-      <DSImmersivePage.Hero
+    <DSPage heroBackgroundImage="/assets/flavor/main-hero.1.ai.webp">
+      <DSPage.Hero
         eyebrow="Welcome to the"
         title={{
           src: '/assets/flavor/logo-full.1.webp',
           alt: 'Relicry',
           width: 1280,
           height: 480,
-          priority: true,
         }}
-        subtitle="Starter deck in hand? Start here and learn how your first quest works."
+        subtitle="Deck in hand? Let the adventure begin!"
         scrollTargetId={contentId}
       />
 
-      <section className={styles.content} id={contentId}>
-        <div className={styles.intro}>
-          <DSText.Eyebrow>Starter guide</DSText.Eyebrow>
-          <DSText.Heading as="h2" size="2xl" className={styles.title}>
-            Follow these steps before your first quest.
-          </DSText.Heading>
-          <DSText.Body size="lg" className={styles.copy}>
+      <DSSection id={contentId}>
+        <DSSection.Card background="dark" padding="thick">
+          <DSSection.Heading>
+            <DSText.Eyebrow>Starter guide</DSText.Eyebrow>
+            <DSText.Heading as="h2" size="2xl">
+              Follow these steps before your first quest.
+            </DSText.Heading>
+          </DSSection.Heading>
+          <DSText.Body size="lg">
             This guide explains what to do after receiving your starter deck. Read each step,
             mark it reviewed, then head back into the event when you are ready.
           </DSText.Body>
-        </div>
+        </DSSection.Card>
 
         <BeginStepModules steps={steps} />
 
-        <section className={styles.optionalSection} aria-labelledby="learn-more">
-          <div className={styles.optionalHeader}>
+        <DSSection.Card background="dark" padding="thick">
+          <DSSection.Heading>
             <DSText.Eyebrow>Optional next steps</DSText.Eyebrow>
             <DSText.Heading as="h2" id="learn-more">Keep learning</DSText.Heading>
-          </div>
-          <div className={styles.optionalGrid}>
+          </DSSection.Heading>
+          <DSSection.Grid columns={optionalLinks.length}>
             {optionalLinks.map((link) => (
-              <a
-                className={styles.optionalCard}
-                href={link.href}
-                key={link.href}
-                target={link.external ? '_blank' : undefined}
-                rel={link.external ? 'noopener noreferrer' : undefined}
-              >
-                <span className={styles.optionalTitle}>{link.title}</span>
-                <span className={styles.optionalCopy}>{link.copy}</span>
-              </a>
+              <DSSection.Card key={link.href} href={link.href} padding="normal">
+                <DSSection.Text>
+                  <DSText.Heading as="h3" size="display" font="display">{link.title}</DSText.Heading>
+                  <DSText.Body size="sm">{link.copy}</DSText.Body>
+                </DSSection.Text>
+              </DSSection.Card>
             ))}
-          </div>
-          <div className={styles.actions}>
+          </DSSection.Grid>
+          <DSSection.Actions>
             <DSButton href="/profile" label="View Your Profile" variant="primary" />
             <DSButton href="/about" label="About Relicry" variant="ghost" />
-          </div>
-        </section>
-      </section>
-    </DSImmersivePage>
+          </DSSection.Actions>
+        </DSSection.Card>
+      </DSSection>
+    </DSPage>
   );
 }

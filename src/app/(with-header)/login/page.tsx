@@ -41,7 +41,7 @@ function LoginClient() {
 
   return (
     <DSPage>
-      <DSSection.Card width="fit-content">
+      <DSSection.Card width="fit-content" padding="thick">
         <LoginPanel />
       </DSSection.Card>
     </DSPage>
