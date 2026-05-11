@@ -1,5 +1,6 @@
 import { AdminRole } from '@/entities/AdminRole';
 import { Event, getEventId } from '@/entities/Event';
+import { getCardId } from '@/entities/Card';
 import { invalidateEventListSoon, invalidateEventSoon } from '@/server/cache/event.cache';
 import { EventDB } from '@/server/db/event.db';
 import { authenticateUser, BadRequest, handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
@@ -7,6 +8,8 @@ import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { Reward } from '@/entities/Reward';
 import { invalidateRewardSoon } from '@/server/cache/reward.cache';
 import { RewardDB } from '@/server/db/reward.db';
+import { normalizeStarterDeckFocusCardIds } from '@/lib/starterDecks';
+import { getFeaturedStarterFocusOptions } from '@/server/starterDecks';
 
 function validateEvent(input: Event) {
   if (!input || typeof input !== 'object') {
@@ -58,6 +61,11 @@ export async function POST(req: Request) {
     const inputEvent = body.event as Event;
     const rewardLevels = validateRewardLevels(body.rewardLevels ?? []);
     validateEvent(inputEvent);
+    const starterDeckFocusCardIds = normalizeStarterDeckFocusCardIds(inputEvent.starterDeckFocusCardIds).map(getCardId);
+    const validStarterIds = new Set((await getFeaturedStarterFocusOptions()).map((option) => option.id));
+    if (starterDeckFocusCardIds.some((id) => !validStarterIds.has(id))) {
+      throw new BadRequest('Starter deck focus card IDs must be featured focus cards.');
+    }
 
     const firestoreAdmin = getFirestoreAdmin();
     const db = new EventDB(firestoreAdmin);
@@ -70,6 +78,7 @@ export async function POST(req: Request) {
         from: new Date(inputEvent.running.from),
         to: new Date(inputEvent.running.to),
       },
+      starterDeckFocusCardIds,
       archivedAt: inputEvent.archivedAt ? new Date(inputEvent.archivedAt) : null,
     };
     const updatedEvent = await db.set(event);

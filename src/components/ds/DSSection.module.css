@@ -1,6 +1,102 @@
-.root {
+.root,
+.heading,
+.text {
   display: flex;
   flex-direction: column;
+}
+
+.root {
   gap: 1rem;
-  margin: 1rem;
+}
+
+.card {
+  border: 1px solid var(--border-brown);
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.card.light {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.card.dark {
+  background: rgba(13, 17, 23, 0.78);
+}
+
+.card.fitContent {
+  width: fit-content;
+  padding: 4rem;
+  margin: 0 auto;
+}
+
+.stepNumber {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent-gold-glass);
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-family: var(--font-unifraktur-cook);
+  margin-bottom: 0.5rem;
+}
+
+.text {
+  gap: 0.75rem;
+  max-width: 45rem;
+}
+
+.heading {
+  gap: 0.25rem;
+  max-width: 35rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid.columns1 {
+  grid-template-columns: 1fr;
+}
+
+.grid.columns2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid.columns3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid.columns4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .grid.columns2,
+  .grid.columns3,
+  .grid.columns4 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .grid.columns1,
+  .grid.columns2,
+  .grid.columns3,
+  .grid.columns4 {
+    grid-template-columns: 1fr;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
 }

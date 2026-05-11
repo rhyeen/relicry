@@ -4,8 +4,6 @@
 
 .heading {
   line-height: 1.2;
-  margin-bottom: 1rem;
-  max-width: 30rem;
 }
 
 .body {
@@ -15,7 +13,6 @@
 .eyebrow {
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
 }
 
 .toneDefault {

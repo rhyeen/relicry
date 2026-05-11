@@ -10,6 +10,7 @@
   z-index: 0;
   isolation: isolate;
   min-height: 100svh;
+  overflow-x: clip;
   background: #0c0d10;
   color: var(--ds-immersive-text);
 }
@@ -52,6 +53,7 @@
   min-height: 92svh;
   align-items: flex-start;
   justify-content: center;
+  overflow-x: clip;
   padding: clamp(6rem, 16svh, 10rem) clamp(1.25rem, 5vw, 4rem) clamp(5.25rem, 12svh, 8rem);
 }
 

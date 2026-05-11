@@ -14,6 +14,7 @@ export type Event = StoredRoot & {
     [ImageSize.Banner]?: ImageStorage;
     [ImageSize.Thumb]?: ImageStorage;
   };
+  starterDeckFocusCardIds: string[];
   // See EventMap for map details
   createdAt: Date;
   updatedAt: Date;

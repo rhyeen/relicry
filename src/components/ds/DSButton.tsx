@@ -1,25 +1,34 @@
 import { Button } from '@base-ui/react';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 import styles from "./DSButton.module.css";
+
+type ButtonIcon = 'checked' | ReactNode;
 
 type DSButtonRootProps = Readonly<{
   label: string;
+  className?: string;
+  icon?: ButtonIcon;
   onClick?: () => void;
   dialogTrigger?: boolean;
   disabled?: boolean;
   loading?: boolean;
   href?: string;
-  variant?: 'primary' | 'secondary' | 'ghost';
+  type?: 'button' | 'submit' | 'reset';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'success';
   size?: 'md' | 'lg';
 }>;
 
 function DSButtonRoot({
+  className: classNameProp,
   href,
+  icon,
   label,
   onClick,
   dialogTrigger,
   disabled,
   loading,
+  type = 'button',
   variant = 'secondary',
   size = 'md',
 }: DSButtonRootProps) {
@@ -29,7 +38,14 @@ function DSButtonRoot({
     styles.button,
     styles[`variant${capitalize(variant)}`],
     styles[`size${capitalize(size)}`],
-  ].join(' ');
+    classNameProp,
+  ].filter(Boolean).join(' ');
+  const content = (
+    <>
+      {icon && <span className={styles.icon} aria-hidden="true">{renderIcon(icon)}</span>}
+      <span>{label}</span>
+    </>
+  );
 
   if (isLink) {
     const isDisabled = disabled || loading;
@@ -42,7 +58,7 @@ function DSButtonRoot({
           data-loading={loading ? 'true' : undefined}
           onClick={onClick}
         >
-          {label}
+          {content}
         </Link>
       );
     }
@@ -56,8 +72,22 @@ function DSButtonRoot({
         onClick={(event) => event.preventDefault()}
         tabIndex={-1}
       >
-        {label}
+        {content}
       </a>
+    );
+  }
+
+  if (isNative) {
+    return (
+      <button
+        className={className}
+        onClick={onClick}
+        type={type}
+        disabled={disabled || loading}
+        data-loading={loading ? 'true' : undefined}
+      >
+        {content}
+      </button>
     );
   }
 
@@ -65,14 +95,36 @@ function DSButtonRoot({
     <Button
       className={className}
       onClick={onClick}
-      nativeButton={isNative}
-      render={isNative ? undefined : <div />}
+      nativeButton={false}
+      render={<div />}
       disabled={disabled || loading}
       data-loading={loading ? 'true' : undefined}
     >
-      {label}
+      {content}
     </Button>
   );
+}
+
+function renderIcon(icon: ButtonIcon) {
+  if (icon === 'checked') {
+    return (
+      <svg
+        aria-hidden="true"
+        fill="none"
+        height="18"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+        width="18"
+      >
+        <path d="m5 12.4 4.2 4.2L19 6.8" />
+      </svg>
+    );
+  }
+
+  return icon;
 }
 
 function capitalize(value: string) {

@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import QRCode from 'qrcode';
 import { getBackendSiteOrigin } from '@/lib/environment';
 
+export function buildQrCodeUrl(path: string, origin: string, preserveCase = false): string {
+  const url = new URL(path, origin).toString();
+  return preserveCase ? url : url.toUpperCase();
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const path = searchParams.get('path');
@@ -9,10 +14,11 @@ export async function GET(req: NextRequest) {
     return new NextResponse('Missing ?path=', { status: 400 });
   }
   const cacheBuster = searchParams.get('cb');
+  const preserveCase = searchParams.get('preserveCase') === '1';
   const origin = getBackendSiteOrigin(req.nextUrl.origin, true);
   // @NOTE: Uppercase makes it so QR codes use a more efficient encoding mode
   // So the code is smaller
-  const url = new URL(path, origin).toString().toUpperCase();
+  const url = buildQrCodeUrl(path, origin, preserveCase);
   if (cacheBuster) {
     console.info(`Cache buster present: ${cacheBuster}`);
     console.info(`Generating QR code for URL: ${url}`);

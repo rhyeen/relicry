@@ -141,10 +141,13 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Images are exporting WAAAY bigger than 2177x2961 - Don't export from a retina display!
 - [x] Figure out starter deck box and booster packaging
 - [x] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
-- [ ] Build out home page and /begin page
+- [x] Build out home page and /begin page
+- [ ] Build out /join page which prompts you to login *before* picking up your deck.
+- [ ] SAMPLE does not appear on focus or gambit cards.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
+- [ ] Make banner for `/join` page to tell people how to begin
 - [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
 

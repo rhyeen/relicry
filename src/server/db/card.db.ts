@@ -76,6 +76,17 @@ export class CardDB extends RootDB<VersionedCard> {
     return querySnapshot.docs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as VersionedCard));
   }
 
+  public async getFeaturedFocusCards(limit = 100): Promise<VersionedCard[]> {
+    return this.getBy({
+      where: [
+        { field: 'isFeatured', op: '==', value: true },
+        { field: 'type', op: '==', value: 'focus' },
+      ],
+      sortBy: { field: 'revealedAt', direction: 'desc' },
+      limit,
+    });
+  }
+
   public async getAllFeatured(index: number): Promise<{
     entities: VersionedCard[];
     index: number;

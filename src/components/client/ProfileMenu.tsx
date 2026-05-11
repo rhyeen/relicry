@@ -1,10 +1,14 @@
 'use client';
 
-import { Menu } from '@base-ui/react/menu';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import DSButton from '@/components/ds/DSButton';
+import DSDialog from '@/components/ds/DSDialog';
+import DSSpinner from '@/components/ds/DSSpinner';
 import { SignOutIcon, UserIcon } from '@/components/ds/DSNavIcons';
+import { buildUniversalScanQrImageSrc } from '@/lib/scanQr';
+import { useUser } from '@/lib/client/useUser';
 import { signOutUser } from '@/lib/client/signInClient';
 import styles from './ProfileMenu.module.css';
 
@@ -15,12 +19,15 @@ type ProfileMenuProps = Readonly<{
 
 export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps) {
   const router = useRouter();
+  const { user, ready } = useUser();
+  const [open, setOpen] = useState(false);
   const label = displayName ? `${displayName} profile menu` : 'Profile menu';
   const initials = getInitials(displayName);
 
   const handleSignOut = async () => {
     try {
       await signOutUser();
+      setOpen(false);
       router.refresh();
     } catch (error) {
       console.error('Error signing out', error);
@@ -28,8 +35,13 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
   };
 
   return (
-    <Menu.Root modal={false}>
-      <Menu.Trigger className={styles.trigger} aria-label={label}>
+    <>
+      <button
+        className={styles.trigger}
+        aria-label={label}
+        type="button"
+        onClick={() => setOpen(true)}
+      >
         {photoURL ? (
           <Image
             className={styles.avatar}
@@ -43,31 +55,56 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
             {initials}
           </span>
         )}
-      </Menu.Trigger>
-      <Menu.Portal>
-        <Menu.Positioner align="end" sideOffset={10}>
-          <Menu.Popup className={styles.popup}>
-            <div className={styles.identity}>
-              <span className={styles.identityName}>{displayName || 'Player'}</span>
-              <span className={styles.identityMeta}>Relicry profile</span>
+      </button>
+
+      <DSDialog
+        open={open}
+        onOpenChange={setOpen}
+        onClose={() => setOpen(false)}
+        title="Your QR Code"
+        description="Show this QR code only to authorized event staff when asked to scan your Relicry profile. Do not share it with anyone else. Anyone with your QR code may be able to redeem your card rewards. If you think your QR code has been compromised, contact us to reset it."
+        content={
+          <div className={styles.dialogContent}>
+            {!ready && (
+              <div className={styles.qrLoading}>
+                <DSSpinner label="Loading player QR" />
+              </div>
+            )}
+            {ready && user && (
+              <div className={styles.qrFrame}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className={styles.qr}
+                  src={buildUniversalScanQrImageSrc(user.id)}
+                  alt="Relicry player scan QR code"
+                  width={280}
+                  height={280}
+                />
+                <span className={styles.userId}>{user.id}</span>
+              </div>
+            )}
+            {ready && !user && (
+              <p className={styles.dialogCopy}>Unable to load your Relicry profile. Try refreshing the page.</p>
+            )}
+            <div className={styles.dialogActions}>
+              <DSButton
+                href="/profile"
+                icon={<UserIcon />}
+                label="View profile"
+                onClick={() => setOpen(false)}
+                variant="primary"
+              />
+              <DSButton
+                icon={<SignOutIcon />}
+                label="Sign out"
+                onClick={handleSignOut}
+                variant="ghost"
+              />
             </div>
-            <Menu.Item
-              className={styles.item}
-              label="View profile"
-              render={<Link href="/profile" />}
-            >
-              <UserIcon className={styles.itemIcon} />
-              <span>View profile</span>
-            </Menu.Item>
-            <Menu.Separator className={styles.separator} />
-            <Menu.Item className={styles.item} label="Sign out" onClick={handleSignOut}>
-              <SignOutIcon className={styles.itemIcon} />
-              <span>Sign out</span>
-            </Menu.Item>
-          </Menu.Popup>
-        </Menu.Positioner>
-      </Menu.Portal>
-    </Menu.Root>
+          </div>
+        }
+      />
+    </>
   );
 }
 

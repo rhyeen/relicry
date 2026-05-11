@@ -13,7 +13,7 @@ type ImageUploaderProps = {
   images: { [key: string]: ImageStorage | undefined; };
   onChange: (images: { [key: string]: ImageStorage | undefined; }) => void;
   required?: boolean;
-  type: 'illustration' | 'promotedItem';
+  type: 'illustration' | 'promotedItem' | 'profile';
 };
 
 export default function ImageUploader({ label, description, images, onChange, required, type }: ImageUploaderProps) {
@@ -38,7 +38,7 @@ export default function ImageUploader({ label, description, images, onChange, re
         height: getImageHeight(ImageSize.CardPreview),
         quality: getImageQuality(ImageSize.CardPreview),
       };
-    } else if (type === 'promotedItem') {
+    } else if (type === 'promotedItem' || type === 'profile') {
       _sizes[ImageSize.Banner] = {
         width: getImageWidth(ImageSize.Banner),
         height: getImageHeight(ImageSize.Banner),

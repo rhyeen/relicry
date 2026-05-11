@@ -1,0 +1,141 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #111827; /* gray-900 */
+  color: white;
+}
+
+.card {
+  padding: 2rem;
+  background-color: #1f2937; /* gray-800 */
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  width: 100%;
+  max-width: 28rem; /* max-w-md */
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  margin-bottom: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.discordLink,
+.submissionLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.discordLink {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1.75rem;
+  border: 1px solid rgba(224, 227, 255, 0.5);
+  border-radius: 0.5rem;
+  background: #5865f2;
+  color: #ffffff;
+  padding: 0.875rem 1rem;
+  text-decoration: none;
+  box-shadow: 0 0.75rem 1.5rem rgba(88, 101, 242, 0.22);
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.discordLink:hover,
+.discordLink:focus-visible {
+  border-color: rgba(224, 227, 255, 0.85);
+  background: #4752c4;
+  transform: translateY(-0.0625rem);
+}
+
+.discordIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: currentColor;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.label {
+  color: #f9fafb;
+  font-weight: 700;
+}
+
+.optional,
+.helpText {
+  color: #d1d5db;
+  font-weight: 400;
+}
+
+.helpText {
+  font-size: 0.875rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  box-sizing: border-box;
+  color: #f9fafb;
+}
+
+.textarea {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #374151; /* gray-700 */
+  border: 1px solid #4b5563; /* gray-600 */
+}
+
+.input {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #374151;
+  border: 1px solid #4b5563;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #f59e0b; /* yellow-400 */
+}
+
+.message {
+  margin-top: 1rem;
+}
+
+.form .message {
+  margin-top: -0.5rem;
+}
+
+.submissionLink {
+  color: #f7d697;
+  margin-top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discordLink {
+    transition: none;
+  }
+
+  .discordLink:hover,
+  .discordLink:focus-visible {
+    transform: none;
+  }
+}

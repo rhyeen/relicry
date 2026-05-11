@@ -14,10 +14,12 @@ import { Event } from '@/entities/Event';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { useUser } from '@/lib/client/useUser';
 import { useRouter } from 'next/navigation';
+import type { StarterFocusOption } from '@/lib/starterDecks';
 
 type EditEventProps = Readonly<{
   event?: Event;
   rewardLevels?: number[];
+  starterFocusOptions?: StarterFocusOption[];
 }>;
 
 const rewardLevelOptions = [1, 2, 3].map((level) => ({
@@ -38,13 +40,14 @@ function getDefaultNewEvent(): Event {
       from: now,
       to: tomorrow,
     },
+    starterDeckFocusCardIds: [],
     createdAt: now,
     updatedAt: now,
     archivedAt: null,
   };
 }
 
-export default function EditEvent({ event: initEvent, rewardLevels: initRewardLevels }: EditEventProps) {
+export default function EditEvent({ event: initEvent, rewardLevels: initRewardLevels, starterFocusOptions = [] }: EditEventProps) {
   const editorKey = useMemo(() => initEvent?.id ?? 'new', [initEvent?.id]);
   const { user, ready } = useUser();
 
@@ -56,10 +59,25 @@ export default function EditEvent({ event: initEvent, rewardLevels: initRewardLe
     return PermissionDenied();
   }
 
-  return <EditEventInner key={editorKey} initEvent={initEvent} initRewardLevels={initRewardLevels} />;
+  return (
+    <EditEventInner
+      key={editorKey}
+      initEvent={initEvent}
+      initRewardLevels={initRewardLevels}
+      starterFocusOptions={starterFocusOptions}
+    />
+  );
 }
 
-function EditEventInner({ initEvent, initRewardLevels }: { initEvent?: Event; initRewardLevels?: number[] }) {
+function EditEventInner({
+  initEvent,
+  initRewardLevels,
+  starterFocusOptions,
+}: {
+  initEvent?: Event;
+  initRewardLevels?: number[];
+  starterFocusOptions: StarterFocusOption[];
+}) {
   const authUser = useAuthUser();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -69,6 +87,10 @@ function EditEventInner({ initEvent, initRewardLevels }: { initEvent?: Event; in
   const [rewardLevels, setRewardLevels] = useState<string[]>(() =>
     (initRewardLevels ?? []).map((level) => `${level}`).sort()
   );
+  const starterFocusToggleOptions = useMemo(() => starterFocusOptions.map((option) => ({
+    label: option.title,
+    value: option.id,
+  })), [starterFocusOptions]);
 
   const getTitleError = (): string | undefined => {
     if (!event.title.trim()) {
@@ -158,6 +180,7 @@ function EditEventInner({ initEvent, initRewardLevels }: { initEvent?: Event; in
               to: new Date(event.running.to),
             },
             archivedAt: event.archivedAt ? new Date(event.archivedAt) : null,
+            starterDeckFocusCardIds: event.starterDeckFocusCardIds ?? [],
           },
           rewardLevels: rewardLevels
             .map((level) => Number.parseInt(level, 10))
@@ -263,6 +286,18 @@ function EditEventInner({ initEvent, initRewardLevels }: { initEvent?: Event; in
           multiple
           values={rewardLevels}
           onChange={(values: string[]) => setRewardLevels([...values].sort())}
+        />
+
+        <DSToggleGroup.Text
+          label="Starter Decks"
+          description="Choose which focus cards can be claimed as starter decks at this event."
+          options={starterFocusToggleOptions}
+          multiple
+          values={event.starterDeckFocusCardIds ?? []}
+          onChange={(values: string[]) => setEvent((current) => ({
+            ...current,
+            starterDeckFocusCardIds: [...new Set(values)].sort(),
+          }))}
         />
 
         <DSSwitch
