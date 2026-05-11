@@ -1,14 +1,169 @@
 .root {
-  min-height: 100vh;
+  position: relative;
+  min-height: 100svh;
   background:
     radial-gradient(circle 2000px at top center, rgba(245, 158, 11, 0.18), transparent 34%),
     #111827;
-  padding: clamp(5rem, 10vw, 8rem) clamp(1rem, 5vw, 4rem) clamp(3rem, 8vw, 6rem);
+  padding: 10rem clamp(1rem, 5vw, 4rem) clamp(3rem, 8vw, 6rem);
+}
+
+.heroBackgroundBackdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.heroBackground {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.heroBackgroundWash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 8, 11, 0.2) 0%, rgba(7, 8, 11, 0.08) 30%, rgba(7, 8, 11, 0.68) 78%, rgba(7, 8, 11, 0.92) 100%),
+    linear-gradient(90deg, rgba(7, 8, 11, 0.36) 0%, transparent 28%, transparent 72%, rgba(7, 8, 11, 0.36) 100%);
 }
 
 .container {
+  position: relative;
   width: min(100%, 68rem);
   margin: 0 auto;
   display: grid;
   gap: clamp(2rem, 5vw, 4rem);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-x: clip;
+  padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(3rem, 12svh, 4.5rem);
+  min-height: 65svh;
+}
+
+.heroInner {
+  display: flex;
+  width: min(100%, 56rem);
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 -1.75rem 0;
+  color: white;
+  font-family: var(--font-bree-serif), serif;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 0.125rem 0.875rem rgba(0, 0, 0, 0.8);
+
+  /* @NOTE: This is to ensure it doesn't get covered by the drop-shadow of the title image */
+  z-index: 1;
+}
+
+.title {
+  max-width: 12ch;
+  margin: 0;
+  font-family: var(--font-pirata-one), serif;
+  font-size: clamp(5rem, 18vw, 10.5rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 0.84;
+  text-shadow: 0 0.25rem 1.5rem rgba(0, 0, 0, 0.8);
+  text-wrap: balance;
+}
+
+.subtitle {
+  max-width: 42rem;
+  margin: 1.5rem 0 0;
+  color: white;
+  font-family: var(--font-bree-serif), serif;
+  font-size: clamp(1.125rem, 2.8vw, 1.45rem);
+  line-height: 1.55;
+  text-shadow: 0 0.125rem 1.5rem rgba(0, 0, 0, 1);
+  text-wrap: balance;
+}
+
+.titleGraphic {
+  width: min(100%, 450px);
+  max-width: 100%;
+  line-height: 0;
+  text-shadow: none;
+}
+
+.titleImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0.25rem 1.5rem rgba(0, 0, 0, 0.8));
+}
+
+.heroSlot {
+  width: 100%;
+  margin-top: clamp(1.25rem, 3.5svh, 2.25rem);
+}
+
+.scrollCue {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(251, 246, 234, 0.28);
+  border-radius: 999px;
+  background: rgba(7, 8, 11, 0.36);
+  color: var(--ds-immersive-text);
+  transform: translateX(-50%);
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.scrollCue span {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-0.125rem) rotate(45deg);
+}
+
+@media (hover: hover) {
+  .scrollCue:hover {
+    border-color: rgba(251, 246, 234, 0.48);
+    background: rgba(7, 8, 11, 0.56);
+    transform: translate(-50%, -0.125rem);
+  }
+}
+
+@media (max-width: 1000px) {
+  .scrollCue {
+    bottom: -30px;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .title {
+    max-width: 9ch;
+  }
+
+  .titleGraphic {
+    width: min(100%, 450px);
+  }
+
+  .scrollCue {
+    bottom: -20px;
+  }
 }

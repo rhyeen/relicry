@@ -13,20 +13,51 @@
   border: 1px solid var(--border-brown);
   border-radius: 6px;
   padding: 1rem;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.cardLink:hover {
+  border-color: var(--border-brown-hover);
+  transform: translateY(-0.125rem);
 }
 
 .card.light {
   background: rgba(255, 255, 255, 0.055);
 }
 
+.cardLink.light:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
 .card.dark {
   background: rgba(13, 17, 23, 0.78);
 }
 
+.cardLink.dark:hover {
+  background: rgba(13, 17, 23, 0.9);
+}
+
+.card.darkBrown {
+  background: rgba(22, 20, 19, 0.88);
+}
+
+.cardLink.darkBrown:hover {
+  background: rgba(22, 20, 19, 0.96);
+}
+
 .card.fitContent {
   width: fit-content;
-  padding: 4rem;
   margin: 0 auto;
+}
+
+.card.form {
+  max-width: 600px;
+  min-width: 320px;
+  margin: 0 auto;
+}
+
+.card.thickPadding {
+  padding: clamp(1.5rem, 8vw, 4rem);
 }
 
 .stepNumber {
@@ -80,10 +111,15 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.grid.columns5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 @media (max-width: 900px) {
   .grid.columns2,
   .grid.columns3,
-  .grid.columns4 {
+  .grid.columns4,
+  .grid.columns5 {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -92,7 +128,8 @@
   .grid.columns1,
   .grid.columns2,
   .grid.columns3,
-  .grid.columns4 {
+  .grid.columns4,
+  .grid.columns5 {
     grid-template-columns: 1fr;
   }
 

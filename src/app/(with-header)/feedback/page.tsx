@@ -5,6 +5,8 @@ import DSText from '@/components/ds/DSText';
 import { saveFeedback } from './actions';
 import styles from './page.module.css';
 import { useActionState } from 'react';
+import DSPage from '@/components/ds/DSPage';
+import DSSection from '@/components/ds/DSSection';
 
 const initialState = {
   errors: {
@@ -22,11 +24,11 @@ export default function FeedbackPage() {
   const [state, formAction] = useActionState(saveFeedback, initialState);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <DSText.Heading as="h1" size="display" align="center" className={styles.title}>
-          Leave Feedback
-        </DSText.Heading>
+    <DSPage>
+      <DSSection.Card background="dark" padding="thick" width="form">
+        <DSSection.Heading>
+          <DSText.Heading as="h1">Leave Feedback</DSText.Heading>
+        </DSSection.Heading>
         <DSText.Body tone="muted" align="center" className={styles.subtitle}>
           We&apos;d love to hear your thoughts on Relicry. Form submissions are posted to our public Discord feedback area.
         </DSText.Body>
@@ -115,8 +117,8 @@ export default function FeedbackPage() {
             View your Discord feedback topic
           </a>
         )}
-      </div>
-    </div>
+      </DSSection.Card>
+    </DSPage>
   );
 }
 

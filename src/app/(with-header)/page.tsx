@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import DSButton from '@/components/ds/DSButton';
-import DSImmersivePage from '@/components/ds/DSImmersivePage';
 import DSText from '@/components/ds/DSText';
 import styles from './page.module.css';
 import { Suspense } from 'react';
@@ -16,6 +14,8 @@ import { getArtist } from '@/server/cache/artist.cache';
 import { CardDB } from '@/server/db/card.db';
 import HomeHeroCardLink from './HomeHeroCardLink';
 import HomeProfileAction from './HomeProfileAction';
+import DSSection from '@/components/ds/DSSection';
+import DSPage from '@/components/ds/DSPage';
 
 const contentId = 'relicry-home-content';
 const HERO_FEATURED_CARD_COUNT = 3;
@@ -74,54 +74,48 @@ async function getHomeFeaturedCards() {
 
 export default async function Home() {
   return (
-    <DSImmersivePage
-      image={{
-        src: '/assets/flavor/card-hero.1.ai.webp',
-        alt: '',
-        width: 470,
-        height: 660,
-        objectPosition: 'center 42%',
-        priority: true,
-      }}
-    >
-      <DSImmersivePage.Hero
+    <DSPage heroBackgroundImage="/assets/flavor/card-hero.1.ai.webp">
+      <DSPage.Hero
         eyebrow="Welcome to the"
         title={{
           src: '/assets/flavor/logo-full.1.webp',
           alt: 'Relicry',
           width: 1280,
           height: 480,
-          priority: true,
         }}
         scrollTargetId={contentId}
       >
         <Suspense fallback={null}>
           <HomeFeaturedCards />
         </Suspense>
-      </DSImmersivePage.Hero>
-
-      <DSImmersivePage.Panel id={contentId} width="wide">
-        <DSText.Eyebrow>{locales.panel.eyebrow}</DSText.Eyebrow>
-        <DSText.Heading as="h2" size="2xl">{locales.panel.title}</DSText.Heading>
-        <DSText.Body size="lg">{locales.panel.copy}</DSText.Body>
-
-        <div className={styles.featureGrid} aria-label="Relicry sections">
+      </DSPage.Hero>
+      
+      <DSSection.Card id={contentId} width="full" background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>{locales.panel.eyebrow}</DSText.Eyebrow>
+          <DSText.Heading as="h2" size="2xl">{locales.panel.title}</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg">{locales.panel.copy}</DSText.Body>
+        </DSSection.Text>
+        <DSSection.Grid columns={featureLinks.length}>
           {featureLinks.map((item) => (
-            <Link className={styles.featureLink} href={item.href} key={item.href}>
-              <span className={styles.featureTitle}>{item.title}</span>
-              <span className={styles.featureCopy}>{item.copy}</span>
-            </Link>
+            <DSSection.Card key={item.href} href={item.href}>
+              <DSSection.Text>
+                <DSText.Heading as="h3" size="display" font="display">{item.title}</DSText.Heading>
+                <DSText.Body size="sm">{item.copy}</DSText.Body>
+              </DSSection.Text>
+            </DSSection.Card>
           ))}
-        </div>
-
-        <div className={styles.panelActions}>
+        </DSSection.Grid>
+        <DSSection.Actions>
           <Suspense fallback={<DSButton href="/login" label="Log In or Sign Up" variant="primary" />}>
             <HomeProfileAction />
           </Suspense>
           <DSButton href="/about" label="Learn More" variant="ghost" />
-        </div>
-      </DSImmersivePage.Panel>
-    </DSImmersivePage>
+        </DSSection.Actions>
+      </DSSection.Card>
+    </DSPage>
   );
 }
 

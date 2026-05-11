@@ -142,8 +142,10 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Figure out starter deck box and booster packaging
 - [x] Caching on /cards/page.tsx and /art/page.tsx is likely not working because we're pulling in 'use client' within the preview.
 - [x] Build out home page and /begin page
-- [ ] Build out /join page which prompts you to login *before* picking up your deck.
+- [x] Build out /join page which prompts you to login *before* picking up your deck.
 - [ ] SAMPLE does not appear on focus or gambit cards.
+- [ ] Update the other pages to have the latest styling: /cards, /events, /e, /r, /ur, /feedback etc.
+- [ ] Update he /c page to have the smarts for explaining the cards when parts of the card are clicked on.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place

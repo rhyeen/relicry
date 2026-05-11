@@ -8,7 +8,7 @@ import DSText from '@/components/ds/DSText';
 export default function PermissionDenied() {
   return (
     <DSPage>
-      <DSSection.Card width="fit-content" background="dark">
+      <DSSection.Card width="fit-content" background="dark" padding="thick">
         <DSSection.Heading>
           <DSText.Eyebrow>401</DSText.Eyebrow>
           <DSText.Heading as="h1">Permission Denied</DSText.Heading>

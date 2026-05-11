@@ -1,12 +1,15 @@
+import Link from 'next/link';
 import styles from './DSSection.module.css';
 
 function Root({
   children,
+  id,
 }: Readonly<{
   children: React.ReactNode;
+  id?: string;
 }>) {
   return (
-    <section className={styles.root}>
+    <section className={styles.root} id={id}>
       {children}
     </section>
   );
@@ -16,17 +19,57 @@ function Card({
   children,
   background = 'light',
   width = 'full',
+  padding = 'normal',
   step,
+  href,
+  id,
 }: Readonly<{
   children: React.ReactNode;
+  padding?: 'normal' | 'thick';
   step?: number;
-  background?: 'light' | 'dark';
-  width?: 'full' | 'fit-content';
+  background?: 'light' | 'dark' | 'darkBrown';
+  width?: 'full' | 'fit-content' | 'form';
+  href?: string;
+  id?: string;
 }>) {
-  return (
-    <section className={`${styles.root} ${styles.card} ${background === 'dark' ? styles.dark : styles.light} ${width === 'fit-content' ? styles.fitContent : ''}`}>
+  const stylesJoin = [
+    styles.root,
+    styles.card,
+  ];
+  if (width === 'fit-content') {
+    stylesJoin.push(styles.fitContent);
+  } else if (width === 'form') {
+    stylesJoin.push(styles.form);
+  }
+  if (padding === 'thick') {
+    stylesJoin.push(styles.thickPadding);
+  }
+  switch (background) {
+    case 'dark':
+      stylesJoin.push(styles.dark);
+      break;
+    case 'darkBrown':
+      stylesJoin.push(styles.darkBrown);
+      break;
+    default:
+      stylesJoin.push(styles.light);
+  }
+  if (href) {
+    stylesJoin.push(styles.cardLink);
+  }
+  const content = (
+    <>
       {step !== undefined && <span className={styles.stepNumber}>{step}</span>}
       {children}
+    </>
+  );
+  return href ? (
+    <Link href={href} className={stylesJoin.join(' ')} id={id}>
+      {content}
+    </Link>
+  ) : (
+    <section className={stylesJoin.join(' ')} id={id}>
+      {content}
     </section>
   );
 }
