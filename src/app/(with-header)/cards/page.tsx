@@ -1,15 +1,15 @@
 import { CardListAspectFilter, CardListTypeFilter, DEFAULT_CARDS_FILTERS } from '@/lib/cardsList';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
-import DSButton from '@/components/ds/DSButton';
+import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { Aspect } from '@/entities/Aspect';
 import { Suspense } from 'react';
 import CardsBrowserClient from './CardsBrowserClient';
-import styles from './page.module.css';
 import { getCardsPreviewPage } from '@/server/cardsPreview';
 import { cacheLife, cacheTag } from 'next/cache';
 import { connection } from 'next/server';
+import CardsPageActions from './CardsPageActions';
 
 async function getInitialCardsPage() {
   'use cache';
@@ -30,16 +30,33 @@ export function generateMetadata() {
 
 export default async function CardsPage() {
   return (
-    <DSSection>
-      <div className={styles.page}>
-        <DSText.Heading as="h1">Cards</DSText.Heading>
-        <DSButton href="/cards/new" label="New Card" />
-      </div>
-      <Suspense fallback={<div>Loading cards...</div>}>
+    <DSPage>
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Collection archive</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Cards</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Browse the public Relicry card archive, filter by card role or aspect, and open a
+            card to see its full art, rules, and story details.
+          </DSText.Body>
+        </DSSection.Text>
+        <CardsPageActions />
+      </DSSection.Card>
+      <Suspense fallback={<CardsLoading />}>
         <CardsPageData />
       </Suspense>
-    </DSSection>
-   );
+    </DSPage>
+  );
+}
+
+function CardsLoading() {
+  return (
+    <DSSection.Card>
+      <DSText.Body tone="muted">Loading cards...</DSText.Body>
+    </DSSection.Card>
+  );
 }
 
 async function CardsPageData() {

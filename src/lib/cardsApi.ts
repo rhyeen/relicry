@@ -12,6 +12,7 @@ export type CardPreviewCard = {
   type: 'deck' | 'focus' | 'gambit';
   drawLimit?: number;
   aspect?: Aspect | [Aspect, Aspect];
+  scrapCost?: (Aspect | [Aspect, Aspect])[];
 };
 
 export type CardPreviewListItem = {

@@ -1,12 +1,23 @@
 'use client';
 
 import DSButton from '@/components/ds/DSButton';
-import DSText from '@/components/ds/DSText';
-import { saveFeedback } from './actions';
-import styles from './page.module.css';
-import { useActionState } from 'react';
+import DSField from '@/components/ds/DSField';
+import DSForm from '@/components/ds/DSForm';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
+import DSSelect from '@/components/ds/DSSelect';
+import DSText from '@/components/ds/DSText';
+import { useActionState } from 'react';
+import { saveFeedback } from './actions';
+
+const feedbackCategories = [
+  { value: 'general', label: 'General feedback' },
+  { value: 'event', label: 'Event experience' },
+  { value: 'cards', label: 'Cards or rules' },
+  { value: 'bug', label: 'Website issue' },
+  { value: 'creator', label: 'Host or creator interest' },
+  { value: 'other', label: 'Other' },
+];
 
 const initialState = {
   errors: {
@@ -22,118 +33,117 @@ const initialState = {
 
 export default function FeedbackPage() {
   const [state, formAction] = useActionState(saveFeedback, initialState);
+  const errors = state.errors ?? {};
 
   return (
     <DSPage>
       <DSSection.Card background="dark" padding="thick" width="form">
         <DSSection.Heading>
+          <DSText.Eyebrow>Feedback</DSText.Eyebrow>
           <DSText.Heading as="h1">Leave Feedback</DSText.Heading>
         </DSSection.Heading>
-        <DSText.Body tone="muted" align="center" className={styles.subtitle}>
-          We&apos;d love to hear your thoughts on Relicry. Form submissions are posted to our public Discord feedback area.
-        </DSText.Body>
-        <a
-          href="https://discord.gg/wbbsUEpC"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.discordLink}
-        >
-          <DiscordIcon className={styles.discordIcon} />
-          Submit directly in Discord
-        </a>
-        <form action={formAction} className={styles.form}>
-          <label className={styles.field}>
-            <span className={styles.label}>Display name <span className={styles.optional}>optional</span></span>
-            <input
-              name="name"
-              placeholder="Name or Discord handle"
-              className={styles.input}
-              maxLength={80}
-            />
-            <span className={styles.helpText}>Shown publicly with your feedback.</span>
-          </label>
-          {state?.errors?.name?.map((error) => (
-            <DSText.Body tone="danger" className={styles.message} key={error}>{error}</DSText.Body>
-          ))}
 
-          <label className={styles.field}>
-            <span className={styles.label}>Contact <span className={styles.optional}>optional</span></span>
-            <input
-              name="contact"
-              placeholder="Email or Discord handle"
-              className={styles.input}
-              maxLength={160}
-            />
-            <span className={styles.helpText}>Only include this if you are comfortable with it being public.</span>
-          </label>
-          {state?.errors?.contact?.map((error) => (
-            <DSText.Body tone="danger" className={styles.message} key={error}>{error}</DSText.Body>
-          ))}
+        <DSSection.Text>
+          <DSText.Body tone="muted">
+            We&apos;d love to hear your thoughts on Relicry. Form submissions are posted to our public Discord feedback area.
+          </DSText.Body>
+        </DSSection.Text>
 
-          <label className={styles.field}>
-            <span className={styles.label}>What is this about?</span>
-            <select name="category" className={styles.input} defaultValue="general">
-              <option value="general">General feedback</option>
-              <option value="event">Event experience</option>
-              <option value="cards">Cards or rules</option>
-              <option value="bug">Website issue</option>
-              <option value="creator">Host or creator interest</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          {state?.errors?.category?.map((error) => (
-            <DSText.Body tone="danger" className={styles.message} key={error}>{error}</DSText.Body>
-          ))}
-
-          <label className={styles.field}>
-            <span className={styles.label}>Feedback</span>
-          <textarea
-            name="feedback"
-            rows={5}
-            placeholder="Your feedback..."
-            className={styles.textarea}
-            maxLength={1500}
-            required
-          />
-          </label>
-          {state?.errors?.feedback?.map((error) => (
-            <DSText.Body tone="danger" className={styles.message} key={error}>{error}</DSText.Body>
-          ))}
-          <DSButton label="Submit Feedback" type="submit" />
-        </form>
-        {state?.errors?.form?.map((error) => (
-          <DSText.Body tone="danger" className={styles.message} key={error}>{error}</DSText.Body>
-        ))}
-        {state?.message && (
-          <DSText.Body tone="success" className={styles.message}>{state.message}</DSText.Body>
-        )}
-        {state?.discordUrl && (
-          <a
-            href={state.discordUrl}
-            target="_blank"
+        <DSSection.Actions>
+          <DSButton
+            href="https://discord.gg/wbbsUEpC"
+            label="Submit Directly in Discord"
             rel="noopener noreferrer"
-            className={styles.submissionLink}
-          >
-            View your Discord feedback topic
-          </a>
+            target="_blank"
+            variant="primary"
+          />
+        </DSSection.Actions>
+
+        <DSForm action={formAction} errors={errors} width="full">
+          <DSField
+            description="Shown publicly with your feedback."
+            error={fieldError(errors.name)}
+            label="Display name (optional)"
+            maxLength={80}
+            name="name"
+            placeholder="Name or Discord handle"
+          />
+          <DSField
+            description="Only include this if you are comfortable with it being public."
+            error={fieldError(errors.contact)}
+            label="Contact (optional)"
+            maxLength={160}
+            name="contact"
+            placeholder="Email or Discord handle"
+          />
+          <DSSelect
+            defaultValue="general"
+            error={fieldError(errors.category)}
+            label="What is this about?"
+            name="category"
+            options={feedbackCategories}
+          />
+          <DSField
+            error={fieldError(errors.feedback)}
+            label="Feedback"
+            maxLength={1500}
+            multiline
+            name="feedback"
+            placeholder="Your feedback..."
+            required
+            rows={5}
+          />
+          <DSForm.ButtonGroup>
+            <DSButton label="Submit Feedback" type="submit" variant="primary" />
+          </DSForm.ButtonGroup>
+        </DSForm>
+
+        <FeedbackStatus errors={errors.form} message={state.message} />
+
+        {state?.discordUrl && (
+          <DSSection.Actions>
+            <DSButton
+              href={state.discordUrl}
+              label="View your Discord feedback topic"
+              rel="noopener noreferrer"
+              target="_blank"
+              variant="ghost"
+            />
+          </DSSection.Actions>
         )}
       </DSSection.Card>
     </DSPage>
   );
 }
 
-function DiscordIcon({ className }: Readonly<{ className?: string }>) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      viewBox="0 0 24 24"
-      role="img"
-    >
-      <path
-        fill="currentColor"
-        d="M20.317 4.369A19.791 19.791 0 0 0 15.37 2.85a.074.074 0 0 0-.079.037c-.211.375-.445.865-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.249.077.077 0 0 0-.079-.037 19.736 19.736 0 0 0-4.947 1.519.07.07 0 0 0-.032.027C.533 8.846-.32 13.188.082 17.477a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 6.073 3.067.078.078 0 0 0 .084-.027 14.07 14.07 0 0 0 1.241-2.024.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.009c.121.099.247.198.373.292a.077.077 0 0 1-.007.128 12.299 12.299 0 0 1-1.873.891.077.077 0 0 0-.041.107c.36.698.772 1.366 1.24 2.023a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.083-3.067.077.077 0 0 0 .031-.055c.48-4.957-.806-9.263-3.719-13.081a.061.061 0 0 0-.031-.028ZM8.02 14.875c-1.183 0-2.157-1.086-2.157-2.421 0-1.336.955-2.422 2.157-2.422 1.211 0 2.176 1.096 2.157 2.422 0 1.335-.955 2.421-2.157 2.421Zm7.975 0c-1.183 0-2.157-1.086-2.157-2.421 0-1.336.955-2.422 2.157-2.422 1.211 0 2.176 1.096 2.157 2.422 0 1.335-.946 2.421-2.157 2.421Z"
-      />
-    </svg>
-  );
+function FeedbackStatus({
+  errors,
+  message,
+}: Readonly<{
+  errors?: string[];
+  message?: string;
+}>) {
+  if (errors?.length) {
+    return (
+      <DSSection.Text>
+        {errors.map((error) => (
+          <DSText.Body key={error} tone="danger">{error}</DSText.Body>
+        ))}
+      </DSSection.Text>
+    );
+  }
+
+  if (message) {
+    return (
+      <DSSection.Text>
+        <DSText.Body tone="success">{message}</DSText.Body>
+      </DSSection.Text>
+    );
+  }
+
+  return null;
+}
+
+function fieldError(errors?: string[]) {
+  return errors?.join(' ');
 }

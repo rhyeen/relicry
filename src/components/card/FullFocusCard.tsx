@@ -39,7 +39,7 @@ export default function FullFocusCard({
   const firstAspect = aspectAsArray(card.aspect)[0];
   return (
     <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} awakenedArt={awakenedArt} ctx={ctx} focusAwakened={awakened} />
+      <IllustrationCardPart art={art} awakenedArt={awakenedArt} ctx={ctx} focusAwakened={awakened} isSample={card.isSample} />
       <RarityCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
       <BannerCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} focus focusAwakened={awakened} />
       <TagsCardPart tags={thisSide.tags} aspect={card.aspect} ctx={ctx} />

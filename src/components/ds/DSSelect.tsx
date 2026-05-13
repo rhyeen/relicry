@@ -1,16 +1,22 @@
 import { Select } from '@base-ui/react';
+import { useCallback, useId, useMemo, useState } from 'react';
 import styles from "./DSSelect.module.css";
 import DSField from './DSField';
 
 type DSSelectRootProps<T> = Readonly<{
+  id?: string;
   label: string;
+  name?: string;
   options: DSSelectOption<T>[];
-  onChange: (newValue: T) => void;
+  onChange?: (newValue: T) => void;
   placeholder?: string;
   value?: T;
+  defaultValue?: T;
   required?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  description?: string;
+  error?: string;
 }>;
 
 type DSSelectOption<T> = Readonly<{
@@ -18,17 +24,59 @@ type DSSelectOption<T> = Readonly<{
   value: T;
 }>;
 
-function DSSelectRoot<T>({ disabled, loading, label, options, placeholder, value, onChange, required }: DSSelectRootProps<T>) {
+function DSSelectRoot<T>({
+  defaultValue,
+  description,
+  disabled,
+  error,
+  id,
+  loading,
+  label,
+  name,
+  options,
+  placeholder,
+  value,
+  onChange,
+  required,
+}: DSSelectRootProps<T>) {
+  const fallbackId = useId();
+  const selectId = id ?? fallbackId;
+  const [internalValue, setInternalValue] = useState<T | null>(defaultValue ?? null);
+  const selectedValue = value ?? internalValue;
+  const selectedOption = useMemo(
+    () => options.find((option) => Object.is(option.value, selectedValue)),
+    [options, selectedValue],
+  );
+  const handleValueChange = useCallback((nextValue: T | null) => {
+    if (nextValue === null || Object.is(nextValue, selectedValue)) {
+      return;
+    }
+
+    if (value === undefined) {
+      setInternalValue(nextValue);
+    }
+
+    onChange?.(nextValue);
+  }, [onChange, selectedValue, value]);
+
   return (
-    <DSField.Root>
+    <DSField.Root invalid={!!error} name={name}>
       <DSField.Label required={required} label={label} />
-      <Select.Root items={options} value={value} onValueChange={v => v ? onChange(v) : undefined}>
+      <Select.Root
+        id={selectId}
+        name={name}
+        required={required}
+        value={selectedValue}
+        onValueChange={handleValueChange}
+      >
         <Select.Trigger
           className={styles.trigger}
           disabled={disabled || loading}
           data-loading={loading ? 'true' : undefined}
         >
-          <Select.Value className={styles.value} placeholder={placeholder} />
+          <Select.Value className={styles.value} placeholder={placeholder}>
+            {selectedOption?.label ?? placeholder}
+          </Select.Value>
           <Select.Icon className={styles.icon}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M7 10L12 15L17 10H7Z" fill="currentColor" />
@@ -54,6 +102,8 @@ function DSSelectRoot<T>({ disabled, loading, label, options, placeholder, value
           </Select.Positioner>
         </Select.Portal>
       </Select.Root>
+      <DSField.Error error={error} />
+      <DSField.Description description={description} />
     </DSField.Root>
   );
 }

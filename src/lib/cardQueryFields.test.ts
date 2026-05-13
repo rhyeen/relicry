@@ -8,6 +8,7 @@ import {
   decodeCardsHistoryEntry,
   encodeCardsHistoryEntry,
   normalizeCardTitleQuery,
+  parseCardSearchQuery,
 } from './cardQueryFields';
 
 describe('normalizeCardTitleQuery', () => {
@@ -25,6 +26,24 @@ describe('buildCardTitlePrefixes', () => {
     expect(prefixes).toContain('wise f');
     expect(prefixes).toContain('focus');
     expect(prefixes).toContain('fo');
+  });
+});
+
+describe('parseCardSearchQuery', () => {
+  it('treats a prefixed card id as an id-only search', () => {
+    expect(parseCardSearchQuery(' c/zq1w ')).toEqual({
+      cardIds: ['c/zq1w'],
+      idOnly: true,
+      normalizedTitle: '',
+    });
+  });
+
+  it('combines bare card id candidates with normal title search', () => {
+    expect(parseCardSearchQuery('zq1w')).toEqual({
+      cardIds: ['c/zq1w'],
+      idOnly: false,
+      normalizedTitle: 'zq1w',
+    });
   });
 });
 

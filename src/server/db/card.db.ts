@@ -8,7 +8,7 @@ import {
   buildAspectFilterKeys,
   buildCardAspectKey,
   buildCardTitlePrefixes,
-  normalizeCardTitleQuery,
+  parseCardSearchQuery,
 } from '@/lib/cardQueryFields';
 
 type FeaturedCardsFilters = {
@@ -39,6 +39,11 @@ export class CardDB extends RootDB<VersionedCard> {
   }
 
   public async getFeaturedPage(filters: FeaturedCardsFilters): Promise<FeaturedCardsPage> {
+    const search = parseCardSearchQuery(filters.query);
+    if (search.idOnly || search.cardIds.length > 0) {
+      return this.getFeaturedPageWithExpandedSearch(filters, search);
+    }
+
     const countQuery = this.applyFeaturedFilters(filters);
     const pageQuery = this
       .applyFeaturedSorting(this.applyFeaturedFilters(filters))
@@ -257,12 +262,54 @@ export class CardDB extends RootDB<VersionedCard> {
       query = query.where('queryAspectKey', 'in', buildAspectFilterKeys(filters.aspect));
     }
 
-    const normalizedTitle = normalizeCardTitleQuery(filters.query);
-    if (normalizedTitle) {
-      query = query.where('queryTitlePrefixes', 'array-contains', normalizedTitle);
+    const search = parseCardSearchQuery(filters.query);
+    if (search.normalizedTitle) {
+      query = query.where('queryTitlePrefixes', 'array-contains', search.normalizedTitle);
     }
 
     return query;
+  }
+
+  private async getFeaturedPageWithExpandedSearch(
+    filters: FeaturedCardsFilters,
+    search: ReturnType<typeof parseCardSearchQuery>,
+  ): Promise<FeaturedCardsPage> {
+    const querySnapshot = await this
+      .applyFeaturedSorting(this.applyFeaturedFilters({
+        ...filters,
+        query: '',
+      }))
+      .get();
+
+    const normalizedIds = new Set(search.cardIds.map((id) => id.toLowerCase()));
+    const matchedDocs = querySnapshot.docs.filter((doc) => {
+      const card = this.conformItemGet(this.conformData(doc.data()) as VersionedCard);
+      const idMatches = normalizedIds.has(card.id.toLowerCase());
+      if (search.idOnly) {
+        return idMatches;
+      }
+
+      const titleMatches = search.normalizedTitle
+        ? buildCardTitlePrefixes(card.title).includes(search.normalizedTitle)
+        : false;
+      return idMatches || titleMatches;
+    });
+
+    const startIndex = filters.cursor
+      ? matchedDocs.findIndex((doc) => this.serializeCursor(doc) === filters.cursor) + 1
+      : 0;
+    const pageStartIndex = Math.max(0, startIndex);
+    const docs = matchedDocs.slice(pageStartIndex, pageStartIndex + CARDS_PAGE_SIZE + 1);
+    const hasNext = docs.length > CARDS_PAGE_SIZE;
+    const pageDocs = hasNext ? docs.slice(0, CARDS_PAGE_SIZE) : docs;
+    const totalCards = matchedDocs.length;
+
+    return {
+      cards: pageDocs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as VersionedCard)),
+      totalCards,
+      totalPages: Math.max(1, Math.ceil(totalCards / CARDS_PAGE_SIZE)),
+      nextCursor: hasNext ? this.serializeCursor(pageDocs[pageDocs.length - 1]!) : null,
+    };
   }
 
   private applyFeaturedSorting(query: FirebaseFirestore.Query): FirebaseFirestore.Query {

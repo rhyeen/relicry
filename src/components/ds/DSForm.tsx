@@ -1,9 +1,16 @@
 import { Form } from '@base-ui/react';
+import type { FormHTMLAttributes } from 'react';
 import styles from "./DSForm.module.css";
 import DSText from './DSText';
 
+type DSFormErrors = Record<string, string[] | string | undefined>;
+
 type DSFormRootProps = Readonly<{
   children: React.ReactNode;
+  action?: FormHTMLAttributes<HTMLFormElement>['action'];
+  className?: string;
+  errors?: DSFormErrors;
+  width?: 'default' | 'full';
 }>;
 
 type DSFormTextProps = Readonly<{
@@ -19,8 +26,30 @@ function ButtonGroup({ children }: DSFormButtonGroupProps) {
   return <div className={styles.buttonGroup}>{children}</div>;
 }
 
-function DSFormRoot({ children }: DSFormRootProps) {
-  return <Form className={styles.root}>{children}</Form>;
+function DSFormRoot({ action, children, className, errors, width = 'default' }: DSFormRootProps) {
+  const formErrors = normalizeErrors(errors);
+
+  return (
+    <Form
+      action={action}
+      className={[
+        styles.root,
+        width === 'full' ? styles.widthFull : undefined,
+        className,
+      ].filter(Boolean).join(' ')}
+      errors={formErrors}
+    >
+      {children}
+    </Form>
+  );
+}
+
+function normalizeErrors(errors?: DSFormErrors) {
+  if (!errors) return undefined;
+
+  return Object.fromEntries(
+    Object.entries(errors).filter((entry): entry is [string, string | string[]] => entry[1] !== undefined)
+  );
 }
 
 function Title({ children, className }: DSFormTextProps) {

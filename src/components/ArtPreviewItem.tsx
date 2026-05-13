@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import DSText from "@/components/ds/DSText";
 import { Art } from "@/entities/Art";
 import { ImageSize, ImageStorage } from "@/entities/Image";
 import StoredImage from "@/components/client/StoredImage";
@@ -10,6 +9,7 @@ import styles from "./PreviewItem.module.css";
 type ArtPreviewItemProps = Readonly<{
   art: Art;
   href: string;
+  artistName?: string | null;
 }>;
 
 function getPreviewImage(art: Art): ImageStorage | null {
@@ -22,30 +22,42 @@ function getPreviewImage(art: Art): ImageStorage | null {
   );
 }
 
-export default function ArtPreviewItem({ art, href }: ArtPreviewItemProps) {
+export default function ArtPreviewItem({ art, href, artistName }: ArtPreviewItemProps) {
   const previewImage = getPreviewImage(art);
   const title = art.title?.trim() || "Untitled";
+  const typeLabel = labelize(art.type);
+  const artistLabel = artistName?.trim() || art.artistId || "Unassigned";
+  const detailLabel = art.aIGenerated ? "AI generated" : "Original";
 
   return (
-    <Link href={href} className={styles.root}>
-      <div className={styles.imageWrap}>
+    <Link href={href} className={styles.root} data-type={art.type}>
+      <div className={styles.artFrame}>
         {previewImage ? (
           <StoredImage
             image={previewImage}
-            size={{ width: 60, height: 60 }}
+            size={ImageSize.CardPreview}
             alt={title}
+            className={styles.image}
           />
         ) : (
           <div className={styles.fallback}>
-            <DSText.Caption>{art.type === "writing" ? "Text" : "No art"}</DSText.Caption>
+            {art.type === "writing" ? "Text" : "No art"}
           </div>
         )}
+        <span className={styles.typeBadge} aria-hidden="true">{typeLabel}</span>
       </div>
       <div className={styles.content}>
-        <DSText.Body as="div" weight="semibold" className={styles.title}>{title}</DSText.Body>
-        <DSText.Caption>Type: {art.type}</DSText.Caption>
-        <DSText.Caption>Artist: {art.artistId || "—"}</DSText.Caption>
+        <span className={styles.detail}>{detailLabel}</span>
+        <span className={styles.title}>{title}</span>
+        {art.description ? (
+          <span className={styles.description}>{art.description}</span>
+        ) : null}
+        <span className={styles.meta}>{artistLabel}</span>
       </div>
     </Link>
   );
+}
+
+function labelize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }

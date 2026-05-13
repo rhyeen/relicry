@@ -1,4 +1,5 @@
 import { Field } from '@base-ui/react';
+import type { ComponentProps } from 'react';
 import styles from "./DSField.module.css";
 
 export function toDateOnlyString(d: Date | string): string {
@@ -27,9 +28,11 @@ export function fromDateOnlyString(s: string): Date | null {
 type DSFieldRootProps = Readonly<{
   label: string;
   className?: string;
-  value: string;
+  value?: string;
+  defaultValue?: string;
+  name?: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'url' | 'date';
-  onChange: (newValue: string) => void;
+  onChange?: (newValue: string) => void;
   placeholder?: string;
   readonly?: boolean;
   required?: boolean;
@@ -39,6 +42,8 @@ type DSFieldRootProps = Readonly<{
   loading?: boolean;
   multiline?: boolean;
   rows?: number;
+  maxLength?: number;
+  autoComplete?: ComponentProps<'input'>['autoComplete'];
 }>;
 
 function DSFieldRoot({
@@ -50,15 +55,19 @@ function DSFieldRoot({
   description,
   label,
   value,
+  defaultValue,
+  name,
   onChange,
   placeholder,
   readonly,
   required,
   multiline,
   rows,
+  maxLength,
+  autoComplete,
 }: DSFieldRootProps) {
   return (
-    <Root className={className}>
+    <Root className={className} name={name} invalid={!!error}>
       <Label required={required} label={label} />
       <Field.Control
         className={styles.control}
@@ -66,11 +75,14 @@ function DSFieldRoot({
         placeholder={placeholder}
         readOnly={readonly}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        defaultValue={defaultValue}
+        onValueChange={onChange}
         type={multiline ? undefined : type}
         disabled={disabled || loading}
         data-loading={loading ? 'true' : undefined}
         data-multiline={multiline ? 'true' : undefined}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
         render={
           multiline
             ? (props) => (
@@ -91,11 +103,19 @@ function DSFieldRoot({
 type RootProps = Readonly<{
   children: React.ReactNode;
   className?: string;
+  name?: string;
+  invalid?: boolean;
 }>;
 
-function Root({ children, className }: RootProps) {
+function Root({ children, className, invalid, name }: RootProps) {
   return (
-    <Field.Root className={[styles.root, className].filter(Boolean).join(' ')}>{children}</Field.Root>
+    <Field.Root
+      className={[styles.root, className].filter(Boolean).join(' ')}
+      invalid={invalid}
+      name={name}
+    >
+      {children}
+    </Field.Root>
   );
 }
 

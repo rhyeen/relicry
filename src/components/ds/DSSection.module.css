@@ -33,6 +33,19 @@
   background: rgba(13, 17, 23, 0.78);
 }
 
+.card.dark,
+.card.darkBrown {
+  --ds-field-background: rgba(255, 255, 255, 0.08);
+  --ds-field-background-hover: rgba(255, 255, 255, 0.12);
+  --ds-field-border-color: rgba(255, 255, 255, 0.22);
+  --ds-field-description-color: var(--parchment-gray);
+  --ds-field-focus-border-color: var(--accent-gold);
+  --ds-field-focus-outline-color: rgba(242, 189, 97, 0.42);
+  --ds-field-label-color: var(--parchment-white);
+  --ds-field-placeholder-color: rgba(244, 237, 222, 0.58);
+  --ds-field-text-color: var(--parchment-white);
+}
+
 .cardLink.dark:hover {
   background: rgba(13, 17, 23, 0.9);
 }
@@ -93,6 +106,12 @@
 .grid {
   display: grid;
   gap: 1rem;
+  --ds-field-max-width: none;
+}
+
+.grid > .actions {
+  align-self: end;
+  margin-top: 0;
 }
 
 .grid.columns1 {

@@ -2,15 +2,9 @@
 
 import DSButton from '@/components/ds/DSButton';
 import DSField from '@/components/ds/DSField';
+import DSSection from '@/components/ds/DSSection';
 import DSSelect from '@/components/ds/DSSelect';
 import { CardListAspectFilter, CardListTypeFilter } from '@/lib/cardsList';
-import {
-  buildDownloadUnpublishedRedirectHref,
-  DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY,
-  isLocalHostname,
-} from '@/lib/unpublishedDownload';
-import { useSyncExternalStore } from 'react';
-import styles from './page.module.css';
 
 type Props = Readonly<{
   query: string;
@@ -39,50 +33,35 @@ export default function CardsToolbar({
   onClear,
   disabled,
 }: Props) {
-  const isLocal = useSyncExternalStore(
-    () => () => undefined,
-    () => isLocalHostname(window.location.hostname),
-    () => false,
-  );
-
-  const handleDownloadUnpublished = () => {
-    window.localStorage.removeItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY);
-    window.location.assign(buildDownloadUnpublishedRedirectHref());
-  };
-
   return (
-    <div className={styles.toolbar}>
-      <DSField
-        label="Search by name"
-        value={query}
-        onChange={onQueryChange}
-        placeholder="Search cards"
-        disabled={disabled}
-      />
-      <DSSelect
-        label="Type"
-        options={typeOptions}
-        value={type}
-        onChange={onTypeChange}
-        disabled={disabled}
-      />
-      <DSSelect
-        label="Aspect"
-        options={aspectOptions}
-        value={aspect}
-        onChange={onAspectChange}
-        disabled={disabled}
-      />
-      <div className={styles.toolbarActions}>
-        {isLocal && (
-          <DSButton
-            onClick={handleDownloadUnpublished}
-            label="Download Unpublished"
-          />
-        )}
-        <DSButton onClick={onApply} label="Apply" disabled={disabled} />
-        <DSButton onClick={onClear} label="Clear" disabled={disabled} />
-      </div>
-    </div>
+    <DSSection.Card background="dark" padding="normal">
+      <DSSection.Grid columns={4}>
+        <DSField
+          label="Search by name"
+          value={query}
+          onChange={onQueryChange}
+          placeholder="Search cards or IDs"
+          disabled={disabled}
+        />
+        <DSSelect
+          label="Type"
+          options={typeOptions}
+          value={type}
+          onChange={onTypeChange}
+          disabled={disabled}
+        />
+        <DSSelect
+          label="Aspect"
+          options={aspectOptions}
+          value={aspect}
+          onChange={onAspectChange}
+          disabled={disabled}
+        />
+        <DSSection.Actions>
+          <DSButton onClick={onApply} label="Apply" disabled={disabled} />
+          <DSButton onClick={onClear} label="Clear" disabled={disabled} />
+        </DSSection.Actions>
+      </DSSection.Grid>
+    </DSSection.Card>
   );
 }

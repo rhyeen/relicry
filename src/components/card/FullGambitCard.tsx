@@ -33,7 +33,7 @@ export default function FullGambitCard({
   }
   return (
     <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} ctx={ctx} />
+      <IllustrationCardPart art={art} ctx={ctx} isSample={card.isSample} />
       <RarityCardPart rarity={card.rarity} aspect={Aspect.Gambit} ctx={ctx} />
       <BannerCardPart rarity={card.rarity} aspect={Aspect.Gambit} ctx={ctx} />
       <TagsCardPart tags={card.tags} aspect={Aspect.Gambit} ctx={ctx} />

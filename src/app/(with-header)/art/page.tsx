@@ -1,28 +1,24 @@
-import { Art, getArtId } from '@/entities/Art';
-import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
-import ArtPreviewItem from '@/components/ArtPreviewItem';
-import { ArtDB } from '@/server/db/art.db';
 import { cacheLife, cacheTag } from 'next/cache';
-import DSButton from '@/components/ds/DSButton';
+import DSPage from '@/components/ds/DSPage';
+import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
-import DSSection from '@/components/ds/DSSection';
+import AdminPageAction from '@/components/client/AdminPageAction';
+import { AdminRole } from '@/entities/AdminRole';
+import ArtBrowserClient from './ArtBrowserClient';
+import { ArtListGenerationFilter, ArtListTypeFilter, DEFAULT_ART_FILTERS } from '@/lib/artList';
+import { getArtPreviewPage } from '@/server/artPreview';
 
-async function getArts(): Promise<Art[]> {
+async function getInitialArtPage() {
   'use cache';
-  const index = 0;
+
   cacheLife('expectedChangeLowConsequenceIfStale');
   cacheTag(LOCAL_CACHE_TAG);
-  cacheTag(`arts:list:${index}`);
+  cacheTag('arts:list:default');
 
-  const entities = await new ArtDB(getFirestoreAdmin()).getBy({
-    where: [],
-    sortBy: { field: 'createdAt', direction: 'desc' },
-    limit: 100,
-  });
-  return entities;
+  return getArtPreviewPage(DEFAULT_ART_FILTERS);
 }
 
 export function generateMetadata() {
@@ -34,33 +30,66 @@ export function generateMetadata() {
 
 export default async function ArtPage() {
   return (
-    <DSSection>
-      <DSText.Heading as="h1">Art</DSText.Heading>
-      <DSButton href="/art/new" label="New Art" />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "16px",
-        }}
-      >
-        <Suspense fallback={<div>Loading art data...</div>}>
-          <ArtPageData />
-        </Suspense>
-      </div>
-    </DSSection>
+    <DSPage>
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Gallery</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Art</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Explore Relicry illustrations and writing, from card art to story pieces that shape the
+            world behind each adventure.
+          </DSText.Body>
+        </DSSection.Text>
+        <AdminPageAction href="/art/new" label="New Art" requiredRole={AdminRole.SuperAdmin} />
+      </DSSection.Card>
+
+      <Suspense fallback={<ArtLoading />}>
+        <ArtPageData />
+      </Suspense>
+    </DSPage>
+  );
+}
+
+function ArtLoading() {
+  return (
+    <DSSection.Card>
+      <DSText.Body tone="muted">Loading art data...</DSText.Body>
+    </DSSection.Card>
   );
 }
 
 async function ArtPageData() {
   await connection();
-  const arts = await getArts();
+  const initialResponse = await getInitialArtPage();
 
-  return arts.map((art) => (
-    <ArtPreviewItem
-      key={art.id}
-      art={art}
-      href={`/${getArtId(art.id)}`}
+  if (initialResponse.totalArts === 0) {
+    return (
+      <DSSection.Card>
+        <DSText.Body tone="muted">No art is available yet.</DSText.Body>
+      </DSSection.Card>
+    );
+  }
+
+  return (
+    <ArtBrowserClient
+      initialFilters={DEFAULT_ART_FILTERS}
+      initialResponse={initialResponse}
+      typeOptions={ART_TYPE_OPTIONS}
+      generationOptions={ART_GENERATION_OPTIONS}
     />
-  ));
+  );
 }
+
+const ART_TYPE_OPTIONS: { label: string; value: ArtListTypeFilter }[] = [
+  { label: 'All art', value: 'all' },
+  { label: 'Illustration', value: 'illustration' },
+  { label: 'Writing', value: 'writing' },
+];
+
+const ART_GENERATION_OPTIONS: { label: string; value: ArtListGenerationFilter }[] = [
+  { label: 'Any generation', value: 'all' },
+  { label: 'AI generated', value: 'ai' },
+  { label: 'Original', value: 'original' },
+];

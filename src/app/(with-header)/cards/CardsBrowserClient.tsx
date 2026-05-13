@@ -6,6 +6,7 @@ import CardPreviewItem from '@/components/CardPreviewItem';
 import DSButton from '@/components/ds/DSButton';
 import DSText from '@/components/ds/DSText';
 import DSLoadingOverlay from '@/components/ds/DSLoadingOverlay';
+import DSSection from '@/components/ds/DSSection';
 import {
   areCardsFiltersEqual,
   buildCardsQueryString,
@@ -16,7 +17,6 @@ import {
   parseCardsFilters,
 } from '@/lib/cardsList';
 import { CardsPreviewResponse } from '@/lib/cardsApi';
-import styles from './page.module.css';
 import CardsToolbar from './CardsToolbar';
 
 type Props = Readonly<{
@@ -133,11 +133,12 @@ export default function CardsBrowserClient({
   };
 
   return (
-    <>
+    <DSSection>
       <Suspense fallback={null}>
         <CardsSearchParamsSync onFiltersChange={handleLocationFilters} />
       </Suspense>
       <DSLoadingOverlay loading={loading} error={error} dismissError={setError} />
+
       <CardsToolbar
         query={draftQuery}
         type={draftType}
@@ -151,40 +152,41 @@ export default function CardsBrowserClient({
         onClear={clearFilters}
         disabled={loading}
       />
-      <div className={styles.grid}>
-        {response.totalCards === 0 ? (
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <DSText.Body tone="muted">No cards matched the current filters.</DSText.Body>
-          </div>
-        ) : (
-          <>
-            <div className={styles.summary}>
-              <DSText.Caption style={{ margin: 0 }}>
-                Showing {response.items.length} of {response.totalCards} featured cards
-              </DSText.Caption>
-              <DSText.Caption style={{ margin: 0 }}>
-                Page {page} of {response.totalPages}
-              </DSText.Caption>
-            </div>
+
+      {response.totalCards === 0 ? (
+        <DSSection.Card>
+          <DSText.Body tone="muted">No cards matched the current filters.</DSText.Body>
+        </DSSection.Card>
+      ) : (
+        <>
+          <DSSection.Text>
+            <DSText.Caption>
+              Showing {response.items.length} of {response.totalCards} featured cards
+            </DSText.Caption>
+            <DSText.Caption>
+              Page {page} of {response.totalPages}
+            </DSText.Caption>
+          </DSSection.Text>
+          <DSSection.Grid columns={3}>
             {response.items.map((item) => (
               <CardPreviewItem key={`${item.card.id}_v${item.card.version}`} item={item} />
             ))}
-            <div className={styles.pagination}>
-              <DSButton
-                onClick={() => updateUrl(previousFilters)}
-                label="Previous"
-                disabled={page <= 1 || loading}
-              />
-              <DSButton
-                onClick={() => updateUrl(nextFilters)}
-                label="Next"
-                disabled={!response.nextCursor || loading}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </>
+          </DSSection.Grid>
+          <DSSection.Actions>
+            <DSButton
+              onClick={() => updateUrl(previousFilters)}
+              label="Previous"
+              disabled={page <= 1 || loading}
+            />
+            <DSButton
+              onClick={() => updateUrl(nextFilters)}
+              label="Next"
+              disabled={!response.nextCursor || loading}
+            />
+          </DSSection.Actions>
+        </>
+      )}
+    </DSSection>
   );
 }
 
