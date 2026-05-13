@@ -1,0 +1,4 @@
+interface:
+  display_name: "DS Component First"
+  short_description: "Use and evolve design-system components before adding custom UI."
+  default_prompt: "Apply the DS Component First workflow to this UI change."

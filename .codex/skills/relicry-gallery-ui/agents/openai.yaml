@@ -1,0 +1,4 @@
+interface:
+  display_name: "Relicry Gallery UI"
+  short_description: "Relicry gallery UI workflows"
+  default_prompt: "Use this skill when updating Relicry art, artist, card, gallery, filter-dialog, or archive detail interfaces. Preserve URL-backed filters, use local DS components, and validate visual work in the browser."

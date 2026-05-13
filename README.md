@@ -20,6 +20,60 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Codex Skills
+
+This repo includes project-specific Codex skills under `.codex/skills`. These are the version-controlled source of truth for reusable Codex guidance.
+
+### Relicry Gallery UI
+
+The `relicry-gallery-ui` skill captures the current conventions for `/art`, `/art/[id]`, `/ast/[id]`, `/cards`, gallery grids, filter dialogs, URL-backed filters, design-system actions, and browser validation.
+
+### DS Component First
+
+The `ds-component-first` skill captures the convention that app UI should use existing DS components first, extend or create DS components for reusable patterns, and reserve custom module CSS for genuinely exceptional one-off UI.
+
+### Repo Managed Skills
+
+The `repo-managed-skills` skill captures this repo's skill workflow: create and update project-specific skills under `.codex/skills`, validate them there, and symlink them into the local Codex skills directory for discovery.
+
+To make Codex discover the repo-owned skill locally, symlink it into your Codex skills directory from the repo root:
+
+```bash
+CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$CODEX_SKILLS_DIR"
+ln -s "$(pwd)/.codex/skills/<skill-name>" "$CODEX_SKILLS_DIR/<skill-name>"
+```
+
+If `"$CODEX_SKILLS_DIR/<skill-name>"` already exists, inspect it first:
+
+```bash
+ls -la "$CODEX_SKILLS_DIR/<skill-name>"
+```
+
+If it is an older local copy, preserve or remove it before creating the symlink. The intended setup is:
+
+```bash
+~/.codex/skills/<skill-name> -> /path/to/relicry/.codex/skills/<skill-name>
+```
+
+After linking, restart or refresh Codex if the skill does not appear immediately. You can ask Codex to use it explicitly, for example: "Use the relicry-gallery-ui skill while updating the art gallery." Codex should also pick it up automatically for related Relicry gallery, card, art detail, and artist page work.
+
+### Adding Future Skills
+
+When adding more project-specific Codex skills, use the built-in `skill-creator` workflow, but keep the repo as the source of truth:
+
+1. Create the skill under `.codex/skills/<skill-name>`.
+2. Include the required `SKILL.md` file and any optional skill resources, such as `agents/openai.yaml`, `references/`, `scripts/`, or `assets/`.
+3. Symlink the repo skill into your local Codex skills directory:
+
+```bash
+CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
+mkdir -p "$CODEX_SKILLS_DIR"
+ln -s "$(pwd)/.codex/skills/<skill-name>" "$CODEX_SKILLS_DIR/<skill-name>"
+```
+
+Do not treat `~/.codex/skills` as the canonical home for Relicry skills. It should only contain symlinks or local install copies that point back to version-controlled repo skills.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
