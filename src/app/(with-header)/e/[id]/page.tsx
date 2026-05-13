@@ -197,9 +197,9 @@ function RewardCard({
 }>) {
   return (
     <article className={styles.rewardCard}>
-      <span className={styles.rewardLevel}>Level {reward.level}</span>
+      <span className={styles.rewardLevel}>Challenge Level {reward.level}</span>
       <DSText.Heading as="h3" size="lg" className={styles.rewardTitle}>
-        Reward Level {reward.level}
+        Reward Information
       </DSText.Heading>
       <DSSection.Text>
         <DSText.Caption>Quest: {reward.questId ?? 'None'}</DSText.Caption>

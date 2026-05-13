@@ -46,10 +46,17 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid rgba(242, 189, 97, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 999px;
-  background: rgba(13, 17, 23, 0.68);
-  color: #f8d996;
+  background:
+    linear-gradient(180deg, rgba(8, 5, 0, 0.6), rgba(37, 26, 0, 0.4)),
+    rgba(13, 17, 23, 0.38);
+  backdrop-filter: blur(0.5rem) saturate(1.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 16px rgba(18, 11, 0, 0.34),
+    0 0 4px -1px rgba(0, 0, 0, 0.25);
+  color: #fbf6ea;
   outline: 0;
   text-decoration: none;
   text-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.72);
@@ -63,10 +70,15 @@
 
 .back:hover,
 .back:focus-visible {
-  border-color: rgba(255, 211, 135, 0.72);
-  background-color: rgba(132, 88, 48, 0.58);
-  box-shadow: 0 0.65rem 1.3rem rgba(0, 0, 0, 0.2);
-  color: #ffe3a8;
+  border-color: rgba(247, 214, 151, 0.5);
+  background:
+    linear-gradient(180deg, rgba(245, 158, 11, 0.2), rgba(84, 58, 10, 0.5)),
+    rgba(245, 158, 11, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 0.1875rem rgba(245, 158, 11, 0.12),
+    0 0.65rem 1.3rem rgba(0, 0, 0, 0.22);
+  color: #f7d695;
   transform: translateY(-0.0625rem);
 }
 
@@ -77,6 +89,7 @@
 
 .backIcon {
   display: block;
+  filter: drop-shadow(0 0.125rem 0.45rem rgba(0, 0, 0, 0.65));
 }
 
 .backTooltip {
