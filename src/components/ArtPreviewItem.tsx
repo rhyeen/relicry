@@ -9,6 +9,7 @@ import styles from "./PreviewItem.module.css";
 type ArtPreviewItemProps = Readonly<{
   art: Art;
   href: string;
+  artistName?: string | null;
 }>;
 
 function getPreviewImage(art: Art): ImageStorage | null {
@@ -21,11 +22,11 @@ function getPreviewImage(art: Art): ImageStorage | null {
   );
 }
 
-export default function ArtPreviewItem({ art, href }: ArtPreviewItemProps) {
+export default function ArtPreviewItem({ art, href, artistName }: ArtPreviewItemProps) {
   const previewImage = getPreviewImage(art);
   const title = art.title?.trim() || "Untitled";
   const typeLabel = labelize(art.type);
-  const artistLabel = art.artistId || "Unassigned";
+  const artistLabel = artistName?.trim() || art.artistId || "Unassigned";
   const detailLabel = art.aIGenerated ? "AI generated" : "Original";
 
   return (

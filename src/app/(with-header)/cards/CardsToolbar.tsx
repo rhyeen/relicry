@@ -40,7 +40,7 @@ export default function CardsToolbar({
           label="Search by name"
           value={query}
           onChange={onQueryChange}
-          placeholder="Search cards"
+          placeholder="Search cards or IDs"
           disabled={disabled}
         />
         <DSSelect

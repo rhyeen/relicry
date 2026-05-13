@@ -1,39 +1,45 @@
 import { Aspect } from '@/entities/Aspect';
-import { CardListAspectFilter } from '@/lib/cardsList';
+import { getCardId } from '@/entities/Card';
+import type { CardListAspectFilter } from '@/lib/cardsList';
+import { buildSearchPrefixes, normalizeSearchQuery } from '@/lib/searchQueryFields';
 
 const FILTERABLE_ASPECTS = [Aspect.Brave, Aspect.Cunning, Aspect.Wise, Aspect.Charming] as const;
 type FilterableAspect = typeof FILTERABLE_ASPECTS[number];
 const ROOT_CURSOR_TOKEN = '__root__';
 
 export function normalizeCardTitleQuery(query: string): string {
-  return query
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return normalizeSearchQuery(query);
 }
 
 export function buildCardTitlePrefixes(title: string): string[] {
-  const normalizedTitle = normalizeCardTitleQuery(title);
-  if (!normalizedTitle) {
-    return [];
+  return buildSearchPrefixes(title);
+}
+
+export function parseCardSearchQuery(query: string): {
+  cardIds: string[];
+  idOnly: boolean;
+  normalizedTitle: string;
+} {
+  const trimmed = query.trim().toLowerCase();
+
+  if (trimmed.startsWith('c/')) {
+    return {
+      cardIds: [trimmed],
+      idOnly: true,
+      normalizedTitle: '',
+    };
   }
 
-  const words = normalizedTitle.split(' ');
-  const prefixes = new Set<string>();
+  const normalizedTitle = normalizeCardTitleQuery(query);
+  const canBeBareCardId = trimmed.length > 0
+    && !/\s/.test(trimmed)
+    && (trimmed.length === 4 || trimmed.length === 12);
 
-  for (let start = 0; start < words.length; start += 1) {
-    let phrase = '';
-    for (let end = start; end < words.length; end += 1) {
-      phrase = phrase ? `${phrase} ${words[end]}` : words[end]!;
-      for (let prefixLength = 1; prefixLength <= phrase.length; prefixLength += 1) {
-        prefixes.add(phrase.slice(0, prefixLength));
-      }
-    }
-  }
-
-  return [...prefixes];
+  return {
+    cardIds: canBeBareCardId ? [getCardId(trimmed)] : [],
+    idOnly: false,
+    normalizedTitle,
+  };
 }
 
 export function buildCardAspectKey(aspect: Aspect | [Aspect, Aspect] | undefined): string | null {
