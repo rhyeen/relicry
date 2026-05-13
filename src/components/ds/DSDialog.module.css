@@ -76,8 +76,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 24rem;
-  max-width: calc(100vw - 3rem);
+  min-width: min(24rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
   margin-top: -2rem;
   padding: 1.5rem;
   border-radius: 0.5rem;
@@ -136,7 +136,7 @@
   margin-bottom: 0.25rem;
   font-size: 1.125rem;
   line-height: 1.75rem;
-  letter-spacing: -0.0025em;
+  letter-spacing: 0;
   font-weight: 500;
 }
 
