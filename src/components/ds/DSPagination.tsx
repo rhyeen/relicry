@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import styles from './DSPagination.module.css';
 
 type RootProps = Readonly<{
@@ -20,6 +21,13 @@ type PageIndexProps = Readonly<{
 type ActionsProps = Readonly<{
   onPrevious: () => void;
   onNext: () => void;
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
+}>;
+
+type LinkActionsProps = Readonly<{
+  previousHref: string;
+  nextHref: string;
   previousDisabled?: boolean;
   nextDisabled?: boolean;
 }>;
@@ -80,6 +88,69 @@ function Actions({
   );
 }
 
+function LinkActions({
+  previousHref,
+  nextHref,
+  previousDisabled = false,
+  nextDisabled = false,
+}: LinkActionsProps) {
+  return (
+    <div className={styles.actions}>
+      <PaginationLink
+        href={previousHref}
+        label="Previous"
+        disabled={previousDisabled}
+      >
+        <ArrowLeftIcon />
+      </PaginationLink>
+      <PaginationLink
+        href={nextHref}
+        label="Next"
+        disabled={nextDisabled}
+      >
+        <ArrowRightIcon />
+      </PaginationLink>
+    </div>
+  );
+}
+
+function PaginationLink({
+  href,
+  label,
+  disabled,
+  children,
+}: Readonly<{
+  href: string;
+  label: string;
+  disabled: boolean;
+  children: ReactNode;
+}>) {
+  if (disabled) {
+    return (
+      <span
+        className={styles.button}
+        aria-disabled="true"
+        aria-label={label}
+        title={label}
+      >
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      className={styles.button}
+      href={href}
+      aria-label={label}
+      title={label}
+      scroll={false}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function ArrowLeftIcon() {
   return (
     <svg
@@ -120,6 +191,7 @@ function ArrowRightIcon() {
 
 const DSPagination = Object.assign(Root, {
   Actions,
+  LinkActions,
   PageIndex,
   Totals,
 });

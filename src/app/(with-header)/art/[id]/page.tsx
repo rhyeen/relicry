@@ -41,6 +41,7 @@ export default async function ArtPage(
 ) {
   return (
     <DSPage>
+      <DSPage.Back href="/art" label="Back to Gallery" />
       <Suspense fallback={<div>Loading art data...</div>}>
         <ArtPageData params={params} />
       </Suspense>
@@ -166,7 +167,6 @@ function ArtHeroPanel({
       </div>
 
       <DSSection.Actions>
-        <DSButton href="/art" label="Back to gallery" />
         {art.referenceUrl ? (
           <DSButton
             href={art.referenceUrl}

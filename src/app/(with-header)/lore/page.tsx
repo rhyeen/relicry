@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 export default function LorePage() {
   return (
     <PlaceholderLearningPage
-      eyebrow="Lore and stories"
-      title="The world of Relicry is opening soon."
-      copy="Card pages, artist pages, and event stories will build out the lore of Relicry over time. This page will become a home for those stories as more of the world is revealed."
-      primaryHref="/begin"
-      primaryLabel="Back to Starter Guide"
+      eyebrow="The world of Relicry"
+      title="There are more stories to tell..."
+      copy="The Relicry cards only tell part of the story of the Relicry and its magic. There are more stones left unturned and secrets to uncover. But for now, those mysteries remain hidden; we’re working on drafting the lore and sharing it with you soon."
+      primaryHref="/about"
+      primaryLabel="Learn More about the Game"
       secondaryHref="/art"
-      secondaryLabel="Explore Art"
+      secondaryLabel="Explore the Art"
     />
   );
 }

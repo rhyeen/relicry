@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import styles from './DSPage.module.css';
 
 function Root({
@@ -84,7 +85,37 @@ function ScrollCue({ targetId, label = 'Scroll to content' }: Readonly<{
   );
 }
 
+function Back({
+  href,
+  label = 'Back',
+}: Readonly<{
+  href: string;
+  label?: string;
+}>) {
+  return (
+    <Link className={styles.back} href={href} aria-label={label}>
+      <svg
+        aria-hidden="true"
+        className={styles.backIcon}
+        fill="none"
+        height="22"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.9"
+        viewBox="0 0 24 24"
+        width="22"
+      >
+        <path d="m12 19-7-7 7-7" />
+        <path d="M19 12H5" />
+      </svg>
+      <span className={styles.backTooltip}>{label}</span>
+    </Link>
+  );
+}
+
 const DSPage = Object.assign(Root, {
+  Back,
   Root,
   Hero,
   ScrollCue,

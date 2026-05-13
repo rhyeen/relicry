@@ -8,14 +8,20 @@ type AdminPageActionProps = Readonly<{
   href: string;
   label: string;
   requiredRole: AdminRole;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'success';
 }>;
 
-export default function AdminPageAction({ href, label, requiredRole }: AdminPageActionProps) {
+export default function AdminPageAction({
+  href,
+  label,
+  requiredRole,
+  variant = 'primary',
+}: AdminPageActionProps) {
   const { user, ready } = useUser();
 
   if (!ready || !hasRole(user?.adminRoles, requiredRole)) {
     return null;
   }
 
-  return <DSButton href={href} label={label} variant="primary" />;
+  return <DSButton href={href} label={label} variant={variant} />;
 }

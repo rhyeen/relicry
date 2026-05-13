@@ -41,6 +41,16 @@ export async function getEvents(): Promise<Event[]> {
   });
 }
 
+export async function getOngoingAndUpcomingEvents(now: Date): Promise<Event[]> {
+  return new EventDB(getFirestoreAdmin()).getBy({
+    where: [
+      { field: 'running.to', op: '>=', value: now },
+    ],
+    sortBy: { field: 'running.to', direction: 'asc' },
+    limit: 100,
+  });
+}
+
 export async function invalidateEventNow(id: string): Promise<void> {
   updateTag(eventTags.data(getEventTagId(id)));
 }

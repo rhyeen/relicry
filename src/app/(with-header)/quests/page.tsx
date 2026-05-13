@@ -26,8 +26,7 @@ export default async function QuestsPage() {
         </DSSection.Heading>
         <DSSection.Text>
           <DSText.Body size="lg" tone="muted">
-            Browse revealed quests, see their level and season, and jump into the encounters that
-            move each event story forward.
+            See what quests are in store for different local events and the exciting rewards you can earn by completing them.
           </DSText.Body>
         </DSSection.Text>
         <DSSection.Actions>

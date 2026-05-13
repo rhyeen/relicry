@@ -37,6 +37,76 @@
   gap: clamp(2rem, 5vw, 4rem);
 }
 
+.back {
+  position: absolute;
+  z-index: 2;
+  top: -3.75rem;
+  left: 0;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(242, 189, 97, 0.42);
+  border-radius: 999px;
+  background: rgba(13, 17, 23, 0.68);
+  color: #f8d996;
+  outline: 0;
+  text-decoration: none;
+  text-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.72);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  border-color: rgba(255, 211, 135, 0.72);
+  background-color: rgba(132, 88, 48, 0.58);
+  box-shadow: 0 0.65rem 1.3rem rgba(0, 0, 0, 0.2);
+  color: #ffe3a8;
+  transform: translateY(-0.0625rem);
+}
+
+.back:focus-visible {
+  outline: 2px solid rgba(242, 189, 97, 0.52);
+  outline-offset: 2px;
+}
+
+.backIcon {
+  display: block;
+}
+
+.backTooltip {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(100% + 0.55rem);
+  max-width: min(16rem, calc(100vw - 6rem));
+  padding: 0.26rem 0.5rem;
+  border: 0.5px solid rgba(244, 237, 222, 0.22);
+  border-radius: 0.25rem;
+  background: rgba(8, 8, 7, 0.9);
+  color: var(--parchment-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: none;
+  transform: translate(-0.25rem, -50%);
+  transition: opacity 140ms ease, transform 140ms ease;
+  white-space: nowrap;
+}
+
+.back:hover .backTooltip,
+.back:focus-visible .backTooltip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
 .hero {
   position: relative;
   display: flex;
@@ -149,6 +219,14 @@
   }
 }
 
+@media (min-width: 76rem) {
+  .back {
+    top: 0;
+    right: calc(100% + 0.75rem);
+    left: auto;
+  }
+}
+
 @media (max-width: 700px) {
   .hero {
     padding-right: 1rem;
@@ -165,5 +243,23 @@
 
   .scrollCue {
     bottom: -20px;
+  }
+
+  .backTooltip {
+    top: calc(100% + 0.45rem);
+    left: 50%;
+    transform: translate(-50%, -0.25rem);
+  }
+
+  .back:hover .backTooltip,
+  .back:focus-visible .backTooltip {
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back,
+  .backTooltip {
+    transition: none;
   }
 }
