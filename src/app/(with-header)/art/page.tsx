@@ -4,12 +4,13 @@ import { LOCAL_CACHE_TAG } from '@/lib/local';
 import ArtPreviewItem from '@/components/ArtPreviewItem';
 import { ArtDB } from '@/server/db/art.db';
 import { cacheLife, cacheTag } from 'next/cache';
-import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
+import AdminPageAction from '@/components/client/AdminPageAction';
+import { AdminRole } from '@/entities/AdminRole';
 
 async function getArts(): Promise<Art[]> {
   'use cache';
@@ -47,9 +48,7 @@ export default async function ArtPage() {
             world behind each adventure.
           </DSText.Body>
         </DSSection.Text>
-        <DSSection.Actions>
-          <DSButton href="/art/new" label="New Art" variant="primary" />
-        </DSSection.Actions>
+        <AdminPageAction href="/art/new" label="New Art" requiredRole={AdminRole.SuperAdmin} />
       </DSSection.Card>
 
       <Suspense fallback={<ArtLoading />}>
@@ -80,7 +79,7 @@ async function ArtPageData() {
   }
 
   return (
-    <DSSection.Grid columns={4}>
+    <DSSection.Grid columns={3}>
       {arts.map((art) => (
         <ArtPreviewItem
           key={art.id}

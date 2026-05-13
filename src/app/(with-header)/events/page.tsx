@@ -2,6 +2,8 @@ import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
+import AdminPageAction from '@/components/client/AdminPageAction';
+import { AdminRole } from '@/entities/AdminRole';
 import { Event } from '@/entities/Event';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
@@ -28,9 +30,7 @@ export default async function EventsPage() {
             rewards available at each gathering.
           </DSText.Body>
         </DSSection.Text>
-        <DSSection.Actions>
-          <DSButton href="/events/new" label="New Event" variant="primary" />
-        </DSSection.Actions>
+        <AdminPageAction href="/events/new" label="New Event" requiredRole={AdminRole.EventAdmin} />
       </DSSection.Card>
 
       <Suspense fallback={<EventsLoading />}>

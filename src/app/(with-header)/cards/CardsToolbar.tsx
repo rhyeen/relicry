@@ -5,12 +5,6 @@ import DSField from '@/components/ds/DSField';
 import DSSection from '@/components/ds/DSSection';
 import DSSelect from '@/components/ds/DSSelect';
 import { CardListAspectFilter, CardListTypeFilter } from '@/lib/cardsList';
-import {
-  buildDownloadUnpublishedRedirectHref,
-  DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY,
-  isLocalHostname,
-} from '@/lib/unpublishedDownload';
-import { useSyncExternalStore } from 'react';
 
 type Props = Readonly<{
   query: string;
@@ -39,17 +33,6 @@ export default function CardsToolbar({
   onClear,
   disabled,
 }: Props) {
-  const isLocal = useSyncExternalStore(
-    () => () => undefined,
-    () => isLocalHostname(window.location.hostname),
-    () => false,
-  );
-
-  const handleDownloadUnpublished = () => {
-    window.localStorage.removeItem(DOWNLOAD_UNPUBLISHED_HISTORY_STORAGE_KEY);
-    window.location.assign(buildDownloadUnpublishedRedirectHref());
-  };
-
   return (
     <DSSection.Card background="dark" padding="normal">
       <DSSection.Grid columns={4}>
@@ -75,12 +58,6 @@ export default function CardsToolbar({
           disabled={disabled}
         />
         <DSSection.Actions>
-          {isLocal && (
-            <DSButton
-              onClick={handleDownloadUnpublished}
-              label="Download Unpublished"
-            />
-          )}
           <DSButton onClick={onApply} label="Apply" disabled={disabled} />
           <DSButton onClick={onClear} label="Clear" disabled={disabled} />
         </DSSection.Actions>

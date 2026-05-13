@@ -34,6 +34,7 @@ export async function buildCardPreviewItems(cards: VersionedCard[]): Promise<Car
 
 export function buildCardPreviewItem(card: VersionedCard, art: Art | null): CardPreviewListItem {
   const drawLimit = card.type === 'deck' ? (card as VersionedDeckCard).drawLimit : undefined;
+  const scrapCost = card.type === 'deck' ? (card as VersionedDeckCard).scrapCost : undefined;
   const aspect = card.type === 'gambit'
     ? undefined
     : (card as VersionedDeckCard | VersionedFocusCard).aspect;
@@ -48,6 +49,7 @@ export function buildCardPreviewItem(card: VersionedCard, art: Art | null): Card
       type: card.type,
       drawLimit,
       aspect,
+      scrapCost,
     },
     href: `/${getCardDocId(card.id, card.version)}`,
     previewImage: getCardPreviewImage(art),

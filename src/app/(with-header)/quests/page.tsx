@@ -2,6 +2,8 @@ import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
+import AdminPageAction from '@/components/client/AdminPageAction';
+import { AdminRole } from '@/entities/AdminRole';
 import { VersionedQuest } from '@/entities/Quest';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
@@ -28,9 +30,7 @@ export default async function QuestsPage() {
             move each event story forward.
           </DSText.Body>
         </DSSection.Text>
-        <DSSection.Actions>
-          <DSButton href="/q/new" label="New Quest" variant="primary" />
-        </DSSection.Actions>
+        <AdminPageAction href="/q/new" label="New Quest" requiredRole={AdminRole.SuperAdmin} />
       </DSSection.Card>
 
       <Suspense fallback={<QuestsLoading />}>

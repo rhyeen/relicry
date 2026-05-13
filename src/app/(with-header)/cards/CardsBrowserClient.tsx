@@ -167,7 +167,7 @@ export default function CardsBrowserClient({
               Page {page} of {response.totalPages}
             </DSText.Caption>
           </DSSection.Text>
-          <DSSection.Grid columns={4}>
+          <DSSection.Grid columns={3}>
             {response.items.map((item) => (
               <CardPreviewItem key={`${item.card.id}_v${item.card.version}`} item={item} />
             ))}

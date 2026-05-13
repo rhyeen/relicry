@@ -1,6 +1,5 @@
 import { CardListAspectFilter, CardListTypeFilter, DEFAULT_CARDS_FILTERS } from '@/lib/cardsList';
 import { LOCAL_CACHE_TAG } from '@/lib/local';
-import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
@@ -10,6 +9,7 @@ import CardsBrowserClient from './CardsBrowserClient';
 import { getCardsPreviewPage } from '@/server/cardsPreview';
 import { cacheLife, cacheTag } from 'next/cache';
 import { connection } from 'next/server';
+import CardsPageActions from './CardsPageActions';
 
 async function getInitialCardsPage() {
   'use cache';
@@ -42,11 +42,8 @@ export default async function CardsPage() {
             card to see its full art, rules, and story details.
           </DSText.Body>
         </DSSection.Text>
-        <DSSection.Actions>
-          <DSButton href="/cards/new" label="New Card" variant="primary" />
-        </DSSection.Actions>
+        <CardsPageActions />
       </DSSection.Card>
-
       <Suspense fallback={<CardsLoading />}>
         <CardsPageData />
       </Suspense>
