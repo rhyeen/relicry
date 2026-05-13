@@ -1,12 +1,11 @@
 import DSButton from '@/components/ds/DSButton';
+import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { VersionedQuest } from '@/entities/Quest';
-import Link from 'next/link';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getQuests } from '@/server/cache/quest.cache';
-import styles from './page.module.css';
 
 export function generateMetadata() {
   return {
@@ -17,15 +16,35 @@ export function generateMetadata() {
 
 export default async function QuestsPage() {
   return (
-    <DSSection>
-      <div className={styles.pageHeader}>
-        <DSText.Heading as="h1">Quests</DSText.Heading>
-        <DSButton href="/q/new" label="New Quest" />
-      </div>
-      <Suspense fallback={<div>Loading quests...</div>}>
+    <DSPage>
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Adventures</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Quests</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Browse revealed quests, see their level and season, and jump into the encounters that
+            move each event story forward.
+          </DSText.Body>
+        </DSSection.Text>
+        <DSSection.Actions>
+          <DSButton href="/q/new" label="New Quest" variant="primary" />
+        </DSSection.Actions>
+      </DSSection.Card>
+
+      <Suspense fallback={<QuestsLoading />}>
         <QuestsPageData />
       </Suspense>
-    </DSSection>
+    </DSPage>
+  );
+}
+
+function QuestsLoading() {
+  return (
+    <DSSection.Card>
+      <DSText.Body tone="muted">Loading quests...</DSText.Body>
+    </DSSection.Card>
   );
 }
 
@@ -37,18 +56,18 @@ async function QuestsPageData() {
 
   if (visibleQuests.length === 0) {
     return (
-      <div className={styles.emptyState}>
+      <DSSection.Card>
         <DSText.Body tone="muted">No revealed quests are available yet.</DSText.Body>
-      </div>
+      </DSSection.Card>
     );
   }
 
   return (
-    <div className={styles.list}>
+    <DSSection>
       {visibleQuests.map((quest) => (
         <QuestListItem key={`${quest.id}-${quest.season}`} quest={quest} />
       ))}
-    </div>
+    </DSSection>
   );
 }
 
@@ -56,22 +75,20 @@ function QuestListItem({ quest }: { quest: VersionedQuest }) {
   const href = `/${quest.id}/${quest.season}`;
 
   return (
-    <article className={styles.card}>
-      <div className={styles.cardHeader}>
+    <DSSection.Card>
+      <DSSection.Heading>
         <DSText.Heading as="h2" size="xl">
-          <Link href={href} className={styles.questLink}>
-            {quest.faction}
-          </Link>
+          {quest.faction}
         </DSText.Heading>
         <DSText.Caption>
-          Level {quest.level} • Season {quest.season} • Revealed {formatQuestDate(quest.revealed.at)}
+          Level {quest.level}, Season {quest.season}, Revealed {formatQuestDate(quest.revealed.at)}
         </DSText.Caption>
-      </div>
-      <div className={styles.cardActions}>
+      </DSSection.Heading>
+      <DSSection.Actions>
         <DSButton href={href} label="View Quest" />
         <DSButton href={`${href}/edit`} label="Edit Quest" />
-      </div>
-    </article>
+      </DSSection.Actions>
+    </DSSection.Card>
   );
 }
 

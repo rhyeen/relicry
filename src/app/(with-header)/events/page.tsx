@@ -1,12 +1,11 @@
 import DSButton from '@/components/ds/DSButton';
+import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { Event } from '@/entities/Event';
-import Link from 'next/link';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getEvents } from '@/server/cache/event.cache';
-import styles from './page.module.css';
 
 export function generateMetadata() {
   return {
@@ -17,15 +16,35 @@ export function generateMetadata() {
 
 export default async function EventsPage() {
   return (
-    <DSSection>
-      <div className={styles.pageHeader}>
-        <DSText.Heading as="h1">Events</DSText.Heading>
-        <DSButton href="/events/new" label="New Event" />
-      </div>
-      <Suspense fallback={<div>Loading events...</div>}>
+    <DSPage>
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Gatherings</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Events</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Find upcoming Relicry events, join a local adventure, and keep track of the quests and
+            rewards available at each gathering.
+          </DSText.Body>
+        </DSSection.Text>
+        <DSSection.Actions>
+          <DSButton href="/events/new" label="New Event" variant="primary" />
+        </DSSection.Actions>
+      </DSSection.Card>
+
+      <Suspense fallback={<EventsLoading />}>
         <EventsPageData />
       </Suspense>
-    </DSSection>
+    </DSPage>
+  );
+}
+
+function EventsLoading() {
+  return (
+    <DSSection.Card>
+      <DSText.Body tone="muted">Loading events...</DSText.Body>
+    </DSSection.Card>
   );
 }
 
@@ -37,40 +56,40 @@ async function EventsPageData() {
 
   if (visibleEvents.length === 0) {
     return (
-      <div className={styles.emptyState}>
+      <DSSection.Card>
         <DSText.Body tone="muted">No upcoming events are scheduled yet.</DSText.Body>
-      </div>
+      </DSSection.Card>
     );
   }
 
   return (
-    <div className={styles.list}>
+    <DSSection>
       {visibleEvents.map((event) => (
         <EventListItem key={event.id} event={event} />
       ))}
-    </div>
+    </DSSection>
   );
 }
 
 function EventListItem({ event }: { event: Event }) {
   return (
-    <article className={styles.card}>
-      <div className={styles.cardHeader}>
+    <DSSection.Card>
+      <DSSection.Heading>
         <DSText.Heading as="h2" size="xl">
-          <Link href={`/${event.id}`} className={styles.eventLink}>
-            {event.title}
-          </Link>
+          {event.title}
         </DSText.Heading>
         <DSText.Caption>
           {formatEventDate(event.running.from)} to {formatEventDate(event.running.to)}
         </DSText.Caption>
-      </div>
-      <DSText.Body tone="muted">{event.description}</DSText.Body>
-      <div className={styles.cardActions}>
+      </DSSection.Heading>
+      <DSSection.Text>
+        <DSText.Body tone="muted">{event.description}</DSText.Body>
+      </DSSection.Text>
+      <DSSection.Actions>
         <DSButton href={`/${event.id}`} label="View Event" />
         <DSButton href={`/${event.id}/edit`} label="Edit Event" />
-      </div>
-    </article>
+      </DSSection.Actions>
+    </DSSection.Card>
   );
 }
 

@@ -1,6 +1,6 @@
 import { Button } from '@base-ui/react';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import styles from "./DSButton.module.css";
 
 type ButtonIcon = 'checked' | ReactNode;
@@ -14,6 +14,8 @@ type DSButtonRootProps = Readonly<{
   disabled?: boolean;
   loading?: boolean;
   href?: string;
+  rel?: AnchorHTMLAttributes<HTMLAnchorElement>['rel'];
+  target?: AnchorHTMLAttributes<HTMLAnchorElement>['target'];
   type?: 'button' | 'submit' | 'reset';
   variant?: 'primary' | 'secondary' | 'ghost' | 'success';
   size?: 'md' | 'lg';
@@ -25,6 +27,8 @@ function DSButtonRoot({
   icon,
   label,
   onClick,
+  rel,
+  target,
   dialogTrigger,
   disabled,
   loading,
@@ -57,6 +61,8 @@ function DSButtonRoot({
           href={href}
           data-loading={loading ? 'true' : undefined}
           onClick={onClick}
+          rel={rel}
+          target={target}
         >
           {content}
         </Link>
@@ -70,7 +76,9 @@ function DSButtonRoot({
         data-disabled=""
         data-loading={loading ? 'true' : undefined}
         onClick={(event) => event.preventDefault()}
+        rel={rel}
         tabIndex={-1}
+        target={target}
       >
         {content}
       </a>

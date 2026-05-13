@@ -6,8 +6,14 @@
   max-width: 16rem;
 }
 
+.widthFull {
+  max-width: none;
+  --ds-field-max-width: none;
+}
+
 .buttonGroup {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
