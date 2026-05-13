@@ -6,10 +6,12 @@ import { useState } from 'react';
 import DSButton from '@/components/ds/DSButton';
 import DSDialog from '@/components/ds/DSDialog';
 import DSSpinner from '@/components/ds/DSSpinner';
-import { SignOutIcon, UserIcon } from '@/components/ds/DSNavIcons';
+import { AdminIcon, LocalIcon, SignOutIcon, UserIcon } from '@/components/ds/DSNavIcons';
+import { AdminRole, hasRole } from '@/entities/AdminRole';
 import { buildUniversalScanQrImageSrc } from '@/lib/scanQr';
 import { useUser } from '@/lib/client/useUser';
 import { signOutUser } from '@/lib/client/signInClient';
+import useIsEmulated from '@/lib/client/useIsEmulated';
 import styles from './ProfileMenu.module.css';
 
 type ProfileMenuProps = Readonly<{
@@ -20,9 +22,12 @@ type ProfileMenuProps = Readonly<{
 export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps) {
   const router = useRouter();
   const { user, ready } = useUser();
+  const isEmulated = useIsEmulated();
   const [open, setOpen] = useState(false);
   const label = displayName ? `${displayName} profile menu` : 'Profile menu';
   const initials = getInitials(displayName);
+  const canUseAdminControls = ready && hasRole(user?.adminRoles, AdminRole.SuperAdmin);
+  const canUseLocalControls = isEmulated === true;
 
   const handleSignOut = async () => {
     try {
@@ -55,6 +60,7 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
             {initials}
           </span>
         )}
+        <span className={styles.tooltip}>Profile</span>
       </button>
 
       <DSDialog
@@ -94,6 +100,22 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
                 onClick={() => setOpen(false)}
                 variant="primary"
               />
+              {canUseAdminControls && (
+                <DSButton
+                  href="/admin"
+                  icon={<AdminIcon />}
+                  label="Admin controls"
+                  onClick={() => setOpen(false)}
+                />
+              )}
+              {canUseLocalControls && (
+                <DSButton
+                  href="/local"
+                  icon={<LocalIcon />}
+                  label="Local controls"
+                  onClick={() => setOpen(false)}
+                />
+              )}
               <DSButton
                 icon={<SignOutIcon />}
                 label="Sign out"

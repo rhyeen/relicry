@@ -68,6 +68,29 @@ export function ArtIcon(props: IconProps) {
   );
 }
 
+export function AdminIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M12 3.8 18.8 7v5.1c0 4.1-2.7 6.7-6.8 8.1-4.1-1.4-6.8-4-6.8-8.1V7L12 3.8Z" />
+      <path d="M9.3 12.2 11.1 14l3.6-4" />
+    </IconRoot>
+  );
+}
+
+export function LocalIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M5.2 6.2h13.6v8.7H5.2V6.2Z" />
+      <path d="M8.4 18h7.2" />
+      <path d="M12 14.9V18" />
+      <path d="m8.2 10.6 1.7-1.7" />
+      <path d="m8.2 10.6 1.7 1.7" />
+      <path d="m15.8 10.6-1.7-1.7" />
+      <path d="m15.8 10.6-1.7 1.7" />
+    </IconRoot>
+  );
+}
+
 export function UserIcon(props: IconProps) {
   return (
     <IconRoot {...props}>

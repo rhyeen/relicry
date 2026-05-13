@@ -9,7 +9,6 @@ import CardsBrowserClient from './CardsBrowserClient';
 import { getCardsPreviewPage } from '@/server/cardsPreview';
 import { cacheLife, cacheTag } from 'next/cache';
 import { connection } from 'next/server';
-import CardsPageActions from './CardsPageActions';
 
 async function getInitialCardsPage() {
   'use cache';
@@ -31,19 +30,6 @@ export function generateMetadata() {
 export default async function CardsPage() {
   return (
     <DSPage>
-      <DSSection.Card background="darkBrown" padding="thick">
-        <DSSection.Heading>
-          <DSText.Eyebrow>Collection archive</DSText.Eyebrow>
-          <DSText.Heading as="h1" size="2xl">Cards</DSText.Heading>
-        </DSSection.Heading>
-        <DSSection.Text>
-          <DSText.Body size="lg" tone="muted">
-            Browse the public Relicry card archive, filter by card role or aspect, and open a
-            card to see its full art, rules, and story details.
-          </DSText.Body>
-        </DSSection.Text>
-        <CardsPageActions />
-      </DSSection.Card>
       <Suspense fallback={<CardsLoading />}>
         <CardsPageData />
       </Suspense>

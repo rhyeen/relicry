@@ -1,7 +1,6 @@
 "use client";
 
 import DSButton from "@/components/ds/DSButton";
-import DSSection from "@/components/ds/DSSection";
 import { AdminRole, hasRole } from "@/entities/AdminRole";
 import { useUser } from "@/lib/client/useUser";
 
@@ -18,9 +17,5 @@ export default function AdminPageAction({ href, label, requiredRole }: AdminPage
     return null;
   }
 
-  return (
-    <DSSection.Actions>
-      <DSButton href={href} label={label} variant="primary" />
-    </DSSection.Actions>
-  );
+  return <DSButton href={href} label={label} variant="primary" />;
 }

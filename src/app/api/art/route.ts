@@ -6,10 +6,10 @@ import { handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
 function parseSearchParams(searchParams: URLSearchParams) {
   return parseArtFilters({
     query: searchParams.get('query') ?? undefined,
+    artistId: searchParams.get('artistId') ?? undefined,
     type: searchParams.get('type') ?? undefined,
     generation: searchParams.get('generation') ?? undefined,
-    cursor: searchParams.get('cursor') ?? undefined,
-    history: searchParams.get('history') ?? undefined,
+    page: searchParams.get('page') ?? undefined,
   });
 }
 

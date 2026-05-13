@@ -144,12 +144,31 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Build out home page and /begin page
 - [x] Build out /join page which prompts you to login *before* picking up your deck.
 - [x] SAMPLE does not appear on focus or gambit cards.
-- [ ] Update the other pages to have the latest styling: /cards, /events, /e, /r, /ur, etc.
-    * /feedback done
+- [ ] Update the other pages to have the latest styling:
+    * /events
+    * /e
+    * /r
+    * /q
+    * /quests
+    * /ur
+    * /u
+    * /sc
+    * /teq
+    * /t
+    * /rules
+    * /pvp & make /pvp/rules
+    * /playercards
+    * /pi
+    * /map
+    * /hrd
+    * /dk
+    * /collection
+    * /lore
 - [ ] Update he /c page to have the smarts for explaining the cards when parts of the card are clicked on.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
 - [ ] Get Apex design in place
+- [ ] Herald page with quest rewards and promoted items
 - [ ] Make banner for `/join` page to tell people how to begin
 - [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->

@@ -3,9 +3,9 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CardPreviewItem from '@/components/CardPreviewItem';
-import DSButton from '@/components/ds/DSButton';
 import DSText from '@/components/ds/DSText';
 import DSLoadingOverlay from '@/components/ds/DSLoadingOverlay';
+import DSPagination from '@/components/ds/DSPagination';
 import DSSection from '@/components/ds/DSSection';
 import {
   areCardsFiltersEqual,
@@ -18,6 +18,8 @@ import {
 } from '@/lib/cardsList';
 import { CardsPreviewResponse } from '@/lib/cardsApi';
 import CardsToolbar from './CardsToolbar';
+import CardsPageActions from './CardsPageActions';
+import styles from './CardsBrowserClient.module.css';
 
 type Props = Readonly<{
   initialFilters: CardListFilters;
@@ -133,25 +135,40 @@ export default function CardsBrowserClient({
   };
 
   return (
-    <DSSection>
+    <DSSection className={styles.browser}>
       <Suspense fallback={null}>
         <CardsSearchParamsSync onFiltersChange={handleLocationFilters} />
       </Suspense>
       <DSLoadingOverlay loading={loading} error={error} dismissError={setError} />
 
-      <CardsToolbar
-        query={draftQuery}
-        type={draftType}
-        aspect={draftAspect}
-        typeOptions={typeOptions}
-        aspectOptions={aspectOptions}
-        onQueryChange={setDraftQuery}
-        onTypeChange={setDraftType}
-        onAspectChange={setDraftAspect}
-        onApply={applyFilters}
-        onClear={clearFilters}
-        disabled={loading}
-      />
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Search the Collection</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Cards</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Browse the public Relicry card archive, filter by card role or aspect, and open a
+            card to see its full art, rules, and story details.
+          </DSText.Body>
+        </DSSection.Text>
+        <DSSection.Actions>
+          <CardsToolbar
+            query={draftQuery}
+            type={draftType}
+            aspect={draftAspect}
+            typeOptions={typeOptions}
+            aspectOptions={aspectOptions}
+            onQueryChange={setDraftQuery}
+            onTypeChange={setDraftType}
+            onAspectChange={setDraftAspect}
+            onApply={applyFilters}
+            onClear={clearFilters}
+            disabled={loading}
+          />
+          <CardsPageActions />
+        </DSSection.Actions>
+      </DSSection.Card>
 
       {response.totalCards === 0 ? (
         <DSSection.Card>
@@ -159,31 +176,25 @@ export default function CardsBrowserClient({
         </DSSection.Card>
       ) : (
         <>
-          <DSSection.Text>
-            <DSText.Caption>
-              Showing {response.items.length} of {response.totalCards} featured cards
-            </DSText.Caption>
-            <DSText.Caption>
-              Page {page} of {response.totalPages}
-            </DSText.Caption>
-          </DSSection.Text>
           <DSSection.Grid columns={3}>
             {response.items.map((item) => (
               <CardPreviewItem key={`${item.card.id}_v${item.card.version}`} item={item} />
             ))}
           </DSSection.Grid>
-          <DSSection.Actions>
-            <DSButton
-              onClick={() => updateUrl(previousFilters)}
-              label="Previous"
-              disabled={page <= 1 || loading}
+          <DSPagination>
+            <DSPagination.Totals
+              shown={response.items.length}
+              total={response.totalCards}
+              label="featured cards"
             />
-            <DSButton
-              onClick={() => updateUrl(nextFilters)}
-              label="Next"
-              disabled={!response.nextCursor || loading}
+            <DSPagination.PageIndex page={page} totalPages={response.totalPages} />
+            <DSPagination.Actions
+              onPrevious={() => updateUrl(previousFilters)}
+              onNext={() => updateUrl(nextFilters)}
+              previousDisabled={page <= 1 || loading}
+              nextDisabled={!response.nextCursor || loading}
             />
-          </DSSection.Actions>
+          </DSPagination>
         </>
       )}
     </DSSection>

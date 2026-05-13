@@ -14,7 +14,7 @@ export default function Header() {
       </Suspense>
       <header className={styles.header}>
         <div className={styles.logoContainer}>
-          <Link href="/" className={styles.logo} aria-label="Relicry home">
+          <Link href="/" className={styles.logo} aria-label="Home Page">
             <Image
               className={styles.logoMark}
               src="/assets/brand/relicry-icon-square.1.png"
@@ -23,6 +23,7 @@ export default function Header() {
               height={148}
               priority
             />
+            <span className={styles.tooltip}>Home Page</span>
           </Link>
           <Suspense fallback={null}>
             <HeaderNavigation />

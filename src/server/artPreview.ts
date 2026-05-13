@@ -22,7 +22,6 @@ export async function getArtPreviewPage(filters: ArtListFilters): Promise<ArtPre
     totalPages: result.totalPages,
     totalArts: result.totalArts,
     pageSize: ART_PAGE_SIZE,
-    nextCursor: result.nextCursor,
   };
 }
 

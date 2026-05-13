@@ -30,7 +30,9 @@ export default async function EventsPage() {
             rewards available at each gathering.
           </DSText.Body>
         </DSSection.Text>
-        <AdminPageAction href="/events/new" label="New Event" requiredRole={AdminRole.EventAdmin} />
+        <DSSection.Actions>
+          <AdminPageAction href="/events/new" label="New Event" requiredRole={AdminRole.EventAdmin} />
+        </DSSection.Actions>
       </DSSection.Card>
 
       <Suspense fallback={<EventsLoading />}>

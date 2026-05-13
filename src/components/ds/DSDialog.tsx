@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog } from '@base-ui/react';
 import type { ComponentProps, ReactNode } from 'react';
 import styles from "./DSDialog.module.css";

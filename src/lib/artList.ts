@@ -1,27 +1,26 @@
 import type { Art } from '@/entities/Art';
-import { decodeCardsHistoryEntry, encodeCardsHistoryEntry } from '@/lib/cardQueryFields';
 import { normalizeSearchQuery } from '@/lib/searchQueryFields';
 import type { ReadonlyURLSearchParams } from 'next/navigation';
 
-export const ART_PAGE_SIZE = 24;
+export const ART_PAGE_SIZE = 22;
 
 export type ArtListTypeFilter = 'all' | Art['type'];
 export type ArtListGenerationFilter = 'all' | 'ai' | 'original';
 
 export type ArtListFilters = {
   query: string;
+  artistId: string;
   type: ArtListTypeFilter;
   generation: ArtListGenerationFilter;
-  cursor: string | null;
-  history: (string | null)[];
+  page: number;
 };
 
 export const DEFAULT_ART_FILTERS: ArtListFilters = {
   query: '',
+  artistId: '',
   type: 'all',
   generation: 'all',
-  cursor: null,
-  history: [],
+  page: 1,
 };
 
 export function parseArtFilters(
@@ -29,10 +28,10 @@ export function parseArtFilters(
 ): ArtListFilters {
   return {
     query: readSearchParam(searchParams, 'query')?.trim() ?? '',
+    artistId: normalizeArtistIdFilter(readSearchParam(searchParams, 'artistId')),
     type: parseTypeFilter(readSearchParam(searchParams, 'type')),
     generation: parseGenerationFilter(readSearchParam(searchParams, 'generation')),
-    cursor: readSearchParam(searchParams, 'cursor')?.trim() || null,
-    history: parseHistory(readSearchParam(searchParams, 'history')),
+    page: parsePage(readSearchParam(searchParams, 'page')),
   };
 }
 
@@ -42,17 +41,17 @@ export function buildArtQueryString(filters: Partial<ArtListFilters>): string {
   if (filters.query?.trim()) {
     params.set('query', filters.query.trim());
   }
+  if (filters.artistId?.trim()) {
+    params.set('artistId', normalizeArtistIdFilter(filters.artistId));
+  }
   if (filters.type && filters.type !== 'all') {
     params.set('type', filters.type);
   }
   if (filters.generation && filters.generation !== 'all') {
     params.set('generation', filters.generation);
   }
-  if (filters.cursor) {
-    params.set('cursor', filters.cursor);
-  }
-  if (filters.history && filters.history.length > 0) {
-    params.set('history', filters.history.map(encodeCardsHistoryEntry).join(','));
+  if (filters.page && filters.page > 1) {
+    params.set('page', String(filters.page));
   }
 
   const serialized = params.toString();
@@ -61,15 +60,21 @@ export function buildArtQueryString(filters: Partial<ArtListFilters>): string {
 
 export function areArtFiltersEqual(left: ArtListFilters, right: ArtListFilters): boolean {
   return left.query === right.query
+    && left.artistId === right.artistId
     && left.type === right.type
     && left.generation === right.generation
-    && left.cursor === right.cursor
-    && left.history.length === right.history.length
-    && left.history.every((value, index) => value === right.history[index]);
+    && left.page === right.page;
 }
 
 export function getArtPageNumber(filters: ArtListFilters): number {
-  return filters.history.length + 1;
+  return filters.page;
+}
+
+export function hasActiveArtFilters(filters: ArtListFilters): boolean {
+  return !!filters.query.trim()
+    || !!filters.artistId.trim()
+    || filters.type !== 'all'
+    || filters.generation !== 'all';
 }
 
 export function parseArtSearchQuery(query: string): {
@@ -142,14 +147,24 @@ function parseGenerationFilter(value: string | undefined): ArtListGenerationFilt
   return 'all';
 }
 
-function parseHistory(value: string | undefined): (string | null)[] {
-  if (!value) {
-    return [];
+function normalizeArtistIdFilter(value: string | undefined): string {
+  const trimmed = value?.trim().toLowerCase() ?? '';
+  if (!trimmed) {
+    return '';
   }
+  if (trimmed.startsWith('ast/')) {
+    return trimmed;
+  }
+  if (trimmed.length === 10 && !/\s|\//.test(trimmed)) {
+    return `ast/${trimmed}`;
+  }
+  return trimmed;
+}
 
-  return value
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter(Boolean)
-    .map(decodeCardsHistoryEntry);
+function parsePage(value: string | undefined): number {
+  const page = Number(value);
+  if (!Number.isInteger(page) || page < 1) {
+    return 1;
+  }
+  return page;
 }
