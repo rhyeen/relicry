@@ -2,7 +2,6 @@
 
 import { AdminRole, hasRole } from "@/entities/AdminRole";
 import DSButton from "@/components/ds/DSButton";
-import DSSection from "@/components/ds/DSSection";
 import { useUser } from "@/lib/client/useUser";
 import {
   buildDownloadUnpublishedRedirectHref,
@@ -31,7 +30,7 @@ export default function CardsPageActions() {
   };
 
   return (
-    <DSSection.Actions>
+    <>
       {canCreateCard && (
         <DSButton href="/cards/new" label="New Card" variant="primary" />
       )}
@@ -41,6 +40,6 @@ export default function CardsPageActions() {
           label="Download Unpublished"
         />
       )}
-    </DSSection.Actions>
+    </>
   );
 }

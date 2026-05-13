@@ -1,4 +1,5 @@
-import { Select } from '@base-ui/react';
+"use client";
+
 import { useCallback, useId, useMemo, useState } from 'react';
 import styles from "./DSSelect.module.css";
 import DSField from './DSField';
@@ -43,65 +44,50 @@ function DSSelectRoot<T>({
   const selectId = id ?? fallbackId;
   const [internalValue, setInternalValue] = useState<T | null>(defaultValue ?? null);
   const selectedValue = value ?? internalValue;
-  const selectedOption = useMemo(
-    () => options.find((option) => Object.is(option.value, selectedValue)),
+  const selectedIndex = useMemo(
+    () => options.findIndex((option) => Object.is(option.value, selectedValue)),
     [options, selectedValue],
   );
-  const handleValueChange = useCallback((nextValue: T | null) => {
-    if (nextValue === null || Object.is(nextValue, selectedValue)) {
+  const selectedKey = selectedIndex >= 0 ? String(selectedIndex) : '';
+  const handleValueChange = useCallback((nextKey: string) => {
+    if (!nextKey) {
       return;
     }
 
+    const nextValue = options[Number(nextKey)]?.value;
+    if (nextValue === undefined || Object.is(nextValue, selectedValue)) {
+      return;
+    }
     if (value === undefined) {
       setInternalValue(nextValue);
     }
 
     onChange?.(nextValue);
-  }, [onChange, selectedValue, value]);
+  }, [onChange, options, selectedValue, value]);
 
   return (
     <DSField.Root invalid={!!error} name={name}>
       <DSField.Label required={required} label={label} />
-      <Select.Root
+      <select
+        aria-label={typeof label === 'string' ? label : undefined}
+        className={styles.trigger}
+        data-loading={loading ? 'true' : undefined}
+        disabled={disabled || loading}
         id={selectId}
         name={name}
+        onChange={(event) => handleValueChange(event.currentTarget.value)}
         required={required}
-        value={selectedValue}
-        onValueChange={handleValueChange}
+        value={selectedKey}
       >
-        <Select.Trigger
-          className={styles.trigger}
-          disabled={disabled || loading}
-          data-loading={loading ? 'true' : undefined}
-        >
-          <Select.Value className={styles.value} placeholder={placeholder}>
-            {selectedOption?.label ?? placeholder}
-          </Select.Value>
-          <Select.Icon className={styles.icon}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 10L12 15L17 10H7Z" fill="currentColor" />
-            </svg>
-          </Select.Icon>
-        </Select.Trigger>
-        <Select.Portal>
-          <Select.Positioner className={styles.positioner} sideOffset={8}>
-            <Select.Popup className={styles.popup}>
-              <Select.List className={styles.list}>
-                {options.map((option, index) => (
-                  <Select.Item key={index} className={styles.item} value={option.value}>
-                    <Select.ItemIndicator className={styles.itemIndicator}>
-                      <svg className={styles.itemIndicatorIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </Select.ItemIndicator>
-                    <Select.ItemText className={styles.itemText}>{option.label}</Select.ItemText>
-                  </Select.Item>
-                ))}
-              </Select.List>
-            </Select.Popup>            
-          </Select.Positioner>
-        </Select.Portal>
-      </Select.Root>
+        {placeholder ? (
+          <option value="" disabled>{placeholder}</option>
+        ) : null}
+        {options.map((option, index) => (
+          <option key={index} value={String(index)}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       <DSField.Error error={error} />
       <DSField.Description description={description} />
     </DSField.Root>

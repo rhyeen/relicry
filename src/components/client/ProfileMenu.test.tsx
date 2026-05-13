@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { AdminRole } from '@/entities/AdminRole';
 import { useUser } from '@/lib/client/useUser';
 import { signOutUser } from '@/lib/client/signInClient';
+import useIsEmulated from '@/lib/client/useIsEmulated';
 import { buildUniversalScanQrImageSrc } from '@/lib/scanQr';
 import ProfileMenu from './ProfileMenu';
 
@@ -11,6 +13,10 @@ vi.mock('@/lib/client/useUser', () => ({
 
 vi.mock('@/lib/client/signInClient', () => ({
   signOutUser: vi.fn(async () => undefined),
+}));
+
+vi.mock('@/lib/client/useIsEmulated', () => ({
+  default: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
@@ -26,8 +32,10 @@ describe('ProfileMenu', () => {
       user: {
         id: 'u/abcDef123',
         displayName: 'Player',
+        adminRoles: [],
       },
     } as ReturnType<typeof useUser>);
+    vi.mocked(useIsEmulated).mockReturnValue(false);
     vi.mocked(signOutUser).mockClear();
   });
 
@@ -40,6 +48,33 @@ describe('ProfileMenu', () => {
     expect(qr.getAttribute('src')).toBe(buildUniversalScanQrImageSrc('u/abcDef123'));
     expect(screen.getByRole('link', { name: /view profile/i }).getAttribute('href')).toBe('/profile');
     expect(screen.getByRole('button', { name: /sign out/i })).toBeDefined();
+  });
+
+  test('shows admin controls for super admins', async () => {
+    vi.mocked(useUser).mockReturnValue({
+      ready: true,
+      user: {
+        id: 'u/abcDef123',
+        displayName: 'Player',
+        adminRoles: [AdminRole.SuperAdmin],
+      },
+    } as ReturnType<typeof useUser>);
+
+    render(<ProfileMenu displayName="Player" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Player profile menu' }));
+
+    expect((await screen.findByRole('link', { name: /admin controls/i })).getAttribute('href')).toBe('/admin');
+  });
+
+  test('shows local controls when emulated', async () => {
+    vi.mocked(useIsEmulated).mockReturnValue(true);
+
+    render(<ProfileMenu displayName="Player" />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Player profile menu' }));
+
+    expect((await screen.findByRole('link', { name: /local controls/i })).getAttribute('href')).toBe('/local');
   });
 
   test('signs out from the dialog', async () => {

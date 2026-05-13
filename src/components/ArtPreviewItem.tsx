@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Art } from "@/entities/Art";
 import { ImageSize, ImageStorage } from "@/entities/Image";
 import StoredImage from "@/components/client/StoredImage";
-import styles from "./PreviewItem.module.css";
+import styles from "./ArtPreviewItem.module.css";
 
 type ArtPreviewItemProps = Readonly<{
   art: Art;
@@ -12,7 +12,7 @@ type ArtPreviewItemProps = Readonly<{
   artistName?: string | null;
 }>;
 
-function getPreviewImage(art: Art): ImageStorage | null {
+export function getArtPreviewImage(art: Art): ImageStorage | null {
   if (art.type !== "illustration") return null;
   return (
     art.image?.[ImageSize.CardPreview] ||
@@ -22,12 +22,10 @@ function getPreviewImage(art: Art): ImageStorage | null {
   );
 }
 
-export default function ArtPreviewItem({ art, href, artistName }: ArtPreviewItemProps) {
-  const previewImage = getPreviewImage(art);
+export default function ArtPreviewItem({ art, href }: ArtPreviewItemProps) {
+  const previewImage = getArtPreviewImage(art);
   const title = art.title?.trim() || "Untitled";
-  const typeLabel = labelize(art.type);
-  const artistLabel = artistName?.trim() || art.artistId || "Unassigned";
-  const detailLabel = art.aIGenerated ? "AI generated" : "Original";
+  const description = art.description?.trim() || (art.type === "writing" ? art.markdown : "");
 
   return (
     <Link href={href} className={styles.root} data-type={art.type}>
@@ -39,25 +37,18 @@ export default function ArtPreviewItem({ art, href, artistName }: ArtPreviewItem
             alt={title}
             className={styles.image}
           />
+        ) : art.type === "writing" && description ? (
+          <span className={styles.writingExcerpt}>{description}</span>
         ) : (
           <div className={styles.fallback}>
             {art.type === "writing" ? "Text" : "No art"}
           </div>
         )}
-        <span className={styles.typeBadge} aria-hidden="true">{typeLabel}</span>
-      </div>
-      <div className={styles.content}>
-        <span className={styles.detail}>{detailLabel}</span>
-        <span className={styles.title}>{title}</span>
-        {art.description ? (
-          <span className={styles.description}>{art.description}</span>
+        {art.aIGenerated ? (
+          <span className={styles.aiBadge} aria-label="AI generated">AI</span>
         ) : null}
-        <span className={styles.meta}>{artistLabel}</span>
       </div>
+      <span className={styles.title}>{title}</span>
     </Link>
   );
-}
-
-function labelize(value: string) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
 }

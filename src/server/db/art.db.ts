@@ -1,22 +1,28 @@
 import 'server-only';
 import { Art, generateArtId, getArtId } from '@/entities/Art';
 import { RootDB } from './root.db';
-import { ART_PAGE_SIZE, ArtListGenerationFilter, ArtListTypeFilter, parseArtSearchQuery } from '@/lib/artList';
+import {
+  ART_PAGE_SIZE,
+  ArtListGenerationFilter,
+  ArtListTypeFilter,
+  normalizeArtSearchText,
+  parseArtSearchQuery,
+} from '@/lib/artList';
 import { buildSearchPrefixes } from '@/lib/searchQueryFields';
 import { FieldPath, Timestamp } from 'firebase-admin/firestore';
 
 type ArtPageFilters = {
   query: string;
+  artistId: string;
   type: ArtListTypeFilter;
   generation: ArtListGenerationFilter;
-  cursor: string | null;
+  page: number;
 };
 
 type ArtPage = {
   arts: Art[];
   totalArts: number;
   totalPages: number;
-  nextCursor: string | null;
 };
 
 export class ArtDB extends RootDB<Art> {
@@ -51,7 +57,11 @@ export class ArtDB extends RootDB<Art> {
     artistNameSearchIds: string[],
   ): Promise<ArtPage> {
     const search = parseArtSearchQuery(filters.query);
-    const artistIds = [...new Set([...search.artistIds, ...artistNameSearchIds])];
+    const artistIds = [...new Set([
+      ...search.artistIds,
+      ...artistNameSearchIds,
+      ...(filters.artistId ? [filters.artistId] : []),
+    ])];
 
     if (search.idOnly || search.artIds.length > 0 || artistIds.length > 0 || search.normalizedText) {
       return this.getPreviewPageWithExpandedSearch(filters, {
@@ -63,23 +73,19 @@ export class ArtDB extends RootDB<Art> {
     const countQuery = this.applyPreviewFilters(filters);
     const pageQuery = this
       .applyPreviewSorting(this.applyPreviewFilters(filters))
-      .limit(ART_PAGE_SIZE + 1);
-    const pagedQuery = this.applyPreviewCursor(pageQuery, filters.cursor);
+      .offset(getPageOffset(filters.page))
+      .limit(ART_PAGE_SIZE);
 
     const [countSnapshot, querySnapshot] = await Promise.all([
       countQuery.count().get(),
-      pagedQuery.get(),
+      pageQuery.get(),
     ]);
-    const docs = querySnapshot.docs;
-    const hasNext = docs.length > ART_PAGE_SIZE;
-    const pageDocs = hasNext ? docs.slice(0, ART_PAGE_SIZE) : docs;
     const totalArts = Number(countSnapshot.data().count);
 
     return {
-      arts: pageDocs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as Art)),
+      arts: querySnapshot.docs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as Art)),
       totalArts,
       totalPages: Math.max(1, Math.ceil(totalArts / ART_PAGE_SIZE)),
-      nextCursor: hasNext ? this.serializeCursor(pageDocs[pageDocs.length - 1]!) : null,
     };
   }
 
@@ -92,6 +98,10 @@ export class ArtDB extends RootDB<Art> {
 
     if (filters.type !== 'all') {
       query = query.where('type', '==', filters.type);
+    }
+
+    if (filters.artistId) {
+      query = query.where('artistId', '==', filters.artistId);
     }
 
     if (filters.generation === 'ai') {
@@ -111,9 +121,7 @@ export class ArtDB extends RootDB<Art> {
     const collection = this.firestoreAdmin.collection(this.collectionName);
 
     if (!search.idOnly && search.normalizedText) {
-      queryPromises.push(
-        collection.where('queryTitlePrefixes', 'array-contains', search.normalizedText).get(),
-      );
+      queryPromises.push(collection.get());
     }
 
     for (const artIdChunk of chunkValues(search.artIds)) {
@@ -133,7 +141,6 @@ export class ArtDB extends RootDB<Art> {
         arts: [],
         totalArts: 0,
         totalPages: 1,
-        nextCursor: null,
       };
     }
 
@@ -146,22 +153,16 @@ export class ArtDB extends RootDB<Art> {
     }
 
     const matchedDocs = [...docsById.values()]
+      .filter((doc) => this.matchesExpandedSearch(doc, search))
       .filter((doc) => this.matchesPreviewFilters(doc, filters))
       .sort(compareArtDocs);
-    const startIndex = filters.cursor
-      ? matchedDocs.findIndex((doc) => this.serializeCursor(doc) === filters.cursor) + 1
-      : 0;
-    const pageStartIndex = Math.max(0, startIndex);
-    const docs = matchedDocs.slice(pageStartIndex, pageStartIndex + ART_PAGE_SIZE + 1);
-    const hasNext = docs.length > ART_PAGE_SIZE;
-    const pageDocs = hasNext ? docs.slice(0, ART_PAGE_SIZE) : docs;
+    const pageDocs = matchedDocs.slice(getPageOffset(filters.page), getPageOffset(filters.page) + ART_PAGE_SIZE);
     const totalArts = matchedDocs.length;
 
     return {
       arts: pageDocs.map((doc) => this.conformItemGet(this.conformData(doc.data()) as Art)),
       totalArts,
       totalPages: Math.max(1, Math.ceil(totalArts / ART_PAGE_SIZE)),
-      nextCursor: hasNext ? this.serializeCursor(pageDocs[pageDocs.length - 1]!) : null,
     };
   }
 
@@ -179,6 +180,10 @@ export class ArtDB extends RootDB<Art> {
       return false;
     }
 
+    if (filters.artistId && doc.get('artistId') !== filters.artistId) {
+      return false;
+    }
+
     if (filters.generation === 'ai' && doc.get('aIGenerated') !== true) {
       return false;
     }
@@ -189,44 +194,22 @@ export class ArtDB extends RootDB<Art> {
     return true;
   }
 
-  private applyPreviewCursor(
-    query: FirebaseFirestore.Query,
-    cursor: string | null,
-  ): FirebaseFirestore.Query {
-    if (!cursor) {
-      return query;
-    }
+  private matchesExpandedSearch(
+    doc: FirebaseFirestore.QueryDocumentSnapshot,
+    search: ReturnType<typeof parseArtSearchQuery>,
+  ): boolean {
+    const artId = String(doc.get('id') ?? doc.id).toLowerCase();
+    const artistId = String(doc.get('artistId') ?? '').toLowerCase();
+    const title = normalizeArtSearchText(String(doc.get('title') ?? ''));
 
-    const { createdAt, docId } = this.parseCursor(cursor);
-    return query.startAfter(Timestamp.fromDate(createdAt), docId);
+    return search.artIds.includes(artId)
+      || search.artistIds.includes(artistId)
+      || (!search.idOnly && !!search.normalizedText && title.includes(search.normalizedText));
   }
+}
 
-  private parseCursor(cursor: string): { createdAt: Date; docId: string } {
-    const [createdAtValue, ...docIdParts] = cursor.split('::');
-    const docId = docIdParts.join('::').trim();
-    const createdAt = new Date(createdAtValue ?? '');
-
-    if (!docId) {
-      throw new Error(`Invalid art cursor: ${cursor}`);
-    }
-
-    if (Number.isNaN(createdAt.getTime())) {
-      throw new Error(`Invalid art cursor timestamp: ${cursor}`);
-    }
-
-    return { createdAt, docId };
-  }
-
-  private serializeCursor(doc: FirebaseFirestore.QueryDocumentSnapshot): string {
-    const createdAt = doc.get('createdAt');
-    const timestamp = createdAt instanceof Timestamp
-      ? createdAt.toDate().toISOString()
-      : createdAt instanceof Date
-        ? createdAt.toISOString()
-        : new Date(createdAt).toISOString();
-
-    return `${timestamp}::${doc.id}`;
-  }
+function getPageOffset(page: number): number {
+  return Math.max(0, page - 1) * ART_PAGE_SIZE;
 }
 
 function chunkValues<T>(values: T[], size = 30): T[][] {

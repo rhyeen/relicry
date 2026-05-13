@@ -3,13 +3,15 @@ import styles from './DSSection.module.css';
 
 function Root({
   children,
+  className,
   id,
 }: Readonly<{
   children: React.ReactNode;
+  className?: string;
   id?: string;
 }>) {
   return (
-    <section className={styles.root} id={id}>
+    <section className={[styles.root, className].filter(Boolean).join(' ')} id={id}>
       {children}
     </section>
   );

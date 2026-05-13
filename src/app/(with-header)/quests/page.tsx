@@ -30,7 +30,9 @@ export default async function QuestsPage() {
             move each event story forward.
           </DSText.Body>
         </DSSection.Text>
-        <AdminPageAction href="/q/new" label="New Quest" requiredRole={AdminRole.SuperAdmin} />
+        <DSSection.Actions>
+          <AdminPageAction href="/q/new" label="New Quest" requiredRole={AdminRole.SuperAdmin} />
+        </DSSection.Actions>
       </DSSection.Card>
 
       <Suspense fallback={<QuestsLoading />}>

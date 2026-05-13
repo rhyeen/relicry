@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo Managed Skills"
+  short_description: "Create project skills in the repo and symlink them locally."
+  default_prompt: "Use the repo-managed skills workflow for this Codex skill change."

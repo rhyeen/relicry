@@ -1,13 +1,18 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ArtPreviewItem from "@/components/ArtPreviewItem";
-import DSButton from "@/components/ds/DSButton";
+import AdminPageAction from "@/components/client/AdminPageAction";
+import StoredImage from "@/components/client/StoredImage";
 import DSLoadingOverlay from "@/components/ds/DSLoadingOverlay";
+import DSPagination from "@/components/ds/DSPagination";
 import DSSection from "@/components/ds/DSSection";
 import DSText from "@/components/ds/DSText";
-import type { ArtPreviewResponse } from "@/lib/artApi";
+import { AdminRole } from "@/entities/AdminRole";
+import { ImageSize, ImageStorage } from "@/entities/Image";
+import type { ArtPreviewListItem, ArtPreviewResponse } from "@/lib/artApi";
 import {
   areArtFiltersEqual,
   ArtListFilters,
@@ -15,9 +20,11 @@ import {
   ArtListTypeFilter,
   buildArtQueryString,
   DEFAULT_ART_FILTERS,
+  hasActiveArtFilters,
   parseArtFilters,
 } from "@/lib/artList";
 import ArtToolbar from "./ArtToolbar";
+import styles from "./ArtBrowserClient.module.css";
 
 type ArtBrowserClientProps = Readonly<{
   initialFilters: ArtListFilters;
@@ -65,6 +72,7 @@ function ArtBrowserContent({
   locationFilters: ArtListFilters;
 }>) {
   const [draftQuery, setDraftQuery] = useState(initialFilters.query);
+  const [draftArtistId, setDraftArtistId] = useState(initialFilters.artistId);
   const [draftType, setDraftType] = useState<ArtListTypeFilter>(initialFilters.type);
   const [draftGeneration, setDraftGeneration] = useState<ArtListGenerationFilter>(initialFilters.generation);
   const [activeFilters, setActiveFilters] = useState(initialFilters);
@@ -75,6 +83,7 @@ function ArtBrowserContent({
 
   useEffect(() => {
     setDraftQuery(activeFilters.query);
+    setDraftArtistId(activeFilters.artistId);
     setDraftType(activeFilters.type);
     setDraftGeneration(activeFilters.generation);
   }, [activeFilters]);
@@ -137,53 +146,87 @@ function ArtBrowserContent({
   const applyFilters = () => {
     updateUrl({
       query: draftQuery,
+      artistId: draftArtistId,
       type: draftType,
       generation: draftGeneration,
-      cursor: null,
-      history: [],
+      page: 1,
     });
   };
 
   const clearFilters = () => {
     setDraftQuery(DEFAULT_ART_FILTERS.query);
+    setDraftArtistId(DEFAULT_ART_FILTERS.artistId);
     setDraftType(DEFAULT_ART_FILTERS.type);
     setDraftGeneration(DEFAULT_ART_FILTERS.generation);
     updateUrl(DEFAULT_ART_FILTERS);
   };
 
   const page = response.page;
+  const totalPages = response.totalPages;
   const previousFilters: ArtListFilters = {
     query: activeFilters.query,
+    artistId: activeFilters.artistId,
     type: activeFilters.type,
     generation: activeFilters.generation,
-    cursor: activeFilters.history.at(-1) ?? null,
-    history: activeFilters.history.slice(0, -1),
+    page: Math.max(1, page - 1),
   };
   const nextFilters: ArtListFilters = {
     query: activeFilters.query,
+    artistId: activeFilters.artistId,
     type: activeFilters.type,
     generation: activeFilters.generation,
-    cursor: response.nextCursor,
-    history: [...activeFilters.history, activeFilters.cursor],
+    page: Math.min(totalPages, page + 1),
   };
+  const activeFilterState = hasActiveArtFilters(activeFilters);
+  const featuredItems = useMemo(() => {
+    if (activeFilterState) {
+      return [];
+    }
+
+    const pickedItems = pickFeaturedItems(response.items, page);
+    return pickedItems.length === 2 ? pickedItems : [];
+  }, [activeFilterState, page, response.items]);
+  const featuredIds = useMemo(
+    () => new Set(featuredItems.map((item) => item.art.id)),
+    [featuredItems],
+  );
+  const gridItems = featuredIds.size > 0
+    ? response.items.filter((item) => !featuredIds.has(item.art.id))
+    : response.items;
 
   return (
-    <DSSection>
+    <DSSection className={styles.gallery}>
       <DSLoadingOverlay loading={loading} error={error} dismissError={setError} />
 
-      <ArtToolbar
-        query={draftQuery}
-        type={draftType}
-        generation={draftGeneration}
-        typeOptions={typeOptions}
-        generationOptions={generationOptions}
-        onQueryChange={setDraftQuery}
-        onTypeChange={setDraftType}
-        onGenerationChange={setDraftGeneration}
-        onApply={applyFilters}
-        onClear={clearFilters}
-        disabled={loading}
-      />
+      <DSSection.Card background="darkBrown" padding="thick">
+        <DSSection.Heading>
+          <DSText.Eyebrow>Browse the Gallery</DSText.Eyebrow>
+          <DSText.Heading as="h1" size="2xl">Illustrations & Writing</DSText.Heading>
+        </DSSection.Heading>
+        <DSSection.Text>
+          <DSText.Body size="lg" tone="muted">
+            Explore Relicry art, from card illustrations to the stories that shape the world of Relicry and beyond.
+          </DSText.Body>
+        </DSSection.Text>
+        <DSSection.Actions>
+          <ArtToolbar
+            query={draftQuery}
+            artistId={draftArtistId}
+            type={draftType}
+            generation={draftGeneration}
+            typeOptions={typeOptions}
+            generationOptions={generationOptions}
+            onQueryChange={setDraftQuery}
+            onArtistIdChange={setDraftArtistId}
+            onTypeChange={setDraftType}
+            onGenerationChange={setDraftGeneration}
+            onApply={applyFilters}
+            onClear={clearFilters}
+            disabled={loading}
+          />
+          <AdminPageAction href="/art/new" label="New Art" requiredRole={AdminRole.SuperAdmin} />
+        </DSSection.Actions>
+      </DSSection.Card>
 
       {response.totalArts === 0 ? (
         <DSSection.Card>
@@ -191,38 +234,120 @@ function ArtBrowserContent({
         </DSSection.Card>
       ) : (
         <>
-          <DSSection.Text>
-            <DSText.Caption>
-              Showing {response.items.length} of {response.totalArts} art entries
-            </DSText.Caption>
-            <DSText.Caption>
-              Page {page} of {response.totalPages}
-            </DSText.Caption>
-          </DSSection.Text>
-          <DSSection.Grid columns={3}>
-            {response.items.map((item) => (
-              <ArtPreviewItem
-                key={item.art.id}
-                art={item.art}
-                href={item.href}
-                artistName={item.artistName}
-              />
-            ))}
-          </DSSection.Grid>
-          <DSSection.Actions>
-            <DSButton
-              onClick={() => updateUrl(previousFilters)}
-              label="Previous"
-              disabled={page <= 1 || loading}
+          {featuredItems.length > 0 ? (
+            <DSSection>
+              <DSSection.Heading>
+                <DSText.Eyebrow>Featured</DSText.Eyebrow>
+                <DSText.Heading as="h2" size="xl">Illustration art</DSText.Heading>
+              </DSSection.Heading>
+              <div className={styles.featuredGrid}>
+                {featuredItems.map((item) => (
+                  <FeaturedArtCard key={item.art.id} item={item} />
+                ))}
+              </div>
+            </DSSection>
+          ) : null}
+
+          <DSSection>
+            <div className={styles.sectionHeader}>
+              <DSSection.Heading>
+                <DSText.Heading as="h2" size="xl">
+                  {activeFilterState ? 'Art results' : 'See more art'}
+                </DSText.Heading>
+              </DSSection.Heading>
+              <DSText.Caption>{gridItems.length} shown in this section</DSText.Caption>
+            </div>
+            <div className={styles.galleryGrid}>
+              {gridItems.map((item) => (
+                <ArtPreviewItem
+                  key={item.art.id}
+                  art={item.art}
+                  href={item.href}
+                  artistName={item.artistName}
+                />
+              ))}
+            </div>
+          </DSSection>
+
+          <DSPagination>
+            <DSPagination.Totals
+              shown={response.items.length}
+              total={response.totalArts}
+              label="art entries"
             />
-            <DSButton
-              onClick={() => updateUrl(nextFilters)}
-              label="Next"
-              disabled={!response.nextCursor || loading}
+            <DSPagination.PageIndex page={page} totalPages={totalPages} />
+            <DSPagination.Actions
+              onPrevious={() => updateUrl(previousFilters)}
+              onNext={() => updateUrl(nextFilters)}
+              previousDisabled={page <= 1 || loading}
+              nextDisabled={page >= totalPages || loading}
             />
-          </DSSection.Actions>
+          </DSPagination>
         </>
       )}
     </DSSection>
   );
+}
+
+function FeaturedArtCard({ item }: Readonly<{ item: ArtPreviewListItem }>) {
+  const title = item.art.title?.trim() || "Untitled";
+  const artist = item.artistName?.trim() || item.art.artistId || "Unassigned";
+  const image = getFeaturedImage(item);
+
+  if (!image) {
+    return null;
+  }
+
+  return (
+    <Link href={item.href} className={styles.featuredCard}>
+      <div className={styles.featuredImageFrame}>
+        <StoredImage
+          image={image}
+          size={ImageSize.Card}
+          alt={title}
+          className={styles.featuredImage}
+          eager
+        />
+        <div className={styles.featuredContent}>
+          <span className={styles.featuredTitle}>{title}</span>
+          <span className={styles.featuredArtist}>{artist}</span>
+        </div>
+        {item.art.aIGenerated ? (
+          <span className={styles.featuredAiBadge} aria-label="AI generated">AI</span>
+        ) : null}
+      </div>
+    </Link>
+  );
+}
+
+function pickFeaturedItems(items: ArtPreviewListItem[], page: number): ArtPreviewListItem[] {
+  return items
+    .filter((item) => getFeaturedImage(item))
+    .map((item) => ({
+      item,
+      score: seededScore(`art-gallery:${page}:${item.art.id}`),
+    }))
+    .sort((left, right) => left.score - right.score)
+    .slice(0, 2)
+    .map(({ item }) => item);
+}
+
+function getFeaturedImage(item: ArtPreviewListItem): ImageStorage | null {
+  const { art } = item;
+  if (art.type !== "illustration") return null;
+  return (
+    art.image?.[ImageSize.Card] ||
+    art.image?.[ImageSize.CardPreview] ||
+    art.image?.[ImageSize.CardFull] ||
+    null
+  );
+}
+
+function seededScore(value: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
 }

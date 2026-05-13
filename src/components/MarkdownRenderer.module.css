@@ -1,5 +1,5 @@
 .article {
-  color: var(--color-gray-900);
+  color: inherit;
 }
 
 .h1,

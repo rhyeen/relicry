@@ -12,5 +12,4 @@ export type ArtPreviewResponse = {
   totalPages: number;
   totalArts: number;
   pageSize: number;
-  nextCursor: string | null;
 };

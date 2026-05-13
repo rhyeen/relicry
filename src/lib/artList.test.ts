@@ -9,23 +9,39 @@ import {
 
 describe('art list filters', () => {
   it('parses supported filters from search params', () => {
-    expect(parseArtFilters(new URLSearchParams('query=Nano&type=illustration&generation=ai'))).toEqual({
+    expect(parseArtFilters(new URLSearchParams('query=Nano&artistId=sbgv1mxyml&type=illustration&generation=ai&page=3'))).toEqual({
       query: 'Nano',
+      artistId: 'ast/sbgv1mxyml',
       type: 'illustration',
       generation: 'ai',
-      cursor: null,
-      history: [],
+      page: 3,
     });
   });
 
-  it('serializes only active filters and pagination state', () => {
+  it('defaults invalid pages to page 1', () => {
+    expect(parseArtFilters(new URLSearchParams('page=-2'))).toEqual({
+      query: '',
+      artistId: '',
+      type: 'all',
+      generation: 'all',
+      page: 1,
+    });
+  });
+
+  it('serializes only active filters and page state', () => {
     expect(buildArtQueryString({
       query: ' Nano Banana ',
+      artistId: 'ast/sbgv1mxyml',
       type: 'all',
       generation: 'original',
-      cursor: 'cursor-token',
-      history: [null, 'previous-token'],
-    })).toBe('?query=Nano+Banana&generation=original&cursor=cursor-token&history=__root__%2Cprevious-token');
+      page: 4,
+    })).toBe('?query=Nano+Banana&artistId=ast%2Fsbgv1mxyml&generation=original&page=4');
+  });
+
+  it('omits page 1 from serialized filters', () => {
+    expect(buildArtQueryString({
+      page: 1,
+    })).toBe('');
   });
 });
 

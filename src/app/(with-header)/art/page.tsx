@@ -5,11 +5,17 @@ import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
-import AdminPageAction from '@/components/client/AdminPageAction';
-import { AdminRole } from '@/entities/AdminRole';
 import ArtBrowserClient from './ArtBrowserClient';
-import { ArtListGenerationFilter, ArtListTypeFilter, DEFAULT_ART_FILTERS } from '@/lib/artList';
+import {
+  areArtFiltersEqual,
+  ArtListGenerationFilter,
+  ArtListTypeFilter,
+  DEFAULT_ART_FILTERS,
+  parseArtFilters,
+} from '@/lib/artList';
 import { getArtPreviewPage } from '@/server/artPreview';
+
+type SearchParams = Record<string, string | string[] | undefined>;
 
 async function getInitialArtPage() {
   'use cache';
@@ -28,25 +34,13 @@ export function generateMetadata() {
   };
 }
 
-export default async function ArtPage() {
+export default async function ArtPage(
+  { searchParams }: { searchParams?: Promise<SearchParams> }
+) {
   return (
     <DSPage>
-      <DSSection.Card background="darkBrown" padding="thick">
-        <DSSection.Heading>
-          <DSText.Eyebrow>Gallery</DSText.Eyebrow>
-          <DSText.Heading as="h1" size="2xl">Art</DSText.Heading>
-        </DSSection.Heading>
-        <DSSection.Text>
-          <DSText.Body size="lg" tone="muted">
-            Explore Relicry illustrations and writing, from card art to story pieces that shape the
-            world behind each adventure.
-          </DSText.Body>
-        </DSSection.Text>
-        <AdminPageAction href="/art/new" label="New Art" requiredRole={AdminRole.SuperAdmin} />
-      </DSSection.Card>
-
       <Suspense fallback={<ArtLoading />}>
-        <ArtPageData />
+        <ArtPageData searchParams={searchParams} />
       </Suspense>
     </DSPage>
   );
@@ -60,9 +54,14 @@ function ArtLoading() {
   );
 }
 
-async function ArtPageData() {
+async function ArtPageData(
+  { searchParams }: { searchParams?: Promise<SearchParams> }
+) {
   await connection();
-  const initialResponse = await getInitialArtPage();
+  const filters = parseArtFilters(await searchParams);
+  const initialResponse = areArtFiltersEqual(filters, DEFAULT_ART_FILTERS)
+    ? await getInitialArtPage()
+    : await getArtPreviewPage(filters);
 
   if (initialResponse.totalArts === 0) {
     return (
@@ -74,7 +73,7 @@ async function ArtPageData() {
 
   return (
     <ArtBrowserClient
-      initialFilters={DEFAULT_ART_FILTERS}
+      initialFilters={filters}
       initialResponse={initialResponse}
       typeOptions={ART_TYPE_OPTIONS}
       generationOptions={ART_GENERATION_OPTIONS}
