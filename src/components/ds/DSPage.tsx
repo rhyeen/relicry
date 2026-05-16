@@ -5,12 +5,14 @@ import styles from './DSPage.module.css';
 function Root({
   children,
   heroBackgroundImage,
+  removeTopPadding = false,
 }: Readonly<{
   children: React.ReactNode;
   heroBackgroundImage?: string;
+  removeTopPadding?: boolean;
 }>) {
   return (
-    <section className={styles.root}>
+    <section className={[styles.root, removeTopPadding ? styles.removeTopPadding : undefined].filter(Boolean).join(' ')}>
       {heroBackgroundImage && (
         <div className={styles.heroBackgroundBackdrop} aria-hidden="true">
           <Image

@@ -4,15 +4,16 @@ import styles from '../Card.module.css';
 import { Rarity } from '@/entities/Rarity';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
+import { getCardPartInteractionProps, type CardPartSelectionProps } from '../cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   aspect: Aspect | [Aspect, Aspect];
   rarity: Rarity;
   ctx: CardContext;
 }
 
 export default function RarityCardPart({
-  aspect, rarity, ctx
+  aspect, rarity, ctx, selectedPart, onPartSelect
 }: Props) {
   const firstAspect = aspectAsArray(aspect)[0];
 
@@ -64,7 +65,16 @@ export default function RarityCardPart({
         }}
         aria-label={`Rarity: ${rarity}`}
       >
-        <div className={styles.rarityClickable} />
+        <div
+          className={styles.rarityClickable}
+          {...getCardPartInteractionProps({
+            disabled: ctx.hideCardPartInteractions,
+            label: `Explain ${rarity} rarity`,
+            onPartSelect,
+            part: 'rarity',
+            selectedPart,
+          })}
+        />
       </div>
     </>
   );

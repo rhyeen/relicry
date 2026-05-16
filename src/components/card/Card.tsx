@@ -6,8 +6,9 @@ import { CardContext, CardSize, CardType } from '@/entities/CardContext';
 import styles from './Card.module.css';
 import FullGambitCard from './FullGambitCard';
 import FullFocusCard from './FullFocusCard';
+import type { CardPartSelectionProps } from './cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   card: VersionedCard;
   art: Art | null;
   awakenedArt: Art | null;
@@ -22,16 +23,42 @@ type Props = {
 };
 
 export default function Card({
-  card, art, artist, ctx, awakenedArt, awakenedArtist, awakened
+  card,
+  art,
+  artist,
+  ctx,
+  awakenedArt,
+  awakenedArtist,
+  awakened,
+  selectedPart,
+  onPartSelect,
 }: Props) {
   const getCard = () => {
     if (ctx.type === CardType.Preview) {
       throw new Error('Preview card view not implemented yet');
     } else if (ctx.type === CardType.Full) {
       if (card.type === 'deck') {
-        return <FullDeckCard card={card} art={art} artist={artist} ctx={ctx} />;
+        return (
+          <FullDeckCard
+            card={card}
+            art={art}
+            artist={artist}
+            ctx={ctx}
+            selectedPart={selectedPart}
+            onPartSelect={onPartSelect}
+          />
+        );
       } else if (card.type === 'gambit') {
-        return <FullGambitCard card={card} art={art} artist={artist} ctx={ctx} />;
+        return (
+          <FullGambitCard
+            card={card}
+            art={art}
+            artist={artist}
+            ctx={ctx}
+            selectedPart={selectedPart}
+            onPartSelect={onPartSelect}
+          />
+        );
       } else if (card.type === 'focus') {
         return (
           <FullFocusCard
@@ -42,6 +69,8 @@ export default function Card({
             awakenedArt={awakenedArt}
             awakenedArtist={awakenedArtist}
             awakened={awakened}
+            selectedPart={selectedPart}
+            onPartSelect={onPartSelect}
           />
         );
       } else {

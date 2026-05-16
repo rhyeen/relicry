@@ -1,13 +1,14 @@
 import { assetURL, CardContext } from '@/entities/CardContext';
 import styles from '../Card.module.css';
 import { FlavorText } from '@/entities/FlavorText';
+import { getCardPartInteractionProps, type CardPartSelectionProps } from '../cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   flavorText?: FlavorText;
   ctx: CardContext;
 }
 
-export default function FlavorTextCardPart({ flavorText, ctx }: Props) {
+export default function FlavorTextCardPart({ flavorText, ctx, selectedPart, onPartSelect }: Props) {
   if (!flavorText || !flavorText.onCard) return null;
 
   let text = flavorText.onCard.text;
@@ -34,7 +35,16 @@ export default function FlavorTextCardPart({ flavorText, ctx }: Props) {
   }
 
   return (
-    <div className={styles.flavorTextContainer}>
+    <div
+      className={styles.flavorTextContainer}
+      {...getCardPartInteractionProps({
+        disabled: ctx.hideCardPartInteractions,
+        label: 'Explain flavor text',
+        onPartSelect,
+        part: 'flavorText',
+        selectedPart,
+      })}
+    >
       <div aria-label='Flavor Text' className={styles.flavorText}>{text}</div>
       <div
         className={styles.flavorTextLine}

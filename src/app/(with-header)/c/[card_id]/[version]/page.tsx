@@ -1,21 +1,21 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import CardCollectionActionSlot from '@/components/client/CardCollectionAction.slot';
 import DownloadUnpublishedAdvance from '@/components/client/DownloadUnpublishedAdvance';
+import DSPage from '@/components/ds/DSPage';
+import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
 import { getCard } from '@/server/cache/card.cache';
 import { Suspense } from 'react';
 import { getArt } from '@/server/cache/art.cache';
 import { getArtist } from '@/server/cache/artist.cache';
 import { VersionedFocusCard } from '@/entities/Card';
-import Card from '@/components/card/Card';
 import { normalizeAwakenedSP, normalizeSizeSP } from '@/lib/normalizeSearchParams';
 import {
   normalizeDownloadUnpublishedSP,
   normalizeUnpublishedCursorSP,
 } from '@/lib/unpublishedDownload';
-import { CardType } from '@/entities/CardContext';
 import { connection } from 'next/server';
+import CardDetailClient from './CardDetailClient';
 
 type Params = { version: string; card_id: string };
 type SearchParams = {
@@ -48,12 +48,19 @@ export default async function CardPage(
   { params, searchParams }: { params: Promise<Params>; searchParams?: Promise<SearchParams> }
 ) {
   return (
-    <>
-      <DSText.Heading as="h1">Card Details</DSText.Heading>
-      <Suspense fallback={<div>Loading card data...</div>}>
+    <DSPage removeTopPadding>
+      <Suspense fallback={<CardLoading />}>
         <CardPageData params={params} searchParams={searchParams} />
       </Suspense>
-    </>
+    </DSPage>
+  );
+}
+
+function CardLoading() {
+  return (
+    <DSSection.Card>
+      <DSText.Body tone="muted">Loading card data...</DSText.Body>
+    </DSSection.Card>
   );
 }
 
@@ -95,21 +102,18 @@ async function CardPageData(
   ]);
 
   return (
-    <section>
+    <>
       <DownloadUnpublishedAdvance
         enabled={downloadUnpublished}
         awakened={awakened}
         isFocus={card.type === 'focus'}
         cursor={unpublishedCursor}
       />
-      <Card
+      <CardDetailClient
         card={card}
         art={illustrationArt}
         artist={illustrationArtist}
-        ctx={{
-          type: CardType.Full,
-          size,
-        }}
+        size={size}
         awakenedArt={awakenedIllustrationArt}
         awakenedArtist={awakenedIllustrationArtist}
         flavorTextExtendedArt={flavorTextExtendedArt}
@@ -118,7 +122,6 @@ async function CardPageData(
         awakenedFlavorTextExtendedArtist={awakenedFlavorTextExtendedArtist}
         awakened={card.type === 'focus' && awakened}
       />
-      <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
-    </section>
+    </>
   );
 }

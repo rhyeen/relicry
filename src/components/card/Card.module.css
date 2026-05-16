@@ -15,6 +15,10 @@
   transform-origin: top left;
 }
 
+.noInteractions {
+  pointer-events: none;
+}
+
 .printSizeEdgeToEdge .fullCard {
   overflow: visible;
 }
@@ -123,6 +127,27 @@
   filter: brightness(1.2);
 }
 
+.interactions .illustration:has(.illustrationClickable[data-selected="true"]) {
+  filter: brightness(1.24) saturate(1.08);
+}
+
+.illustrationClickable:focus-visible,
+.drawLimit:focus-visible,
+.qrcode:focus-visible,
+.titleContainer:focus-visible,
+.flavorTextContainer:focus-visible,
+.effectsContainer:focus-visible,
+.typeTitle:focus-visible,
+.headerLeft:focus-visible,
+.headerRight:focus-visible,
+.rarityClickable:focus-visible,
+.scrapCostContainer:focus-visible,
+.aspectContainer:focus-visible,
+.tagsContainer:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 3px;
+}
+
 .qrcode {
   position: absolute;
   top: 19px;
@@ -172,6 +197,14 @@
 .interactions .qrcode:hover {
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.5);
+}
+
+.interactions .drawLimit[data-selected="true"],
+.interactions .qrcode[data-selected="true"] {
+  background-color: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 0 0 2px rgba(242, 189, 97, 0.82),
+    0 0 12px 4px rgba(255, 255, 255, 0.5);
 }
 
 .qrcodeImageHover {
@@ -241,6 +274,13 @@
   --hoverGradientColor2: rgba(255, 255, 255, 0);
 }
 
+.interactions .titleContainer[data-selected="true"],
+.interactions .flavorTextContainer[data-selected="true"],
+.interactions .effectsContainer[data-selected="true"] {
+  --hoverGradientColor1: rgba(242, 189, 97, 0.34);
+  --hoverGradientColor2: rgba(255, 255, 255, 0);
+}
+
 .details {
   bottom: 63px;
   height: 145px;
@@ -280,6 +320,10 @@
 
 .interactions .typeTitle.gambit:hover {
   background-color: rgba(255, 255, 255, 0.4);
+}
+
+.interactions .typeTitle[data-selected="true"] {
+  background-color: rgba(242, 189, 97, 0.34);
 }
 
 .title {
@@ -397,6 +441,13 @@
   text-shadow: 0 0 3px rgba(255, 255, 255, 1);
 }
 
+.interactions .headerLeft[data-selected="true"],
+.interactions .headerRight[data-selected="true"] {
+  text-shadow:
+    0 0 3px rgba(255, 255, 255, 1),
+    0 0 8px rgba(242, 189, 97, 0.9);
+}
+
 .rarityClickable {
   position: absolute;
   cursor: pointer;
@@ -413,6 +464,10 @@
 
 .interactions .rarity:has(.rarityClickable:hover) {
   filter: brightness(1.2);
+}
+
+.interactions .rarity:has(.rarityClickable[data-selected="true"]) {
+  filter: brightness(1.25) drop-shadow(0 0 5px rgba(242, 189, 97, 0.78));
 }
 
 .rarity.brave.legendary {
@@ -480,6 +535,10 @@
   filter: brightness(1.5) saturate(0.75);
 }
 
+.interactions .scrapCostContainer[data-selected="true"] {
+  filter: brightness(1.55) saturate(0.8) drop-shadow(0 0 5px rgba(242, 189, 97, 0.72));
+}
+
 .scrapCost {
   position: relative;
   width: 45px;
@@ -515,6 +574,10 @@
 
 .interactions .aspectContainer:hover {
   filter: brightness(1.5) saturate(0.75);
+}
+
+.interactions .aspectContainer[data-selected="true"] {
+  filter: brightness(1.55) saturate(0.8) drop-shadow(0 0 5px rgba(242, 189, 97, 0.72));
 }
 
 .effectsContainer {
@@ -566,6 +629,10 @@
 
 .interactions .tagsContainer:hover {
   filter: brightness(1.5);
+}
+
+.interactions .tagsContainer[data-selected="true"] {
+  filter: brightness(1.55) drop-shadow(0 0 5px rgba(242, 189, 97, 0.72));
 }
 
 .tagsWithTwoAspects {

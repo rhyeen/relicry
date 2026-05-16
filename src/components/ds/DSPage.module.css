@@ -7,6 +7,10 @@
   padding: 10rem clamp(1rem, 5vw, 4rem) clamp(3rem, 8vw, 6rem);
 }
 
+.removeTopPadding {
+  padding-top: 8rem;
+}
+
 .heroBackgroundBackdrop {
   position: fixed;
   inset: 0;
@@ -244,6 +248,10 @@
   .hero {
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+
+  .removeTopPadding {
+    padding-top: 6rem;
   }
 
   .title {

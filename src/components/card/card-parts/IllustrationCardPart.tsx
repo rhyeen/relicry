@@ -1,8 +1,9 @@
 import { Art, IllustrationArt } from '@/entities/Art';
 import styles from '../Card.module.css';
 import { assetURL, CardContext, CardSize } from '@/entities/CardContext';
+import { getCardPartInteractionProps, type CardPartSelectionProps } from '../cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   art: Art | null;
   ctx: CardContext;
   awakenedArt?: Art | null;
@@ -13,7 +14,16 @@ type Props = {
 
 const DEBUG_ALWAYS_SHOW_EXAMPLE = false;
 
-export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwakened, isSample, showWatermark }: Props) {
+export default function IllustrationCardPart({
+  art,
+  awakenedArt,
+  ctx,
+  focusAwakened,
+  isSample,
+  showWatermark,
+  selectedPart,
+  onPartSelect,
+}: Props) {
   const _art = focusAwakened ? (awakenedArt || art) : art;
   let backgroundImage = assetURL(ctx, 'example-illustration.ai.webp');
   if (ctx.size === CardSize.PrintSize) {
@@ -29,12 +39,20 @@ export default function IllustrationCardPart({ art, awakenedArt, ctx, focusAwake
   return (
     <div
       className={styles.illustration}
-      aria-hidden="true"
       style={{
         backgroundImage: `url(${backgroundImage})`,
       }}
     >
-      <div className={styles.illustrationClickable} />
+      <div
+        className={styles.illustrationClickable}
+        {...getCardPartInteractionProps({
+          disabled: ctx.hideCardPartInteractions,
+          label: 'Explain card illustration',
+          onPartSelect,
+          part: 'illustration',
+          selectedPart,
+        })}
+      />
       {(isSample && showWatermark) && <div className={styles.sampleWatermark} aria-hidden>Sample</div>}
       {isSample && <div className={styles.sampleTag} aria-label='This is a Sample Card'>Sample</div>}
     </div>

@@ -162,6 +162,9 @@ The current plan is to get the scaffolding in place so that the developer can fo
     * /dk
     * /collection
     * /lore
+- [ ] Fix "Failed to load collection status"
+- [ ] Too many cards don't have scrap anymore. Brave deck needs more yellow for favored weapon and more 1 or 2 draw limit cards.
+- [ ] Cunning doesn't work at all because there isn't enough scrapping.
 - [ ] Update he /c page to have the smarts for explaining the cards when parts of the card are clicked on.
 - [ ] Make it so Quests and Scenes have to be scanned in and tracked to recieve rewards.
 - [ ] Apex needs to have different values based on number of players facing it (multiplayer)
@@ -170,6 +173,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [ ] Make banner for `/join` page to tell people how to begin
 - [ ] When a card moves from isSample to revealed, regenerate the ID so it's not 12 characters long.
 <!-- - [ ] Get all pages unit/component tested with vitest and local `__test__` folders. -->
+
 
 ### Localization
 

@@ -17,6 +17,7 @@ type DSDialogRootProps = Readonly<{
   actions?: ReactNode;
   disablePointerDismissal?: boolean;
   loading?: boolean;
+  size?: 'default' | 'wide';
 }>;
 
 type DSDialogCloseProps = Readonly<{
@@ -39,7 +40,19 @@ function Close({ text, onClick, variant = 'ghost' }: DSDialogCloseProps) {
   );
 }
 
-function DSDialogRoot({ loading, trigger, open, onOpenChange, onClose, title, description, content, actions, disablePointerDismissal }: DSDialogRootProps) {
+function DSDialogRoot({
+  loading,
+  trigger,
+  open,
+  onOpenChange,
+  onClose,
+  title,
+  description,
+  content,
+  actions,
+  disablePointerDismissal,
+  size = 'default',
+}: DSDialogRootProps) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange} disablePointerDismissal={disablePointerDismissal}>
       {trigger && <Dialog.Trigger className={styles.trigger}>{trigger}</Dialog.Trigger>}
@@ -47,7 +60,7 @@ function DSDialogRoot({ loading, trigger, open, onOpenChange, onClose, title, de
         <Dialog.Backdrop
           className={styles.backdrop}
         />
-        <Dialog.Popup className={styles.popup}>
+        <Dialog.Popup className={`${styles.popup} ${size === 'wide' ? styles.wide : ''}`}>
           {onClose && (
             <Dialog.Close
               render={(
