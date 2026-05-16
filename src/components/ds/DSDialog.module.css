@@ -97,6 +97,41 @@
   }
 }
 
+.popup.wide {
+  display: flex;
+  flex-direction: column;
+  top: 1rem;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(72rem, calc(100vw - 2rem));
+  max-height: none;
+  min-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(216, 177, 91, 0.12), transparent 34%),
+    rgb(13, 12, 11);
+  color: var(--parchment-white);
+  outline-color: rgba(216, 177, 91, 0.28);
+}
+
+.popup.wide[data-starting-style],
+.popup.wide[data-ending-style] {
+  transform: translateX(-50%) scale(0.98);
+}
+
+.popup.wide .title {
+  flex: 0 0 auto;
+}
+
+.popup.wide .content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0.125rem;
+}
+
 .iconClose {
   position: absolute;
   top: 0.75rem;

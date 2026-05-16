@@ -148,8 +148,8 @@ export default function CardsBrowserClient({
         </DSSection.Heading>
         <DSSection.Text>
           <DSText.Body size="lg" tone="muted">
-            Browse the public Relicry card archive, filter by card role or aspect, and open a
-            card to see its full art, rules, and story details.
+            Browse the public Relicry card collection, filter to find a specific card or plan out your deck, or select a
+            card to see a deeper explanation of its rules and its part in the story.
           </DSText.Body>
         </DSSection.Text>
         <DSSection.Actions>

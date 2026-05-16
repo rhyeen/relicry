@@ -2,13 +2,14 @@ import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
 import { assetURL, CardContext } from '@/entities/CardContext';
+import { getCardPartInteractionProps, type CardPartSelectionProps } from '../cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   scrapCost: (Aspect | [Aspect, Aspect])[];
   ctx: CardContext;
 }
 
-export default function ScrapCostCardPart({ scrapCost, ctx }: Props) {
+export default function ScrapCostCardPart({ scrapCost, ctx, selectedPart, onPartSelect }: Props) {
   const spreadCosts = scrapCost.map((aspect) => aspectAsArray(aspect));
 
   const getAspectColorImageUrl = (aspect: Aspect) => {
@@ -46,7 +47,16 @@ export default function ScrapCostCardPart({ scrapCost, ctx }: Props) {
   };
 
   return (
-    <div className={styles.scrapCostContainer}>
+    <div
+      className={styles.scrapCostContainer}
+      {...getCardPartInteractionProps({
+        disabled: ctx.hideCardPartInteractions,
+        label: 'Explain scrap cost',
+        onPartSelect,
+        part: 'scrapCost',
+        selectedPart,
+      })}
+    >
       {spreadCosts.map((cost, index) => {
         const sameAspect = cost[0] === cost[1];
         return (

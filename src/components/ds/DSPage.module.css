@@ -7,6 +7,10 @@
   padding: 10rem clamp(1rem, 5vw, 4rem) clamp(3rem, 8vw, 6rem);
 }
 
+.removeTopPadding {
+  padding-top: 8rem;
+}
+
 .heroBackgroundBackdrop {
   position: fixed;
   inset: 0;
@@ -35,6 +39,89 @@
   margin: 0 auto;
   display: grid;
   gap: clamp(2rem, 5vw, 4rem);
+}
+
+.back {
+  position: absolute;
+  z-index: 2;
+  top: -3.75rem;
+  left: 0;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(8, 5, 0, 0.6), rgba(37, 26, 0, 0.4)),
+    rgba(13, 17, 23, 0.38);
+  backdrop-filter: blur(0.5rem) saturate(1.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 16px rgba(18, 11, 0, 0.34),
+    0 0 4px -1px rgba(0, 0, 0, 0.25);
+  color: #fbf6ea;
+  outline: 0;
+  text-decoration: none;
+  text-shadow: 0 0.125rem 0.75rem rgba(0, 0, 0, 0.72);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.back:hover,
+.back:focus-visible {
+  border-color: rgba(247, 214, 151, 0.5);
+  background:
+    linear-gradient(180deg, rgba(245, 158, 11, 0.2), rgba(84, 58, 10, 0.5)),
+    rgba(245, 158, 11, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 0 0.1875rem rgba(245, 158, 11, 0.12),
+    0 0.65rem 1.3rem rgba(0, 0, 0, 0.22);
+  color: #f7d695;
+  transform: translateY(-0.0625rem);
+}
+
+.back:focus-visible {
+  outline: 2px solid rgba(242, 189, 97, 0.52);
+  outline-offset: 2px;
+}
+
+.backIcon {
+  display: block;
+  filter: drop-shadow(0 0.125rem 0.45rem rgba(0, 0, 0, 0.65));
+}
+
+.backTooltip {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(100% + 0.55rem);
+  max-width: min(16rem, calc(100vw - 6rem));
+  padding: 0.26rem 0.5rem;
+  border: 0.5px solid rgba(244, 237, 222, 0.22);
+  border-radius: 0.25rem;
+  background: rgba(8, 8, 7, 0.9);
+  color: var(--parchment-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: none;
+  transform: translate(-0.25rem, -50%);
+  transition: opacity 140ms ease, transform 140ms ease;
+  white-space: nowrap;
+}
+
+.back:hover .backTooltip,
+.back:focus-visible .backTooltip {
+  opacity: 1;
+  transform: translate(0, -50%);
 }
 
 .hero {
@@ -149,10 +236,22 @@
   }
 }
 
+@media (min-width: 76rem) {
+  .back {
+    top: 0;
+    right: calc(100% + 0.75rem);
+    left: auto;
+  }
+}
+
 @media (max-width: 700px) {
   .hero {
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+
+  .removeTopPadding {
+    padding-top: 6rem;
   }
 
   .title {
@@ -165,5 +264,23 @@
 
   .scrollCue {
     bottom: -20px;
+  }
+
+  .backTooltip {
+    top: calc(100% + 0.45rem);
+    left: 50%;
+    transform: translate(-50%, -0.25rem);
+  }
+
+  .back:hover .backTooltip,
+  .back:focus-visible .backTooltip {
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back,
+  .backTooltip {
+    transition: none;
   }
 }

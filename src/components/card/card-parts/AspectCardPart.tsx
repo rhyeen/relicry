@@ -2,13 +2,14 @@ import styles from '../Card.module.css';
 import { Aspect } from '@/entities/Aspect';
 import { aspectAsArray } from './aspectsAsArray';
 import { assetURL, CardContext } from '@/entities/CardContext';
+import { getCardPartInteractionProps, type CardPartSelectionProps } from '../cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   aspect: Aspect | [Aspect, Aspect] | 'gambit';
   ctx: CardContext;
 }
 
-export default function AspectCardPart({ aspect, ctx }: Props) {
+export default function AspectCardPart({ aspect, ctx, selectedPart, onPartSelect }: Props) {
   let asArray: [Aspect, Aspect] | 'gambit';
   if (aspect === 'gambit') {
     asArray = 'gambit';
@@ -41,6 +42,13 @@ export default function AspectCardPart({ aspect, ctx }: Props) {
     <div
       className={styles.aspectContainer}
       data-aspect={asArray === 'gambit' ? 'gambit' : (sameAspect ? asArray[0] : asArray[0] + "/" + asArray[1])}
+      {...getCardPartInteractionProps({
+        disabled: ctx.hideCardPartInteractions,
+        label: 'Explain card aspect',
+        onPartSelect,
+        part: 'aspect',
+        selectedPart,
+      })}
     >
       {(sameAspect || asArray === 'gambit') ?
         <div

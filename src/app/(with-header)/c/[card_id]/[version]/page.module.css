@@ -1,0 +1,61 @@
+.root {
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: minmax(22rem, 0.9fr) minmax(20rem, 1.1fr);
+  gap: clamp(1rem, 4vw, 2rem);
+  align-items: start;
+}
+
+.cardColumn {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  min-width: 0;
+}
+
+.cardStage {
+  display: grid;
+  width: 100%;
+  min-height: calc(664px * 0.75);
+  place-items: start center;
+  overflow: visible;
+}
+
+.explanationColumn {
+  position: sticky;
+  top: 5.5rem;
+  min-width: 0;
+}
+
+.collectionAction {
+  color: var(--parchment-gray);
+  text-align: center;
+}
+
+.collectionAction button {
+  border: 1px solid rgba(244, 237, 222, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--parchment-white);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.45rem 0.75rem;
+}
+
+.collectionAction button:hover:not(:disabled) {
+  border-color: rgba(242, 189, 97, 0.58);
+  background: rgba(242, 189, 97, 0.12);
+}
+
+@media (max-width: 900px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .explanationColumn {
+    position: static;
+  }
+}

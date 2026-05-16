@@ -18,8 +18,9 @@ import FoilShineOverlay from './card-parts/FoilShineOverlay';
 import TypeTitleCardPart from './card-parts/TypeTitleCardPart';
 import { aspectAsArray } from './card-parts/aspectsAsArray';
 import { Aspect } from '@/entities/Aspect';
+import type { CardPartSelectionProps } from './cardExplanationParts';
 
-type Props = {
+type Props = CardPartSelectionProps & {
   card: VersionedFocusCard;
   art: Art | null;
   artist: Artist | null;
@@ -30,7 +31,7 @@ type Props = {
 }
 
 export default function FullFocusCard({
-  card, art, artist, awakenedArt, awakenedArtist, ctx, awakened
+  card, art, artist, awakenedArt, awakenedArtist, ctx, awakened, selectedPart, onPartSelect
 }: Props) {
   if (card.type !== 'focus') {
     throw new Error(`FullFocusCard can only render focus type cards, received: ${card.type}`);
@@ -38,13 +39,35 @@ export default function FullFocusCard({
   const thisSide = awakened ? card.awakened : card;
   const firstAspect = aspectAsArray(card.aspect)[0];
   return (
-    <section className={styles.fullCard}>
-      <IllustrationCardPart art={art} awakenedArt={awakenedArt} ctx={ctx} focusAwakened={awakened} isSample={card.isSample} />
-      <RarityCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} />
+    <section
+      className={`${styles.fullCard} ${ctx.hideCardPartInteractions ? styles.noInteractions : styles.interactions}`}
+    >
+      <IllustrationCardPart
+        art={art}
+        awakenedArt={awakenedArt}
+        ctx={ctx}
+        focusAwakened={awakened}
+        isSample={card.isSample}
+        selectedPart={selectedPart}
+        onPartSelect={onPartSelect}
+      />
+      <RarityCardPart
+        rarity={card.rarity}
+        aspect={card.aspect}
+        ctx={ctx}
+        selectedPart={selectedPart}
+        onPartSelect={onPartSelect}
+      />
       <BannerCardPart rarity={card.rarity} aspect={card.aspect} ctx={ctx} focus focusAwakened={awakened} />
-      <TagsCardPart tags={thisSide.tags} aspect={card.aspect} ctx={ctx} />
-      <AspectCardPart aspect={card.aspect} ctx={ctx} />
-      <DetailsCardPart card={card} ctx={ctx} focusAwakened={awakened} />
+      <TagsCardPart tags={thisSide.tags} aspect={card.aspect} ctx={ctx} selectedPart={selectedPart} onPartSelect={onPartSelect} />
+      <AspectCardPart aspect={card.aspect} ctx={ctx} selectedPart={selectedPart} onPartSelect={onPartSelect} />
+      <DetailsCardPart
+        card={card}
+        ctx={ctx}
+        focusAwakened={awakened}
+        selectedPart={selectedPart}
+        onPartSelect={onPartSelect}
+      />
       <div
         className={styles.frame}
         style={{
@@ -57,7 +80,7 @@ export default function FullFocusCard({
         }}
         aria-hidden="true"
       />
-      <TypeTitleCardPart type={card.type} ctx={ctx} />
+      <TypeTitleCardPart type={card.type} ctx={ctx} selectedPart={selectedPart} onPartSelect={onPartSelect} />
       <HeaderCardPart
         artist={artist}
         awakenedArtist={awakenedArtist}
@@ -65,6 +88,8 @@ export default function FullFocusCard({
         ctx={ctx}
         focusAwakened={awakened}
         art={art}
+        selectedPart={selectedPart}
+        onPartSelect={onPartSelect}
       />
       <TitleCardPart
         rarity={card.rarity}
@@ -73,8 +98,10 @@ export default function FullFocusCard({
         aspect={card.aspect}
         focus
         focusAwakened={awakened}
+        selectedPart={selectedPart}
+        onPartSelect={onPartSelect}
       />
-      {!awakened && <QRCodeCardPart card={card} ctx={ctx} />}
+      {!awakened && <QRCodeCardPart card={card} ctx={ctx} selectedPart={selectedPart} onPartSelect={onPartSelect} />}
       {!awakened && <QRTextureCardPart ctx={ctx} />}
       {/* @DEBUG: Not sure when we'd apply foil */}
       { card.version === 2 && <FoilShineOverlay /> }

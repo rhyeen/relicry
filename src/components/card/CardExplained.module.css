@@ -1,0 +1,72 @@
+.root {
+  display: grid;
+  gap: 1rem;
+  color: var(--parchment-white);
+}
+
+.intro {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.sections {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.section {
+  display: grid;
+  gap: 0.45rem;
+  border: 1px solid rgba(244, 237, 222, 0.14);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.045);
+  padding: 0.85rem;
+}
+
+.section[data-active="true"] {
+  border-color: rgba(242, 189, 97, 0.5);
+  background: rgba(242, 189, 97, 0.08);
+}
+
+.labelRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.value {
+  color: var(--parchment-white);
+  font-weight: 700;
+}
+
+.body {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pill {
+  border: 1px solid rgba(244, 237, 222, 0.18);
+  border-radius: 4px;
+  background: rgba(8, 8, 7, 0.42);
+  color: var(--parchment-white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0.18rem 0.4rem;
+}
+
+.empty {
+  border: 1px dashed rgba(244, 237, 222, 0.18);
+  border-radius: 6px;
+  padding: 0.85rem;
+}
