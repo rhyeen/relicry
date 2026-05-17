@@ -1,5 +1,5 @@
 import 'server-only';
-import { getDeckDocId, getDeckId, VersionedDeck } from '@/entities/Deck';
+import { generateDeckId, getDeckDocId, getDeckId, VersionedDeck } from '@/entities/Deck';
 import { RootDB } from './root.db';
 
 export class DeckDB extends RootDB<VersionedDeck> {
@@ -40,6 +40,10 @@ export class DeckDB extends RootDB<VersionedDeck> {
       sortBy: { field: 'updatedAt', direction: 'desc' },
       limit: 100,
     });
+  }
+
+  public async generateId(): Promise<string> {
+    return this.getUniqueId(generateDeckId);
   }
 
   public async getLatest(id: string): Promise<VersionedDeck | null> {

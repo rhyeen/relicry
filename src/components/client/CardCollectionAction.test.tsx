@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { PlayerCardCondition, PlayerCardLanguage, PlayerCardOwnership } from '@/entities/PlayerCard';
 import { useAuthUser } from '@/lib/client/useAuthUser';
+import { LATEST_DECK_STORAGE_KEY } from '@/lib/decksApi';
 import CardCollectionAction from './CardCollectionAction';
 
 const authUser = {
@@ -78,6 +79,7 @@ vi.mock('@/components/ds/DSNumberField', () => ({
 describe('CardCollectionAction', () => {
   beforeEach(() => {
     cleanup();
+    window.localStorage.clear();
     vi.mocked(useAuthUser).mockReturnValue({ ready: true, user: authUser } as unknown as ReturnType<typeof useAuthUser>);
     authUser.getIdToken.mockClear();
     vi.stubGlobal('fetch', vi.fn());
@@ -148,6 +150,49 @@ describe('CardCollectionAction', () => {
     expect((vi.mocked(fetch).mock.calls[1]?.[1] as RequestInit).method).toBe('DELETE');
   });
 
+  test('adds the current card to the latest referenced deck', async () => {
+    window.localStorage.setItem(LATEST_DECK_STORAGE_KEY, 'dk/deck1');
+    mockFetchResponses(
+      jsonResponse({ playerCard: null }),
+      jsonResponse({ deck: makeDeck('dk/deck1') }),
+    );
+
+    render(<CardCollectionAction cardId="0001" cardVersionId={1} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /add to latest deck/i }));
+
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+    const request = vi.mocked(fetch).mock.calls[1]!;
+    expect(request[0]).toBe('/api/decks/deck1/cards');
+    expect((request[1] as RequestInit).method).toBe('POST');
+    expect(JSON.parse((request[1] as RequestInit).body as string)).toMatchObject({
+      cardId: '0001',
+      cardVersion: 1,
+      quantity: 1,
+    });
+  });
+
+  test('opens a deck picker and can create a deck before adding the card', async () => {
+    mockFetchResponses(
+      jsonResponse({ playerCard: null }),
+      jsonResponse({ decks: [] }),
+      jsonResponse({ deck: makeDeck('dk/new') }),
+      jsonResponse({ deck: makeDeck('dk/new') }),
+    );
+
+    render(<CardCollectionAction cardId="0001" cardVersionId={1} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /^add to deck$/i }));
+    expect(await screen.findByRole('dialog', { name: /add to deck/i })).toBeDefined();
+
+    fireEvent.change(screen.getByLabelText('New deck name'), { target: { value: 'New Build' } });
+    fireEvent.click(screen.getByRole('button', { name: /create and add/i }));
+
+    await waitFor(() => expect(window.localStorage.getItem(LATEST_DECK_STORAGE_KEY)).toBe('dk/new'));
+    expect((vi.mocked(fetch).mock.calls[2]?.[1] as RequestInit).method).toBe('POST');
+    expect((vi.mocked(fetch).mock.calls[3]?.[1] as RequestInit).method).toBe('POST');
+  });
+
   test('shows an error FAB that reveals recovery details', async () => {
     mockFetchResponses(new Response('{}', { status: 500 }));
 
@@ -194,5 +239,19 @@ function makePlayerCard(ownership: PlayerCardOwnership, quantity: number) {
       foiled: false,
       ownership,
     })),
+  };
+}
+
+function makeDeck(id: string) {
+  return {
+    id,
+    userId: 'u/player',
+    name: 'Deck',
+    cardPathIds: [],
+    version: 1,
+    isLatest: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    archivedAt: null,
   };
 }

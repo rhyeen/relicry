@@ -6,6 +6,7 @@
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 8rem minmax(0, 1fr);
+  width: 100%;
   min-height: 8rem;
   gap: 0.875rem;
   padding: 0rem;
@@ -14,6 +15,9 @@
   background: linear-gradient(110deg, color-mix(in srgb, var(--preview-accent) 50%, black) 0%, rgba(11, 11, 10, 0.586) 65%);
   border: 0.5px solid var(--preview-border);
   color: var(--parchment-white);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
   text-decoration: none;
   transition: filter 160ms ease, transform 160ms ease;
 }

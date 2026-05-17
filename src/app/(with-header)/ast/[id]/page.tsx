@@ -82,9 +82,10 @@ function ArtistHero({ artist, user }: Readonly<{ artist: Artist; user: User | nu
   const viewAllHref = `/art${buildArtQueryString({ artistId: artist.id })}`;
   const artistTags = artist.tags ?? [];
   const bannerImage = artist.bannerImage?.[ImageSize.Banner];
+  const hasBanner = !!bannerImage || !!artist.bannerImageUrl;
 
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} data-has-banner={hasBanner ? 'true' : undefined}>
       {bannerImage ? (
         <StoredImageSlot
           image={bannerImage}

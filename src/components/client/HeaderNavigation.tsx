@@ -8,18 +8,24 @@ import type { KeyboardEvent } from 'react';
 import { ArtIcon, CardsIcon, EventsIcon } from '@/components/ds/DSNavIcons';
 import styles from './HeaderNavigation.module.css';
 
-type MenuKey = 'events' | 'art';
-
-const linkItems = [
-  { href: '/cards', label: 'Cards', icon: CardsIcon },
-];
+type MenuKey = 'cards' | 'events' | 'art';
 
 const menuItems: Record<MenuKey, {
   label: string;
-  icon: typeof EventsIcon;
+  icon: typeof CardsIcon;
   activeHrefs: string[];
   options: { href: string; label: string }[];
 }> = {
+  cards: {
+    label: 'Cards',
+    icon: CardsIcon,
+    activeHrefs: ['/cards', '/collection', '/decks', '/dk'],
+    options: [
+      { href: '/cards', label: 'Explore Cards' },
+      { href: '/collection', label: 'My Collection' },
+      { href: '/decks', label: 'My Decks' },
+    ],
+  },
   events: {
     label: 'Events',
     icon: EventsIcon,
@@ -40,11 +46,7 @@ const menuItems: Record<MenuKey, {
   },
 };
 
-const navItems: ({ type: 'link' } & (typeof linkItems)[number] | { type: 'menu'; key: MenuKey })[] = [
-  ...linkItems.map((item) => ({ ...item, type: 'link' as const })),
-  { type: 'menu', key: 'events' },
-  { type: 'menu', key: 'art' },
-];
+const navItems: MenuKey[] = ['cards', 'events', 'art'];
 
 export default function HeaderNavigation() {
   const pathname = usePathname();
@@ -77,68 +79,48 @@ export default function HeaderNavigation() {
     >
       <NavigationMenu.List className={styles.list}>
         {navItems.map((item) => {
-          if (item.type === 'menu') {
-            const menu = menuItems[item.key];
-            const Icon = menu.icon;
-            const active = menu.activeHrefs.some((href) => pathname === href || pathname.startsWith(`${href}/`));
-            const open = openMenu === item.key;
-
-            return (
-              <NavigationMenu.Item
-                className={styles.item}
-                key={item.key}
-                onPointerEnter={(event) => {
-                  if (event.pointerType === 'mouse') setOpenMenu(item.key);
-                }}
-                onPointerLeave={(event) => {
-                  if (event.pointerType === 'mouse') setOpenMenu(null);
-                }}
-              >
-                <button
-                  aria-expanded={open}
-                  aria-haspopup="menu"
-                  aria-label={`${menu.label} menu`}
-                  className={styles.link}
-                  data-active={active ? '' : undefined}
-                  onClick={() => setOpenMenu(item.key)}
-                  type="button"
-                >
-                  <Icon className={styles.icon} />
-                </button>
-                {open && (
-                  <div className={styles.menu} role="menu">
-                    {menu.options.map((option) => (
-                      <Link
-                        className={styles.menuLink}
-                        href={option.href}
-                        key={option.href}
-                        onClick={() => setOpenMenu(null)}
-                        role="menuitem"
-                      >
-                        {option.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </NavigationMenu.Item>
-            );
-          }
-
-          const Icon = item.icon;
-          const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const menu = menuItems[item];
+          const Icon = menu.icon;
+          const active = menu.activeHrefs.some((href) => pathname === href || pathname.startsWith(`${href}/`));
+          const open = openMenu === item;
 
           return (
-            <NavigationMenu.Item className={styles.item} key={item.href}>
-              <NavigationMenu.Link
-                active={active}
-                aria-label={item.label}
+            <NavigationMenu.Item
+              className={styles.item}
+              key={item}
+              onPointerEnter={(event) => {
+                if (event.pointerType === 'mouse') setOpenMenu(item);
+              }}
+              onPointerLeave={(event) => {
+                if (event.pointerType === 'mouse') setOpenMenu(null);
+              }}
+            >
+              <button
+                aria-expanded={open}
+                aria-haspopup="menu"
+                aria-label={`${menu.label} menu`}
                 className={styles.link}
-                onClick={() => setOpenMenu(null)}
-                render={<Link href={item.href} />}
+                data-active={active ? '' : undefined}
+                onClick={() => setOpenMenu(item)}
+                type="button"
               >
                 <Icon className={styles.icon} />
-                <span className={styles.tooltip}>{item.label}</span>
-              </NavigationMenu.Link>
+              </button>
+              {open && (
+                <div className={styles.menu} role="menu">
+                  {menu.options.map((option) => (
+                    <Link
+                      className={styles.menuLink}
+                      href={option.href}
+                      key={option.href}
+                      onClick={() => setOpenMenu(null)}
+                      role="menuitem"
+                    >
+                      {option.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </NavigationMenu.Item>
           );
         })}

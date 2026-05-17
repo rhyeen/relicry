@@ -18,15 +18,30 @@
   color: #f7d695;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.browser {
   gap: 1rem;
+}
+
+.scopeRow {
+  margin-top: 1.25rem;
+}
+
+.previewButton {
+  min-height: 100%;
 }
 
 .tile {
   position: relative;
   min-width: 0;
+}
+
+.tile[data-unsaved='true'] .previewButton {
+  filter: grayscale(1) saturate(0.08) brightness(0.72);
+}
+
+.tile[data-unsaved='true'] .previewButton:hover,
+.tile[data-unsaved='true'] .previewButton:focus-visible {
+  filter: grayscale(0.85) saturate(0.18) brightness(0.9);
 }
 
 .badges {
@@ -50,10 +65,4 @@
   line-height: 1;
   padding: 0.28rem 0.45rem;
   text-transform: uppercase;
-}
-
-@media (max-width: 760px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
 }

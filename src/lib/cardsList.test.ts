@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildCardsQueryString,
+  buildCollectionQueryString,
   getCardsPageNumber,
+  parseCollectionFilters,
   parseCardsFilters,
 } from './cardsList';
 
@@ -23,6 +25,19 @@ describe('parseCardsFilters', () => {
   });
 });
 
+describe('parseCollectionFilters', () => {
+  it('defaults to the signed-in player collection', () => {
+    expect(parseCollectionFilters({ scope: 'unexpected' }).scope).toBe('collection');
+  });
+
+  it('accepts the all-cards scope', () => {
+    expect(parseCollectionFilters({ scope: 'all', query: 'Deck' })).toMatchObject({
+      scope: 'all',
+      query: 'Deck',
+    });
+  });
+});
+
 describe('getCardsPageNumber', () => {
   it('derives the page number from cursor history', () => {
     expect(getCardsPageNumber({
@@ -32,6 +47,22 @@ describe('getCardsPageNumber', () => {
       cursor: 'cursor-2',
       history: [null, 'cursor-1'],
     })).toBe(3);
+  });
+});
+
+describe('buildCollectionQueryString', () => {
+  it('omits the default collection scope', () => {
+    expect(buildCollectionQueryString({
+      scope: 'collection',
+      query: 'Deck',
+    })).toBe('?query=Deck');
+  });
+
+  it('serializes all-cards scope with regular card filters', () => {
+    expect(buildCollectionQueryString({
+      scope: 'all',
+      type: 'focus',
+    })).toBe('?type=focus&scope=all');
   });
 });
 

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { forwardRef } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 import StoredImage from "@/components/client/StoredImage";
 import { CardPreviewListItem } from "@/lib/cardsApi";
 import { Aspect } from "@/entities/Aspect";
@@ -11,9 +12,20 @@ import styles from "./CardPreviewItem.module.css";
 
 type CardPreviewItemProps = Readonly<{
   item: CardPreviewListItem;
-}>;
+  className?: string;
+}> & (
+  | {
+    as?: 'link';
+    onClick?: never;
+  }
+  | {
+    as: 'button';
+    onClick?: () => void;
+  }
+);
 
-export default function CardPreviewItem({ item }: CardPreviewItemProps) {
+const CardPreviewItem = forwardRef<HTMLAnchorElement | HTMLButtonElement, CardPreviewItemProps>(
+  function CardPreviewItem({ as = 'link', className, item, onClick }, ref) {
   const { card, href, previewImage } = item;
   const drawLimit = "drawLimit" in card ? card.drawLimit : undefined;
   const title = card.title?.trim() || "Untitled";
@@ -26,15 +38,76 @@ export default function CardPreviewItem({ item }: CardPreviewItemProps) {
   const drawSignal = card.type === 'deck' && typeof drawLimit === 'number'
     ? drawLimit === -1 ? '*' : String(drawLimit)
     : undefined;
+  const rootClassName = [styles.root, className].filter(Boolean).join(' ');
+  const content = (
+    <CardPreviewContent
+      aspects={aspects}
+      card={card}
+      drawSignal={drawSignal}
+      previewImage={previewImage}
+      rarityLabel={rarityLabel}
+      scrapCost={scrapCost}
+      subTitle={subTitle}
+      title={title}
+      typeLabel={typeLabel}
+    />
+  );
+
+  if (as === 'button') {
+    return (
+      <button
+        className={rootClassName}
+        data-rarity={card.rarity}
+        data-type={card.type}
+        onClick={onClick}
+        ref={ref as Ref<HTMLButtonElement>}
+        style={frameStyle}
+        type="button"
+      >
+        {content}
+      </button>
+    );
+  }
 
   return (
     <Link
       href={href}
-      className={styles.root}
+      className={rootClassName}
       data-rarity={card.rarity}
       data-type={card.type}
+      ref={ref as Ref<HTMLAnchorElement>}
       style={frameStyle}
     >
+      {content}
+    </Link>
+  );
+});
+
+export default CardPreviewItem;
+
+function CardPreviewContent({
+  aspects,
+  card,
+  drawSignal,
+  previewImage,
+  rarityLabel,
+  scrapCost,
+  subTitle,
+  title,
+  typeLabel,
+}: Readonly<{
+  aspects: Aspect[];
+  card: CardPreviewListItem['card'];
+  drawSignal: string | undefined;
+  previewImage: CardPreviewListItem['previewImage'];
+  rarityLabel: string;
+  scrapCost: NonNullable<CardPreviewListItem['card']['scrapCost']>;
+  subTitle: string | undefined;
+  title: string;
+  typeLabel: string;
+}>): ReactNode {
+  return (
+    <>
       <div className={styles.artFrame}>
         {previewImage ? (
           <StoredImage
@@ -75,7 +148,7 @@ export default function CardPreviewItem({ item }: CardPreviewItemProps) {
           </span>
         ) : null}
       </div>
-    </Link>
+    </>
   );
 }
 

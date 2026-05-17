@@ -1,5 +1,10 @@
 import { describe, expect, test } from 'vitest';
-import { buildUniversalScanPath, buildUniversalScanQrImageSrc, parseScannedUserId } from './scanQr';
+import {
+  buildUniversalScanPath,
+  buildUniversalScanQrImageSrc,
+  parseScannedCardPath,
+  parseScannedUserId,
+} from './scanQr';
 
 describe('scan QR helpers', () => {
   test('builds universal player scan QR paths', () => {
@@ -21,5 +26,27 @@ describe('scan QR helpers', () => {
     expect(parseScannedUserId('https://relicry.com/starter?userId=u%2FabcDef123')).toBeNull();
     expect(parseScannedUserId('https://relicry.com/scan')).toBeNull();
     expect(parseScannedUserId('not a useful scan')).toBeNull();
+  });
+
+  test('extracts card path data from card QR URLs', () => {
+    expect(parseScannedCardPath('http://127.0.0.1:3000/c/0003/1')).toEqual({
+      cardId: '0003',
+      cardVersion: 1,
+      cardPathId: 'c/0003/1',
+    });
+    expect(parseScannedCardPath('https://relicry.com/c/udpgl63bv9c2/12')).toEqual({
+      cardId: 'udpgl63bv9c2',
+      cardVersion: 12,
+      cardPathId: 'c/udpgl63bv9c2/12',
+    });
+    expect(parseScannedCardPath('/c/0003/1')?.cardPathId).toBe('c/0003/1');
+    expect(parseScannedCardPath('c/0003/1')?.cardPathId).toBe('c/0003/1');
+  });
+
+  test('rejects invalid card QR inputs', () => {
+    expect(parseScannedCardPath('https://relicry.com/scan?userId=u%2FabcDef123')).toBeNull();
+    expect(parseScannedCardPath('/c/0003/0')).toBeNull();
+    expect(parseScannedCardPath('/c/0003')).toBeNull();
+    expect(parseScannedCardPath('not a card')).toBeNull();
   });
 });

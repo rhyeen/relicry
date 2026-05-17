@@ -1,4 +1,6 @@
 import { VersionedDeck } from '@/entities/Deck';
+import { getCardDocId } from '@/entities/Card';
+import { cardTestIds } from './card.data';
 import { userTestIds } from './user.data';
 
 export const deckTestIds = {
@@ -23,13 +25,23 @@ function defaultDeck(id: string, name: string, userId: string): VersionedDeck {
 
 export function getExampleDeck1() {
   return {
-    ...defaultDeck(deckTestIds.deck1, 'Example Deck 1', userTestIds.user1),
+    ...defaultDeck(deckTestIds.deck1, 'Brave Starter Build', userTestIds.user1),
+    cardPathIds: [
+      getCardDocId(cardTestIds.deckCard1, 1),
+      getCardDocId(cardTestIds.deckCard1, 1),
+      getCardDocId(cardTestIds.deckCard2, 1),
+      getCardDocId(cardTestIds.focusCard3, 1),
+    ],
   };
 }
 
 export function getExampleDeck2() {
   return {
-    ...defaultDeck(deckTestIds.deck2, 'Example Deck 2', userTestIds.user1),
+    ...defaultDeck(deckTestIds.deck2, 'Focus Test Deck', userTestIds.user1),
+    cardPathIds: [
+      getCardDocId(cardTestIds.focusCard3, 1),
+      getCardDocId(cardTestIds.deckCard2, 1),
+    ],
   };
 }
 

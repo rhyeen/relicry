@@ -22,3 +22,42 @@ export function parseScannedUserId(input: string): string | null {
     return null;
   }
 }
+
+export type ScannedCardPath = {
+  cardId: string;
+  cardVersion: number;
+  cardPathId: string;
+};
+
+export function parseScannedCardPath(input: string): ScannedCardPath | null {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  const rawPath = getPossibleCardPath(trimmed);
+  if (!rawPath) return null;
+
+  const match = rawPath.match(/^\/?c\/([A-Za-z0-9]+)\/([1-9]\d*)\/?$/);
+  if (!match) return null;
+
+  const cardId = match[1]!;
+  const cardVersion = Number(match[2]);
+  if (!Number.isInteger(cardVersion) || cardVersion < 1) return null;
+
+  return {
+    cardId,
+    cardVersion,
+    cardPathId: `c/${cardId}/${cardVersion}`,
+  };
+}
+
+function getPossibleCardPath(input: string): string | null {
+  if (/^\/?c\/[A-Za-z0-9]+\/[1-9]\d*\/?$/.test(input)) {
+    return input;
+  }
+
+  try {
+    return new URL(input, 'https://relicry.local').pathname;
+  } catch {
+    return null;
+  }
+}
