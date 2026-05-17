@@ -24,10 +24,8 @@ function IconRoot({ children, ...props }: IconProps) {
 export function CardsIcon(props: IconProps) {
   return (
     <IconRoot {...props}>
-      <path d="M7.5 4.5 16.8 3l2.1 13.2-9.3 1.5L7.5 4.5Z" />
-      <path d="M5.1 7.2h10.1v13.2H5.1V7.2Z" />
-      <path d="M8.3 11.4h3.8" />
-      <path d="m10.2 14.6.9-1.5.9 1.5 1.5.9-1.5.9-.9 1.5-.9-1.5-1.5-.9 1.5-.9Z" />
+      <path d="M8.8 4.2 18 5l-1.1 12.6" />
+      <path d="M4.6 7.8 14.7 6.9 15.8 19.7 5.7 20.6 4.6 7.8Z" />
     </IconRoot>
   );
 }

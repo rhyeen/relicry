@@ -1,6 +1,13 @@
 import 'server-only';
 
 import {
+  getCardDocId,
+  getCardId,
+  VersionedCard,
+  VersionedDeckCard,
+  VersionedFocusCard,
+} from '@/entities/Card';
+import {
   getPlayerCardId,
   GradeID,
   GradingCompany,
@@ -9,8 +16,21 @@ import {
   PlayerCardLanguage,
   PlayerCardOwnership,
 } from '@/entities/PlayerCard';
+import {
+  buildAspectFilterKeys,
+  buildCardAspectKey,
+  buildCardTitlePrefixes,
+  parseCardSearchQuery,
+} from '@/lib/cardQueryFields';
+import {
+  CARDS_PAGE_SIZE,
+  CollectionCardFilters,
+  getCardsPageNumber,
+  parseCollectionFilters,
+} from '@/lib/cardsList';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
-import { buildCardPreviewItems } from '@/server/cardsPreview';
+import type { CardPreviewListItem } from '@/lib/cardsApi';
+import { buildCardPreviewItems, getCardsPreviewPage } from '@/server/cardsPreview';
 import { CardDB } from '@/server/db/card.db';
 import { PlayerCardDB } from '@/server/db/playerCard.db';
 import { invalidatePlayerCardsSoon } from '@/server/cache/playerCard.cache';
@@ -26,10 +46,7 @@ export async function GET(req: Request) {
 
     if (!cardId && rawCardVersion === null) {
       const playerCards = await db.getByUserId(userId);
-      return handleJsonResponse({
-        playerCards,
-        items: await buildCollectionItems(playerCards),
-      });
+      return handleJsonResponse(await buildCollectionResponse(playerCards, parseCollectionFilters(searchParams)));
     }
 
     if (!cardId) {
@@ -85,21 +102,133 @@ export async function DELETE(req: Request) {
   }
 }
 
-async function buildCollectionItems(playerCards: PlayerCard[]) {
+async function buildCollectionResponse(
+  playerCards: PlayerCard[],
+  filters: CollectionCardFilters,
+) {
+  if (filters.scope === 'all') {
+    const page = await getCardsPreviewPage(filters);
+    return {
+      ...page,
+      playerCards,
+      items: annotatePreviewItems(page.items, playerCards),
+    };
+  }
+
+  const page = await getCollectionPreviewPage(playerCards, filters);
+  return {
+    ...page,
+    playerCards,
+    items: annotatePreviewItems(page.items, playerCards),
+  };
+}
+
+async function getCollectionPreviewPage(
+  playerCards: PlayerCard[],
+  filters: CollectionCardFilters,
+) {
   const cardDb = new CardDB(getFirestoreAdmin());
   const cards = await Promise.all(
     playerCards.map((playerCard) => cardDb.getFromParts(playerCard.cardId, playerCard.cardVersion))
   );
-  const previews = await buildCardPreviewItems(cards.filter((card) => card !== null));
-  const previewMap = new Map(previews.map((preview) => [
-    `${preview.card.id}:${preview.card.version}`,
-    preview,
+  const filteredCards = cards
+    .filter((card): card is VersionedCard => card !== null)
+    .filter((card) => matchesCardFilters(card, filters))
+    .sort(compareCardsForPreview);
+  const totalCards = filteredCards.length;
+  const startIndex = filters.cursor
+    ? filteredCards.findIndex((card) => serializeCardCursor(card) === filters.cursor) + 1
+    : 0;
+  const pageStartIndex = Math.max(0, startIndex);
+  const pageCards = filteredCards.slice(pageStartIndex, pageStartIndex + CARDS_PAGE_SIZE + 1);
+  const hasNext = pageCards.length > CARDS_PAGE_SIZE;
+  const shownCards = hasNext ? pageCards.slice(0, CARDS_PAGE_SIZE) : pageCards;
+
+  return {
+    items: await buildCardPreviewItems(shownCards),
+    page: getCardsPageNumber(filters),
+    totalPages: Math.max(1, Math.ceil(totalCards / CARDS_PAGE_SIZE)),
+    totalCards,
+    pageSize: CARDS_PAGE_SIZE,
+    nextCursor: hasNext ? serializeCardCursor(shownCards[shownCards.length - 1]!) : null,
+  };
+}
+
+function annotatePreviewItems(previews: CardPreviewListItem[], playerCards: PlayerCard[]) {
+  const playerCardMap = new Map(playerCards.map((playerCard) => [
+    `${normalizeCardKey(playerCard.cardId)}:${playerCard.cardVersion}`,
+    playerCard,
   ]));
 
-  return playerCards.map((playerCard) => ({
-    playerCard,
-    preview: previewMap.get(`${playerCard.cardId}:${playerCard.cardVersion}`) ?? null,
+  return previews.map((preview) => ({
+    preview,
+    playerCard: playerCardMap.get(`${normalizeCardKey(preview.card.id)}:${preview.card.version}`) ?? null,
   }));
+}
+
+function matchesCardFilters(card: VersionedCard, filters: CollectionCardFilters): boolean {
+  if (filters.type !== 'all' && card.type !== filters.type) {
+    return false;
+  }
+
+  if (filters.aspect !== 'all' && !matchesAspectFilter(card, filters.aspect)) {
+    return false;
+  }
+
+  return matchesSearchFilter(card, filters.query);
+}
+
+function matchesAspectFilter(card: VersionedCard, aspect: CollectionCardFilters['aspect']): boolean {
+  if (card.type === 'gambit') {
+    return false;
+  }
+
+  const aspectKey = buildCardAspectKey((card as VersionedDeckCard | VersionedFocusCard).aspect);
+  return !!aspectKey && buildAspectFilterKeys(aspect).includes(aspectKey);
+}
+
+function matchesSearchFilter(card: VersionedCard, query: string): boolean {
+  const search = parseCardSearchQuery(query);
+  if (!search.idOnly && !search.normalizedTitle && search.cardIds.length === 0) {
+    return true;
+  }
+
+  const normalizedIds = new Set(search.cardIds.map((id) => id.toLowerCase()));
+  const idMatches = normalizedIds.has(card.id.toLowerCase())
+    || normalizedIds.has(getCardId(card.id).toLowerCase());
+
+  if (search.idOnly) {
+    return idMatches;
+  }
+
+  const titleMatches = search.normalizedTitle
+    ? buildCardTitlePrefixes(card.title).includes(search.normalizedTitle)
+    : false;
+  return idMatches || titleMatches;
+}
+
+function compareCardsForPreview(left: VersionedCard, right: VersionedCard): number {
+  const leftRevealed = left.revealedAt ? new Date(left.revealedAt).getTime() : 0;
+  const rightRevealed = right.revealedAt ? new Date(right.revealedAt).getTime() : 0;
+
+  if (rightRevealed !== leftRevealed) {
+    return rightRevealed - leftRevealed;
+  }
+
+  return getCardDocId(right.id, right.version).localeCompare(getCardDocId(left.id, left.version));
+}
+
+function serializeCardCursor(card: VersionedCard): string {
+  const revealedAt = card.revealedAt ? new Date(card.revealedAt) : null;
+  const timestamp = revealedAt && Number.isFinite(revealedAt.getTime())
+    ? revealedAt.toISOString()
+    : 'null';
+
+  return `${timestamp}::${getCardDocId(card.id, card.version)}`;
+}
+
+function normalizeCardKey(cardId: string): string {
+  return cardId.startsWith('c/') ? cardId.slice(2) : cardId;
 }
 
 function parseCardVersion(value: string | null): number {

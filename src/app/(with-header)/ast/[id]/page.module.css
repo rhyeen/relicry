@@ -25,6 +25,16 @@
     linear-gradient(90deg, rgba(8, 8, 7, 0.94) 0%, rgba(8, 8, 7, 0.84) 48%, rgba(8, 8, 7, 0.52) 100%);
 }
 
+.hero[data-has-banner='true'] {
+  background: #080807;
+}
+
+.hero[data-has-banner='true']::after {
+  background:
+    linear-gradient(90deg, rgba(8, 8, 7, 0.7) 0%, rgba(8, 8, 7, 0.42) 45%, rgba(8, 8, 7, 0.08) 100%),
+    linear-gradient(180deg, rgba(8, 8, 7, 0.08) 0%, rgba(8, 8, 7, 0.16) 48%, rgba(8, 8, 7, 0.7) 100%);
+}
+
 .bannerImage {
   position: absolute;
   inset: 0;
@@ -32,6 +42,10 @@
   height: 100%;
   object-fit: cover;
   opacity: 0.42;
+}
+
+.hero[data-has-banner='true'] .bannerImage {
+  opacity: 1;
 }
 
 .heroContent {

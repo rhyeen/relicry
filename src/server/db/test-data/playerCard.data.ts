@@ -42,7 +42,7 @@ export function getExamplePlayerCard1(): PlayerCard {
 
 export function getExamplePlayerCard2(): PlayerCard {
   return defaultPlayerCard(
-    userTestIds.user2,
+    userTestIds.user1,
     cardTestIds.deckCard2,
     PlayerCardCondition.LightPlayed,
     PlayerCardOwnership.LookingToSell,
@@ -51,7 +51,7 @@ export function getExamplePlayerCard2(): PlayerCard {
 
 export function getExamplePlayerCard3(): PlayerCard {
   return defaultPlayerCard(
-    userTestIds.user3,
+    userTestIds.user1,
     cardTestIds.focusCard3,
     PlayerCardCondition.Mint,
     PlayerCardOwnership.WishList,

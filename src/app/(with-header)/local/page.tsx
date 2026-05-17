@@ -6,6 +6,7 @@ import DSForm from '@/components/ds/DSForm';
 import DSLoadingOverlay from '@/components/ds/DSLoadingOverlay';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
+import { signInWithLocalTestUser } from '@/lib/client/signInClient';
 import useIsEmulated from '@/lib/client/useIsEmulated';
 import {
   DEFAULT_LOCAL_CARD_COUNT,
@@ -20,6 +21,7 @@ export default function LocalPage() {
   const [cardCount, setCardCount] = useState(String(DEFAULT_LOCAL_CARD_COUNT));
   const [isPopulating, setIsPopulating] = useState(false);
   const [isClearingCache, setIsClearingCache] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const isEmulated = useIsEmulated();
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -27,7 +29,7 @@ export default function LocalPage() {
   const normalizedCardCount = normalizeLocalCardCount(cardCount);
   const minimumApplied = cardCount.trim() !== '' && Number(cardCount) < DEFAULT_LOCAL_CARD_COUNT;
   const maximumApplied = Number(cardCount) > MAX_LOCAL_CARD_COUNT;
-  const isBusy = isPopulating || isClearingCache;
+  const isBusy = isPopulating || isClearingCache || isSigningIn;
 
   const clearCache = async () => {
     setIsClearingCache(true);
@@ -74,6 +76,21 @@ export default function LocalPage() {
       setError(e instanceof Error ? e.message : 'Unknown error');
     } finally {
       setIsPopulating(false);
+    }
+  };
+
+  const signInAsTestUser = async () => {
+    setIsSigningIn(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await signInWithLocalTestUser();
+      setSuccessMessage('Signed in as Test User 1 and seeded their collection.');
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unknown error');
+    } finally {
+      setIsSigningIn(false);
     }
   };
 
@@ -156,6 +173,24 @@ export default function LocalPage() {
               disabled={isBusy}
               loading={isClearingCache}
             />
+          </DSForm.ButtonGroup>
+        </div>
+
+        <div className={styles.group}>
+          <DSText.Heading as="h2" size="xl">Test collection login</DSText.Heading>
+          <DSForm.Description>
+            Signs into the Auth emulator as Test User 1 and reseeds their sample card collection.
+            Use this before opening the collection page locally.
+          </DSForm.Description>
+          <DSForm.ButtonGroup>
+            <DSButton
+              onClick={signInAsTestUser}
+              label={isSigningIn ? 'Signing in...' : 'Sign in as Test User 1'}
+              disabled={isBusy}
+              loading={isSigningIn}
+              variant="primary"
+            />
+            <DSButton href="/collection" label="Open collection" disabled={isBusy} variant="ghost" />
           </DSForm.ButtonGroup>
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
 import LoginDialog from '@/components/client/LoginDialog';
 import DSActionMenu from '@/components/ds/DSActionMenu';
 import DSButton from '@/components/ds/DSButton';
@@ -31,10 +32,18 @@ import {
 } from '@/entities/PlayerCard';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import { signOutUser } from '@/lib/client/signInClient';
+import { DeckListItemDTO, DeckListResponse, DeckMutationResponse, getDeckHref, getDeckRouteId, LATEST_DECK_STORAGE_KEY } from '@/lib/decksApi';
 import type { PlayerCardMutationResponse, PlayerCardStatusResponse } from '@/lib/playerCardsApi';
 import styles from './CardCollectionAction.module.css';
 
-type Props = { cardId: string; cardVersionId: number };
+type Props = {
+  cardId: string;
+  cardVersionId: number;
+  initialPlayerCard?: PlayerCardDTO | null;
+  loadInitialStatus?: boolean;
+  onPlayerCardChange?: (playerCard: PlayerCardDTO | null) => void;
+  trigger?: ReactElement;
+};
 
 type CollectionError = {
   title: string;
@@ -88,9 +97,16 @@ const gradeIdOptions = [
   { label: GradeID.PSAGEMMT, value: GradeID.PSAGEMMT },
 ];
 
-export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
+export default function CardCollectionAction({
+  cardId,
+  cardVersionId,
+  initialPlayerCard = null,
+  loadInitialStatus = true,
+  onPlayerCardChange,
+  trigger: triggerProp,
+}: Props) {
   const { user, ready } = useAuthUser();
-  const [playerCard, setPlayerCard] = useState<PlayerCardDTO | null>(null);
+  const [playerCard, setPlayerCard] = useState<PlayerCardDTO | null>(initialPlayerCard);
   const [loading, setLoading] = useState(false);
   const [working, setWorking] = useState<null | 'save' | 'wishlist' | 'details' | 'remove'>(null);
   const [error, setError] = useState<CollectionError | null>(null);
@@ -100,6 +116,11 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [form, setForm] = useState<PlayerCardForm>(() => createDefaultForm(PlayerCardOwnership.Owned));
   const [quickQuantity, setQuickQuantity] = useState(1);
+  const [latestDeckId, setLatestDeckId] = useState('');
+  const [deckPickerOpen, setDeckPickerOpen] = useState(false);
+  const [deckOptions, setDeckOptions] = useState<DeckListItemDTO[]>([]);
+  const [selectedDeckId, setSelectedDeckId] = useState('');
+  const [newDeckName, setNewDeckName] = useState('New Deck');
 
   const count = Array.isArray(playerCard?.individuals) ? playerCard.individuals.length : 0;
   const fabTone = error ? 'danger' : playerCard ? 'success' : 'primary';
@@ -113,7 +134,7 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
     let cancelled = false;
 
     async function run() {
-      if (!ready || !user) return;
+      if (!ready || !user || !loadInitialStatus) return;
 
       setLoading(true);
       setError(null);
@@ -149,17 +170,31 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [ready, user, cardId, cardVersionId]);
+  }, [ready, user, cardId, cardVersionId, loadInitialStatus]);
+
+  useEffect(() => {
+    if (!loadInitialStatus) {
+      setPlayerCard(initialPlayerCard);
+    }
+  }, [initialPlayerCard, loadInitialStatus]);
+
+  useEffect(() => {
+    if (ready && user) {
+      setLatestDeckId(window.localStorage.getItem(LATEST_DECK_STORAGE_KEY) ?? '');
+    }
+  }, [ready, user]);
 
   const trigger = useMemo(() => (
-    <DSFloatingActionButton
-      badge={playerCard && count > 0 ? count : undefined}
-      icon={error ? <WarningIcon /> : <AddToCollectionIcon />}
-      label={fabLabel}
-      loading={loading}
-      tone={fabTone}
-    />
-  ), [count, error, fabLabel, fabTone, loading, playerCard]);
+    triggerProp ?? (
+      <DSFloatingActionButton
+        badge={playerCard && count > 0 ? count : undefined}
+        icon={error ? <WarningIcon /> : <AddToCollectionIcon />}
+        label={fabLabel}
+        loading={loading}
+        tone={fabTone}
+      />
+    )
+  ), [count, error, fabLabel, fabTone, loading, playerCard, triggerProp]);
 
   const saveForm = async (nextForm: PlayerCardForm, method: 'POST' | 'PATCH' = playerCard ? 'PATCH' : 'POST') => {
     if (!user) {
@@ -172,6 +207,7 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
     try {
       const saved = await savePlayerCard(user, cardId, cardVersionId, nextForm, method);
       setPlayerCard(saved);
+      onPlayerCardChange?.(saved);
       setDetailsOpen(false);
     } catch (e) {
       console.error(e);
@@ -229,12 +265,149 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
       });
       if (!res.ok) throw new Error(`DELETE failed: ${res.status}`);
       setPlayerCard(null);
+      onPlayerCardChange?.(null);
       setQuickQuantity(1);
     } catch (e) {
       console.error(e);
       setError({
         title: 'Unable to remove card',
         message: 'The collection record was not removed. Try again, or log out and back in if your session has expired.',
+      });
+      setErrorOpen(true);
+    } finally {
+      setWorking(null);
+    }
+  };
+
+  const addCardToDeck = async (deckId: string) => {
+    if (!user) {
+      setLoginPromptOpen(true);
+      return false;
+    }
+
+    setWorking('details');
+    setError(null);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch(`/api/decks/${encodeURIComponent(getDeckRouteId(deckId))}/cards`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          cardId,
+          cardVersion: cardVersionId,
+          quantity: 1,
+        }),
+      });
+      const json = await res.json().catch(() => ({})) as DeckMutationResponse & { error?: string };
+      if (!res.ok) {
+        if (res.status === 404) {
+          window.localStorage.removeItem(LATEST_DECK_STORAGE_KEY);
+          setLatestDeckId('');
+          await openDeckPicker();
+          return false;
+        }
+        throw new Error(json.error || `Unable to add card to deck (${res.status})`);
+      }
+      window.localStorage.setItem(LATEST_DECK_STORAGE_KEY, json.deck.id);
+      setLatestDeckId(json.deck.id);
+      return true;
+    } catch (e) {
+      console.error(e);
+      setError({
+        title: 'Unable to add card to deck',
+        message: (e as Error)?.message || 'The card was not added. Decks accept deck and focus cards.',
+      });
+      setErrorOpen(true);
+      return false;
+    } finally {
+      setWorking(null);
+    }
+  };
+
+  const handleQuickAddToDeck = async () => {
+    if (latestDeckId) {
+      await addCardToDeck(latestDeckId);
+      return;
+    }
+    await openDeckPicker();
+  };
+
+  const openDeckPicker = async () => {
+    if (!user) {
+      setLoginPromptOpen(true);
+      return;
+    }
+
+    setDeckPickerOpen(true);
+    setWorking('details');
+    setError(null);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch('/api/decks', {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store',
+      });
+      const json = await res.json().catch(() => ({})) as DeckListResponse & { error?: string };
+      if (!res.ok) throw new Error(json.error || `Unable to load decks (${res.status})`);
+      setDeckOptions(json.decks ?? []);
+      const preferredDeckId = latestDeckId && json.decks?.some((deck) => deck.deck.id === latestDeckId)
+        ? latestDeckId
+        : json.decks?.[0]?.deck.id ?? '';
+      setSelectedDeckId(preferredDeckId);
+    } catch (e) {
+      console.error(e);
+      setError({
+        title: 'Unable to load decks',
+        message: 'Relicry could not load your decks. Try again, or open My Decks to manage them.',
+      });
+      setErrorOpen(true);
+    } finally {
+      setWorking(null);
+    }
+  };
+
+  const addToSelectedDeck = async () => {
+    if (!selectedDeckId) return;
+    const saved = await addCardToDeck(selectedDeckId);
+    if (saved) setDeckPickerOpen(false);
+  };
+
+  const createDeckAndAdd = async () => {
+    if (!user) {
+      setLoginPromptOpen(true);
+      return;
+    }
+
+    setWorking('details');
+    setError(null);
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch('/api/decks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: newDeckName }),
+      });
+      const json = await res.json().catch(() => ({})) as DeckMutationResponse & { error?: string };
+      if (!res.ok) throw new Error(json.error || `Unable to create deck (${res.status})`);
+      window.localStorage.setItem(LATEST_DECK_STORAGE_KEY, json.deck.id);
+      setLatestDeckId(json.deck.id);
+      setSelectedDeckId(json.deck.id);
+      const saved = await addCardToDeck(json.deck.id);
+      if (saved) {
+        setDeckPickerOpen(false);
+        setNewDeckName('New Deck');
+      }
+    } catch (e) {
+      console.error(e);
+      setError({
+        title: 'Unable to create deck',
+        message: (e as Error)?.message || 'The deck was not created.',
       });
       setErrorOpen(true);
     } finally {
@@ -310,6 +483,18 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
             onClick: openDetails,
           },
           {
+            label: latestDeckId ? 'Add to latest deck' : 'Add to deck',
+            description: latestDeckId ? 'Adds one copy to your latest deck.' : 'Choose or create a deck first.',
+            disabled: working === 'details',
+            icon: <DeckTbdIcon />,
+            onClick: handleQuickAddToDeck,
+          },
+          {
+            label: 'Change deck',
+            icon: <DeckTbdIcon />,
+            onClick: openDeckPicker,
+          },
+          {
             label: 'Remove from collection',
             destructive: true,
             disabled: working === 'remove',
@@ -322,10 +507,10 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
             href: '/collection',
           },
           {
-            label: 'Add to deck',
-            description: 'Deck building is coming later.',
-            disabled: true,
+            label: 'View latest deck',
+            disabled: !latestDeckId,
             icon: <DeckTbdIcon />,
+            href: latestDeckId ? getDeckHref(latestDeckId) : undefined,
           },
         ] : [
           {
@@ -338,6 +523,18 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
             label: 'More options',
             icon: <EditDetailsIcon />,
             onClick: openDetails,
+          },
+          {
+            label: latestDeckId ? 'Add to latest deck' : 'Add to deck',
+            description: latestDeckId ? 'Adds one copy to your latest deck.' : 'Choose or create a deck first.',
+            disabled: working === 'details',
+            icon: <DeckTbdIcon />,
+            onClick: handleQuickAddToDeck,
+          },
+          {
+            label: 'Change deck',
+            icon: <DeckTbdIcon />,
+            onClick: openDeckPicker,
           },
         ]}
       >
@@ -380,7 +577,91 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
         onClose={() => setDetailsOpen(false)}
         onSave={() => saveForm(form)}
       />
+
+      <DeckPickerDialog
+        deckOptions={deckOptions}
+        loading={working === 'details'}
+        newDeckName={newDeckName}
+        open={deckPickerOpen}
+        selectedDeckId={selectedDeckId}
+        onAdd={addToSelectedDeck}
+        onChangeNewDeckName={setNewDeckName}
+        onClose={() => setDeckPickerOpen(false)}
+        onCreate={createDeckAndAdd}
+        onSelectDeck={setSelectedDeckId}
+      />
     </>
+  );
+}
+
+function DeckPickerDialog({
+  deckOptions,
+  loading,
+  newDeckName,
+  onAdd,
+  onChangeNewDeckName,
+  onClose,
+  onCreate,
+  onSelectDeck,
+  open,
+  selectedDeckId,
+}: Readonly<{
+  deckOptions: DeckListItemDTO[];
+  loading: boolean;
+  newDeckName: string;
+  onAdd: () => void;
+  onChangeNewDeckName: (name: string) => void;
+  onClose: () => void;
+  onCreate: () => void;
+  onSelectDeck: (deckId: string) => void;
+  open: boolean;
+  selectedDeckId: string;
+}>) {
+  const deckSelectOptions = deckOptions.map((deck) => ({
+    label: `${deck.deck.name} (${deck.cardCount} cards)`,
+    value: deck.deck.id,
+  }));
+
+  return (
+    <DSDialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) onClose();
+      }}
+      onClose={onClose}
+      title="Add to deck"
+      description="Choose a deck for this card, or create a new one."
+      content={(
+        <div className={styles.dialogStack}>
+          {deckSelectOptions.length > 0 ? (
+            <DSSelect
+              label="Deck"
+              options={deckSelectOptions}
+              value={selectedDeckId}
+              onChange={onSelectDeck}
+              disabled={loading}
+            />
+          ) : (
+            <DSText.Body tone="muted">No decks yet. Create one below to add this card.</DSText.Body>
+          )}
+          <DSField
+            label="New deck name"
+            value={newDeckName}
+            onChange={onChangeNewDeckName}
+            maxLength={80}
+            autoComplete="off"
+            disabled={loading}
+          />
+        </div>
+      )}
+      actions={(
+        <>
+          <DSButton label="Cancel" onClick={onClose} variant="ghost" disabled={loading} />
+          <DSButton label="Create and add" onClick={onCreate} variant="secondary" loading={loading} />
+          <DSButton label="Add to selected" onClick={onAdd} variant="primary" disabled={!selectedDeckId} loading={loading} />
+        </>
+      )}
+    />
   );
 }
 

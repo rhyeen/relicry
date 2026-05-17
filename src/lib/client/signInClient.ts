@@ -35,6 +35,20 @@ export async function createAccountWithEmailPassword({
   });
 }
 
+export async function signInWithLocalTestUser() {
+  const res = await fetch('/api/local/test-login', {
+    method: 'POST',
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || typeof json?.token !== 'string') {
+    throw new Error(json?.error || `Unable to prepare local test login (${res.status})`);
+  }
+
+  await withAuth(async ({ signInWithCustomToken }, auth) => {
+    await signInWithCustomToken(auth, json.token);
+  });
+}
+
 export async function sendPasswordReset(email: string) {
   await withAuth(async ({ sendPasswordResetEmail }, auth) => {
     await sendPasswordResetEmail(auth, email);

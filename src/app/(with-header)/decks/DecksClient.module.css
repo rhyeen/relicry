@@ -1,0 +1,87 @@
+.loading,
+.statePanel {
+  display: grid;
+  justify-items: start;
+  gap: 0.8rem;
+}
+
+.statePanel {
+  max-width: 42rem;
+}
+
+.stateIcon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.deckTile {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--parchment-white) 12%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ink-black) 82%, transparent);
+  color: var(--parchment-white);
+}
+
+.deckHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.latestBadge {
+  display: inline-flex;
+  margin-bottom: 0.35rem;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--accent-gold) 50%, transparent);
+  border-radius: 999px;
+  color: var(--accent-gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  color: color-mix(in srgb, var(--parchment-white) 72%, transparent);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.stats span {
+  display: inline-flex;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--parchment-white) 8%, transparent);
+}
+
+.previewStrip {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.previewStrip > * {
+  flex: 0 0 11rem;
+}
+
+.emptyPreview {
+  display: grid;
+  min-height: 8rem;
+  place-items: center;
+  border: 1px dashed color-mix(in srgb, var(--parchment-white) 16%, transparent);
+  border-radius: 8px;
+}
+
+@media (max-width: 760px) {
+  .deckHeader {
+    display: grid;
+  }
+}

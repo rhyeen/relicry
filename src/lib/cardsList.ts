@@ -16,12 +16,23 @@ export type CardListFilters = {
   history: (string | null)[];
 };
 
+export type CollectionCardScope = 'collection' | 'all';
+
+export type CollectionCardFilters = CardListFilters & {
+  scope: CollectionCardScope;
+};
+
 export const DEFAULT_CARDS_FILTERS: CardListFilters = {
   query: '',
   type: 'all',
   aspect: 'all',
   cursor: null,
   history: [],
+};
+
+export const DEFAULT_COLLECTION_FILTERS: CollectionCardFilters = {
+  ...DEFAULT_CARDS_FILTERS,
+  scope: 'collection',
 };
 
 export function parseCardsFilters(
@@ -39,6 +50,15 @@ export function parseCardsFilters(
     aspect,
     cursor,
     history,
+  };
+}
+
+export function parseCollectionFilters(
+  searchParams?: Record<string, string | string[] | undefined> | URLSearchParams | ReadonlyURLSearchParams,
+): CollectionCardFilters {
+  return {
+    ...parseCardsFilters(searchParams),
+    scope: parseCollectionScope(readSearchParam(searchParams, 'scope')),
   };
 }
 
@@ -65,6 +85,17 @@ export function buildCardsQueryString(filters: Partial<CardListFilters>): string
   return serialized ? `?${serialized}` : '';
 }
 
+export function buildCollectionQueryString(filters: Partial<CollectionCardFilters>): string {
+  const params = new URLSearchParams(buildCardsQueryString(filters).replace(/^\?/, ''));
+
+  if (filters.scope && filters.scope !== DEFAULT_COLLECTION_FILTERS.scope) {
+    params.set('scope', filters.scope);
+  }
+
+  const serialized = params.toString();
+  return serialized ? `?${serialized}` : '';
+}
+
 export function getCardsPageNumber(filters: CardListFilters): number {
   return filters.history.length + 1;
 }
@@ -76,6 +107,10 @@ export function areCardsFiltersEqual(left: CardListFilters, right: CardListFilte
     && left.cursor === right.cursor
     && left.history.length === right.history.length
     && left.history.every((value, index) => value === right.history[index]);
+}
+
+export function areCollectionFiltersEqual(left: CollectionCardFilters, right: CollectionCardFilters): boolean {
+  return left.scope === right.scope && areCardsFiltersEqual(left, right);
 }
 
 export function hasActiveCardsFilters(filters: CardListFilters): boolean {
@@ -113,6 +148,10 @@ function parseAspectFilter(value: string | undefined): CardListAspectFilter {
     return value as Aspect;
   }
   return 'all';
+}
+
+function parseCollectionScope(value: string | undefined): CollectionCardScope {
+  return value === 'all' ? 'all' : 'collection';
 }
 
 function parseHistory(value: string | undefined): (string | null)[] {
