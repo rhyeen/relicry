@@ -8,10 +8,10 @@ import DSDialog from '@/components/ds/DSDialog';
 import DSField, { toDateOnlyString } from '@/components/ds/DSField';
 import DSFloatingActionButton from '@/components/ds/DSFloatingActionButton';
 import {
+  AddToCollectionIcon,
   CollectionIcon,
   DeckTbdIcon,
   EditDetailsIcon,
-  PhysicalCopyIcon,
   RemoveIcon,
   SignOutIcon,
   WarningIcon,
@@ -154,7 +154,7 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
   const trigger = useMemo(() => (
     <DSFloatingActionButton
       badge={playerCard && count > 0 ? count : undefined}
-      icon={error ? <WarningIcon /> : <CollectionIcon />}
+      icon={error ? <WarningIcon /> : <AddToCollectionIcon />}
       label={fabLabel}
       loading={loading}
       tone={fabTone}
@@ -246,7 +246,7 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
     return (
       <DSFloatingActionButton
         disabled
-        icon={<CollectionIcon />}
+        icon={<AddToCollectionIcon />}
         label="Loading collection action"
         loading
         tone="neutral"
@@ -258,7 +258,7 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
     return (
       <>
         <DSFloatingActionButton
-          icon={<WarningIcon />}
+          icon={<AddToCollectionIcon />}
           label="Log in to save this card"
           onClick={() => setLoginPromptOpen(true)}
           tone="warning"
@@ -289,6 +289,10 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
           error={error}
           open={errorOpen}
           onClose={() => setErrorOpen(false)}
+          onDismiss={() => {
+            setError(null);
+            setErrorOpen(false);
+          }}
         />
       </>
     );
@@ -337,7 +341,16 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
           },
         ]}
       >
-        {!playerCard ? (
+        {playerCard ? (
+          <div className={styles.savedSummary}>
+            <DSText.Body className={styles.savedCount}>
+              {formatSavedCount(count)}
+            </DSText.Body>
+            <DSText.Body tone="muted" className={styles.savedMeta}>
+              Saved to your collection
+            </DSText.Body>
+          </div>
+        ) : (
           <div className={styles.quickSave}>
             <DSText.Body className={styles.quickTitle}>Save physical copies</DSText.Body>
             <DSNumberField
@@ -348,14 +361,14 @@ export default function CardCollectionAction({ cardId, cardVersionId }: Props) {
               onChange={(value) => setQuickQuantity(clampQuantity(value))}
             />
             <DSButton
-              icon={<PhysicalCopyIcon />}
+              icon={<AddToCollectionIcon />}
               label={working === 'save' ? 'Saving...' : 'Save physical copy'}
               loading={working === 'save'}
               onClick={saveQuickPhysicalCopy}
               variant="primary"
             />
           </div>
-        ) : null}
+        )}
       </DSActionMenu>
 
       <PlayerCardDetailsDialog
@@ -407,10 +420,12 @@ function LoginRequiredDialog({
 function CollectionErrorDialog({
   error,
   onClose,
+  onDismiss,
   open,
 }: Readonly<{
   error: CollectionError;
   onClose: () => void;
+  onDismiss: () => void;
   open: boolean;
 }>) {
   const handleSignOut = async () => {
@@ -436,7 +451,7 @@ function CollectionErrorDialog({
       }
       actions={
         <>
-          <DSButton label="Close" onClick={onClose} variant="ghost" />
+          <DSButton label="Dismiss error" onClick={onDismiss} variant="primary" />
           <DSButton icon={<SignOutIcon />} label="Log out" onClick={handleSignOut} variant="secondary" />
         </>
       }
@@ -680,4 +695,8 @@ function clampQuantity(value: number | null | undefined) {
 function toDateInputString(value: Date | string) {
   const date = value instanceof Date ? value : new Date(value);
   return Number.isFinite(date.getTime()) ? toDateOnlyString(date) : toDateOnlyString(new Date());
+}
+
+function formatSavedCount(count: number) {
+  return count === 1 ? '1 copy saved' : `${count} copies saved`;
 }

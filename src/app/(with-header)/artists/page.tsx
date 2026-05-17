@@ -14,7 +14,7 @@ import { ImageSize } from '@/entities/Image';
 import { User } from '@/entities/User';
 import { buildArtQueryString } from '@/lib/artList';
 import { getArtists } from '@/server/cache/artist.cache';
-import { getUser } from '@/server/cache/user.cache';
+import { getArtistUsers } from '@/server/artistUsers';
 import styles from './page.module.css';
 
 export function generateMetadata() {
@@ -74,17 +74,11 @@ async function ArtistsPageData() {
     <DSSection>
       <div className={styles.grid}>
         {artists.map((artist) => (
-          <ArtistCard key={artist.id} artist={artist} user={usersById.get(artist.userId) ?? null} />
+          <ArtistCard key={artist.id} artist={artist} user={usersById.get(artist.id) ?? null} />
         ))}
       </div>
     </DSSection>
   );
-}
-
-async function getArtistUsers(artists: Artist[]): Promise<Map<string, User>> {
-  const userIds = [...new Set(artists.map((artist) => artist.userId).filter(Boolean))];
-  const users = await Promise.all(userIds.map(async (userId) => [userId, await getUser(userId)] as const));
-  return new Map(users.filter((entry): entry is [string, User] => !!entry[1]));
 }
 
 function ArtistCard({ artist, user }: Readonly<{ artist: Artist; user: User | null }>) {
@@ -110,12 +104,12 @@ function ArtistCard({ artist, user }: Readonly<{ artist: Artist; user: User | nu
         ) : null}
         <div className={styles.avatar}>
           {user ? (
-            <DSAvatar user={user} size="fill" decorative variant="plain" />
+            <DSAvatar className={styles.avatarDs} user={user} size="fill" decorative variant="plain" />
           ) : artist.profileImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={artist.profileImageUrl} alt="" className={styles.avatarImage} aria-hidden="true" />
           ) : (
-            <span>{getArtistInitials(artist.name)}</span>
+            <span className={styles.avatarInitials}>{getArtistInitials(artist.name)}</span>
           )}
         </div>
       </div>

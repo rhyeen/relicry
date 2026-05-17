@@ -50,7 +50,7 @@ function DSSelectRoot<T>({
   );
   const selectedKey = selectedIndex >= 0 ? String(selectedIndex) : '';
   const handleValueChange = useCallback((nextKey: string) => {
-    if (!nextKey) {
+    if (nextKey === '') {
       return;
     }
 

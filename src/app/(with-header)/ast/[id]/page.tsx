@@ -17,7 +17,7 @@ import { User } from '@/entities/User';
 import { ArtPreviewListItem } from '@/lib/artApi';
 import { buildArtQueryString, DEFAULT_ART_FILTERS } from '@/lib/artList';
 import { getArtPreviewPage } from '@/server/artPreview';
-import { getUser } from '@/server/cache/user.cache';
+import { getArtistUser } from '@/server/artistUsers';
 import styles from './page.module.css';
 
 type Params = { id: string };
@@ -73,7 +73,7 @@ async function ArtistHeroData(
   const { id } = await params;
   const artist = await getArtist(id);
   if (!artist) notFound();
-  const user = artist.userId ? await getUser(artist.userId) : null;
+  const user = await getArtistUser(artist);
 
   return <ArtistHero artist={artist} user={user} />;
 }

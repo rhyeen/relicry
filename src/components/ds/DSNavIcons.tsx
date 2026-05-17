@@ -141,6 +141,14 @@ export function CollectionIcon(props: IconProps) {
   );
 }
 
+export function AddToCollectionIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M7 4.2h10v15.6L12 17l-5 2.8V4.2Z" />
+    </IconRoot>
+  );
+}
+
 export function WishlistIcon(props: IconProps) {
   return (
     <IconRoot {...props}>

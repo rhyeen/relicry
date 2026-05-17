@@ -39,7 +39,6 @@
 .banner {
   position: relative;
   display: grid;
-  overflow: hidden;
   aspect-ratio: 16 / 7;
   place-items: center;
   background:
@@ -58,40 +57,59 @@
 }
 
 .bannerImage {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  grid-area: 1 / 1;
 }
 
 .avatar {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   left: 1rem;
-  bottom: -1.75rem;
+  bottom: -2rem;
   display: grid;
-  overflow: hidden;
   width: 4rem;
+  height: 4rem;
   aspect-ratio: 1;
   place-items: center;
-  border: 1px solid rgba(244, 237, 222, 0.34);
+  border: 1px solid rgba(244, 237, 222, 0.42);
   border-radius: 50%;
-  background: rgba(8, 8, 7, 0.86);
+  background: rgba(8, 8, 7, 0.92);
+  box-shadow:
+    0 0.35rem 1rem rgba(0, 0, 0, 0.42),
+    0 0 0 0.25rem rgba(12, 13, 17, 0.92);
   color: var(--parchment-white);
   font-family: var(--font-bree-serif), serif;
   font-size: 1.25rem;
   line-height: 1;
 }
 
-.avatarImage {
+.avatarDs,
+.avatarImage,
+.avatarInitials {
   width: 100%;
   height: 100%;
+}
+
+.avatarImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
   object-fit: cover;
+}
+
+.avatarInitials {
+  display: grid;
+  place-items: center;
 }
 
 .content {
   display: grid;
   gap: 0.65rem;
-  padding: 2.3rem 1rem 1rem;
+  padding: 2.75rem 1rem 1rem;
 }
 
 .title {
