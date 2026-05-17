@@ -94,7 +94,7 @@ export default function FeedbackPage() {
             rows={5}
           />
           <DSForm.ButtonGroup>
-            <DSButton label="Submit Feedback" type="submit" variant="primary" />
+            <DSButton label="Submit Feedback" submitOnEnter type="submit" variant="primary" />
           </DSForm.ButtonGroup>
         </DSForm>
 

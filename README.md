@@ -36,6 +36,10 @@ The `ds-component-first` skill captures the convention that app UI should use ex
 
 The `repo-managed-skills` skill captures this repo's skill workflow: create and update project-specific skills under `.codex/skills`, validate them there, and symlink them into the local Codex skills directory for discovery.
 
+### Browser Smoke Check
+
+The `browser-smoke-check` skill captures the localhost smoke-test workflow for checking whether the Codex in-app browser can reach local pages and capture screenshots.
+
 To make Codex discover the repo-owned skill locally, symlink it into your Codex skills directory from the repo root:
 
 ```bash

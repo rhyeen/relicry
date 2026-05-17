@@ -3,16 +3,21 @@ import { Suspense } from 'react';
 import { getArtist } from '@/server/cache/artist.cache';
 import { connection } from 'next/server';
 import Link from 'next/link';
+import AdminPageAction from '@/components/client/AdminPageAction';
 import StoredImageSlot from '@/components/client/StoredImage.slot';
+import DSAvatar from '@/components/ds/DSAvatar';
 import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
 import DSSection from '@/components/ds/DSSection';
 import DSText from '@/components/ds/DSText';
+import { AdminRole } from '@/entities/AdminRole';
 import { Artist, ArtistTag } from '@/entities/Artist';
 import { ImageSize } from '@/entities/Image';
+import { User } from '@/entities/User';
 import { ArtPreviewListItem } from '@/lib/artApi';
 import { buildArtQueryString, DEFAULT_ART_FILTERS } from '@/lib/artList';
 import { getArtPreviewPage } from '@/server/artPreview';
+import { getUser } from '@/server/cache/user.cache';
 import styles from './page.module.css';
 
 type Params = { id: string };
@@ -68,17 +73,27 @@ async function ArtistHeroData(
   const { id } = await params;
   const artist = await getArtist(id);
   if (!artist) notFound();
+  const user = artist.userId ? await getUser(artist.userId) : null;
 
-  return <ArtistHero artist={artist} />;
+  return <ArtistHero artist={artist} user={user} />;
 }
 
-function ArtistHero({ artist }: Readonly<{ artist: Artist }>) {
+function ArtistHero({ artist, user }: Readonly<{ artist: Artist; user: User | null }>) {
   const viewAllHref = `/art${buildArtQueryString({ artistId: artist.id })}`;
   const artistTags = artist.tags ?? [];
+  const bannerImage = artist.bannerImage?.[ImageSize.Banner];
 
   return (
     <section className={styles.hero}>
-      {artist.bannerImageUrl ? (
+      {bannerImage ? (
+        <StoredImageSlot
+          image={bannerImage}
+          size={ImageSize.Banner}
+          alt=""
+          className={styles.bannerImage}
+          eager
+        />
+      ) : artist.bannerImageUrl ? (
         <img
           src={artist.bannerImageUrl}
           alt=""
@@ -88,7 +103,9 @@ function ArtistHero({ artist }: Readonly<{ artist: Artist }>) {
       ) : null}
       <div className={styles.heroContent}>
         <div className={styles.profileMark}>
-          {artist.profileImageUrl ? (
+          {user ? (
+            <DSAvatar user={user} size="fill" decorative variant="plain" />
+          ) : artist.profileImageUrl ? (
             <img src={artist.profileImageUrl} alt="" className={styles.profileImage} aria-hidden="true" />
           ) : (
             <span>{getArtistInitials(artist.name)}</span>
@@ -119,10 +136,17 @@ function ArtistHero({ artist }: Readonly<{ artist: Artist }>) {
             <span className={styles.metaLabel}>Artist ID</span>
             <span className={styles.metaValue}>{artist.id}</span>
           </div>
+          {user ? (
+            <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>User</span>
+              <Link href={`/${user.id}`} className={styles.metaValue}>{user.displayName || user.id}</Link>
+            </div>
+          ) : null}
         </div>
 
         <DSSection.Actions>
           <DSButton href={viewAllHref} label="View all art" />
+          <AdminPageAction href={`/${artist.id}/edit`} label="Edit Artist" requiredRole={AdminRole.SuperAdmin} variant="secondary" />
         </DSSection.Actions>
       </div>
     </section>

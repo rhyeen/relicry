@@ -116,9 +116,7 @@ export default function CardDetailClient({
               onPartSelect={handlePartSelect}
             />
           </div>
-          <div className={styles.collectionAction}>
-            <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
-          </div>
+          <CardCollectionActionSlot cardId={card.id} cardVersionId={card.version} />
         </div>
 
         <aside className={styles.explanationColumn}>

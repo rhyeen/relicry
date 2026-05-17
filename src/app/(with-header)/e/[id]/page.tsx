@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { getEvent } from '@/server/cache/event.cache';
 import { connection } from 'next/server';
 import StoredImageSlot from '@/components/client/StoredImage.slot';
+import DSAvatar from '@/components/ds/DSAvatar';
 import DSText from '@/components/ds/DSText';
 import DSButton from '@/components/ds/DSButton';
 import DSPage from '@/components/ds/DSPage';
@@ -11,12 +12,27 @@ import AdminPageAction from '@/components/client/AdminPageAction';
 import { AdminRole } from '@/entities/AdminRole';
 import { ImageSize } from '@/entities/Image';
 import type { Event } from '@/entities/Event';
+import type { EventQuest } from '@/entities/EventQuest';
+import type { Herald } from '@/entities/Herald';
 import type { Reward } from '@/entities/Reward';
+import type { User } from '@/entities/User';
+import { getArtist } from '@/server/cache/artist.cache';
+import { getUser } from '@/server/cache/user.cache';
+import { EventQuestDB } from '@/server/db/eventQuest.db';
+import { HeraldDB } from '@/server/db/herald.db';
 import { RewardDB } from '@/server/db/reward.db';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
+import { getHeraldDisplayName } from '@/server/heralds';
+import StarterDecksSection from './StarterDecksSection';
 import styles from './page.module.css';
 
 type Params = { id: string };
+type HeraldView = {
+  herald: Herald;
+  name: string;
+  summary: string | null;
+  user: User | null;
+};
 
 export async function generateMetadata(
   { params }: { params: Promise<Params> }
@@ -67,18 +83,51 @@ async function EventPageData(
 
   if (!event) notFound();
 
-  const rewards = await new RewardDB(getFirestoreAdmin()).getBy({
-    where: [{ field: 'eventId', op: '==', value: event.id }],
-    sortBy: { field: 'level', direction: 'asc' },
-  });
+  const firestoreAdmin = getFirestoreAdmin();
+  const [eventQuests, heralds, rewards] = await Promise.all([
+    new EventQuestDB(firestoreAdmin).getBy({
+      where: [{ field: 'eventId', op: '==', value: event.id }],
+    }),
+    new HeraldDB(firestoreAdmin).getBy({
+      where: [{ field: 'eventId', op: '==', value: event.id }],
+    }),
+    new RewardDB(firestoreAdmin).getBy({
+      where: [{ field: 'eventId', op: '==', value: event.id }],
+      sortBy: { field: 'level', direction: 'asc' },
+    }),
+  ]);
+  const activeEventQuests = eventQuests
+    .filter((eventQuest) => eventQuest.archivedAt === null)
+    .sort((a, b) => a.questClaimed.from.getTime() - b.questClaimed.from.getTime());
+  const activeHeralds = await buildHeraldViews(
+    heralds.filter((herald) => herald.archivedAt === null),
+  );
   const activeRewards = rewards.filter((reward) => reward.archivedAt === null);
 
   return (
     <section className={styles.root}>
       <EventHero event={event} rewardCount={activeRewards.length} />
+      <HeraldsSection heralds={activeHeralds} />
+      <StarterDecksSection eventId={event.id} />
+      <EventQuestsSection eventQuests={activeEventQuests} />
       <RewardsSection event={event} rewards={activeRewards} />
     </section>
   );
+}
+
+async function buildHeraldViews(heralds: Herald[]): Promise<HeraldView[]> {
+  const views = await Promise.all(heralds.map(async (herald) => {
+    const [artist, user] = await Promise.all([
+      herald.artistId ? getArtist(herald.artistId) : Promise.resolve(null),
+      getUser(herald.userId),
+    ]);
+    const name = getHeraldDisplayName(herald, artist, user);
+    const summary = herald.override.summary || artist?.summary || null;
+
+    return { herald, name, summary, user };
+  }));
+
+  return views.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function EventHero({
@@ -157,6 +206,133 @@ function MetaItem({
       <span className={styles.metaLabel}>{label}</span>
       <span className={styles.metaValue}>{value}</span>
     </div>
+  );
+}
+
+function HeraldsSection({
+  heralds,
+}: Readonly<{
+  heralds: HeraldView[];
+}>) {
+  return (
+    <DSSection className={styles.heraldsSection}>
+      <DSSection.Heading>
+        <DSText.Eyebrow>Event heralds</DSText.Eyebrow>
+        <DSText.Heading as="h2" size="xl">Associated heralds</DSText.Heading>
+      </DSSection.Heading>
+      {heralds.length === 0 ? (
+        <DSSection.Card>
+          <DSText.Body tone="muted">No heralds are configured for this event.</DSText.Body>
+        </DSSection.Card>
+      ) : (
+        <div className={styles.heraldGrid}>
+          {heralds.map((heraldView) => (
+            <HeraldCard key={heraldView.herald.id} heraldView={heraldView} />
+          ))}
+        </div>
+      )}
+    </DSSection>
+  );
+}
+
+function HeraldCard({
+  heraldView,
+}: Readonly<{
+  heraldView: HeraldView;
+}>) {
+  const { herald, name, summary, user } = heraldView;
+
+  return (
+    <article className={styles.heraldCard}>
+      <div className={styles.heraldHeader}>
+        <DSAvatar
+          user={{
+            displayName: name,
+            profileImage: user?.profileImage,
+          }}
+          size="lg"
+        />
+        <div className={styles.heraldTitleBlock}>
+          <span className={styles.heraldLevel}>Herald</span>
+          <DSText.Heading as="h3" size="lg" className={styles.heraldTitle}>
+            {name}
+          </DSText.Heading>
+        </div>
+      </div>
+      <DSSection.Text>
+        {summary && (
+          <DSText.Body size="sm" tone="muted" className={styles.heraldSummary}>
+            {summary}
+          </DSText.Body>
+        )}
+        <DSText.Caption>Map pin: {herald.mapPin.id}</DSText.Caption>
+        {herald.mapPin.note && <DSText.Caption>{herald.mapPin.note}</DSText.Caption>}
+        {herald.limitedTimeAtEvent && (
+          <DSText.Caption>
+            Available {formatEventDateRange(herald.limitedTimeAtEvent.from, herald.limitedTimeAtEvent.to)}
+          </DSText.Caption>
+        )}
+      </DSSection.Text>
+      <DSSection.Actions>
+        <DSButton href={`/${herald.id}`} label="View Herald" />
+      </DSSection.Actions>
+    </article>
+  );
+}
+
+function EventQuestsSection({
+  eventQuests,
+}: Readonly<{
+  eventQuests: EventQuest[];
+}>) {
+  return (
+    <DSSection className={styles.eventQuestsSection}>
+      <DSSection.Heading>
+        <DSText.Eyebrow>Event quests</DSText.Eyebrow>
+        <DSText.Heading as="h2" size="xl">Associated quests</DSText.Heading>
+      </DSSection.Heading>
+      {eventQuests.length === 0 ? (
+        <DSSection.Card>
+          <DSText.Body tone="muted">No quests are configured for this event.</DSText.Body>
+        </DSSection.Card>
+      ) : (
+        <div className={styles.questGrid}>
+          {eventQuests.map((eventQuest) => (
+            <EventQuestCard key={`${eventQuest.eventId}-${eventQuest.questId}`} eventQuest={eventQuest} />
+          ))}
+        </div>
+      )}
+    </DSSection>
+  );
+}
+
+function EventQuestCard({
+  eventQuest,
+}: Readonly<{
+  eventQuest: EventQuest;
+}>) {
+  const threadCount = eventQuest.threads.length;
+  const title = eventQuest.title.trim() || eventQuest.questId;
+
+  return (
+    <article className={styles.questCard}>
+      <span className={styles.questLevel}>{eventQuest.questId}</span>
+      <DSText.Heading as="h3" size="lg" className={styles.questTitle}>
+        {title}
+      </DSText.Heading>
+      <DSSection.Text>
+        <DSText.Body size="sm" tone="muted" className={styles.questDescription}>
+          {eventQuest.description.start}
+        </DSText.Body>
+        <DSText.Caption>
+          {threadCount} {threadCount === 1 ? 'thread' : 'threads'}, claimable {formatEventDateRange(eventQuest.questClaimed.from, eventQuest.questClaimed.to)}
+        </DSText.Caption>
+        <DSText.Caption>Reward: {eventQuest.rewardId}</DSText.Caption>
+      </DSSection.Text>
+      <DSSection.Actions>
+        <DSButton href={`/${eventQuest.questId}`} label="View Quest" />
+      </DSSection.Actions>
+    </article>
   );
 }
 

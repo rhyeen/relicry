@@ -1,4 +1,5 @@
 import EditArtistSlot from '@/components/client/EditArtist.slot';
+import DSPage from '@/components/ds/DSPage';
 
 export function generateMetadata() {
   return {
@@ -9,6 +10,9 @@ export function generateMetadata() {
 
 export default function NewArtistAdminPage() {
   return (
-    <EditArtistSlot />
+    <DSPage removeTopPadding>
+      <DSPage.Back href="/artists" label="Back to artists" />
+      <EditArtistSlot />
+    </DSPage>
   );
 }

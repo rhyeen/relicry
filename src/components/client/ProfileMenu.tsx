@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import DSAvatar, { type DSAvatarUser } from '@/components/ds/DSAvatar';
 import DSButton from '@/components/ds/DSButton';
 import DSDialog from '@/components/ds/DSDialog';
 import DSSpinner from '@/components/ds/DSSpinner';
@@ -15,17 +15,21 @@ import useIsEmulated from '@/lib/client/useIsEmulated';
 import styles from './ProfileMenu.module.css';
 
 type ProfileMenuProps = Readonly<{
+  avatarUser?: DSAvatarUser | null;
   displayName?: string | null;
-  photoURL?: string | null;
 }>;
 
-export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps) {
+export default function ProfileMenu({ avatarUser, displayName }: ProfileMenuProps) {
   const router = useRouter();
   const { user, ready } = useUser();
   const isEmulated = useIsEmulated();
   const [open, setOpen] = useState(false);
-  const label = displayName ? `${displayName} profile menu` : 'Profile menu';
-  const initials = getInitials(displayName);
+  const resolvedAvatarUser = avatarUser ?? {
+    displayName: displayName ?? '',
+    profileImage: undefined,
+  };
+  const labelDisplayName = resolvedAvatarUser.displayName?.trim() || displayName?.trim();
+  const label = labelDisplayName ? `${labelDisplayName} profile menu` : 'Profile menu';
   const canUseAdminControls = ready && hasRole(user?.adminRoles, AdminRole.SuperAdmin);
   const canUseLocalControls = isEmulated === true;
 
@@ -47,19 +51,13 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
         type="button"
         onClick={() => setOpen(true)}
       >
-        {photoURL ? (
-          <Image
-            className={styles.avatar}
-            src={photoURL}
-            alt=""
-            width={40}
-            height={40}
-          />
-        ) : (
-          <span className={styles.avatarFallback} aria-hidden="true">
-            {initials}
-          </span>
-        )}
+        <DSAvatar
+          className={styles.avatar}
+          decorative
+          size="fill"
+          user={resolvedAvatarUser}
+          variant="plain"
+        />
         <span className={styles.tooltip}>Profile</span>
       </button>
 
@@ -128,17 +126,4 @@ export default function ProfileMenu({ displayName, photoURL }: ProfileMenuProps)
       />
     </>
   );
-}
-
-function getInitials(displayName?: string | null) {
-  if (!displayName) return 'R';
-
-  const initials = displayName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
-
-  return initials || 'R';
 }

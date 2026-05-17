@@ -1,5 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { AdminRole } from '@/entities/AdminRole';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import ProfileClient from './ProfileClient';
@@ -42,6 +42,11 @@ describe('ProfileClient', () => {
     } as ReturnType<typeof useAuthUser>);
   });
 
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+  });
+
   test('renders singular starter deck heading for one claim', async () => {
     mockProfileFetch([{
       id: 'c/focus1',
@@ -79,5 +84,19 @@ describe('ProfileClient', () => {
 
     await waitFor(() => expect(screen.getByText('Starter decks obtained')).toBeDefined());
     expect(screen.getByText('Wise Starter')).toBeDefined();
+  });
+
+  test('shows a field error instead of saving a blank display name', async () => {
+    mockProfileFetch([]);
+
+    render(<ProfileClient />);
+
+    await screen.findByRole('heading', { name: 'Your Relicry profile' });
+
+    fireEvent.change(screen.getByLabelText('Display Name'), { target: { value: '   ' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save Profile' }));
+
+    expect(screen.getByText('Enter a display name.')).toBeDefined();
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

@@ -254,7 +254,7 @@ export default function StarterDeckScanClient({ eventId }: Props) {
             placeholder="https://relicry.com/scan?userId=u%2F..."
           />
           <DSForm.ButtonGroup>
-            <DSButton onClick={submitManualScan} label="Load Player" variant="primary" />
+            <DSButton onClick={submitManualScan} label="Load Player" submitOnEnter variant="primary" />
             {scannedUserId && <DSButton onClick={resetScan} label="Scan Another" variant="ghost" />}
           </DSForm.ButtonGroup>
         </DSForm>
@@ -299,6 +299,7 @@ export default function StarterDeckScanClient({ eventId }: Props) {
                       <DSButton
                         onClick={claimStarter}
                         label={proceedAnyway ? 'Record Additional Starter' : 'Record Starter Deck'}
+                        submitOnEnter
                         variant="primary"
                         disabled={!selectedStarterId || claimed}
                         loading={loading}

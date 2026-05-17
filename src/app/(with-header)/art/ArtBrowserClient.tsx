@@ -225,6 +225,7 @@ function ArtBrowserContent({
             disabled={loading}
           />
           <AdminPageAction href="/art/new" label="New Art" requiredRole={AdminRole.SuperAdmin} />
+          <AdminPageAction href="/ast/new" label="New Artist" requiredRole={AdminRole.SuperAdmin} variant="secondary" />
         </DSSection.Actions>
       </DSSection.Card>
 

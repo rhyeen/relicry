@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { getUser } from '@/server/cache/user.cache';
 import { connection } from 'next/server';
+import DSAvatar from '@/components/ds/DSAvatar';
 import DSText from '@/components/ds/DSText';
 
 type Params = { id: string };
@@ -49,7 +50,10 @@ async function UserPageData(
 
   return (
     <div>
-      <DSText.Heading as="h2">{user.displayName}</DSText.Heading>
+      <div style={{ alignItems: 'center', display: 'flex', gap: '1rem' }}>
+        <DSAvatar user={user} size="xl" />
+        <DSText.Heading as="h2">{user.displayName}</DSText.Heading>
+      </div>
       <DSText.Body tone="muted">ID: {user.id}</DSText.Body>
       <DSText.Body tone="muted">Email: {user.email}</DSText.Body>
     </div>

@@ -80,6 +80,9 @@
 }
 
 .statusBadge,
+.heraldLevel,
+.starterDeckLevel,
+.questLevel,
 .rewardLevel {
   display: inline-flex;
   align-items: center;
@@ -152,16 +155,25 @@
   font-weight: 700;
 }
 
+.heraldsSection,
+.starterDecksSection,
+.eventQuestsSection,
 .rewardsSection {
   gap: 1.25rem;
 }
 
+.heraldGrid,
+.starterDeckGrid,
+.questGrid,
 .rewardGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
   gap: 1rem;
 }
 
+.heraldCard,
+.starterDeckCard,
+.questCard,
 .rewardCard {
   --event-accent: #d8b15b;
   display: flex;
@@ -176,8 +188,32 @@
   padding: 1rem;
 }
 
+.heraldTitle,
+.starterDeckTitle,
+.questTitle,
 .rewardTitle {
   color: var(--parchment-white);
+}
+
+.heraldHeader {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.heraldTitleBlock {
+  display: grid;
+  min-width: 0;
+  gap: 0.45rem;
+}
+
+.heraldSummary,
+.questDescription {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 @media (min-width: 900px) {
@@ -199,6 +235,9 @@
     flex-direction: column;
   }
 
+  .heraldGrid,
+  .starterDeckGrid,
+  .questGrid,
   .rewardGrid {
     grid-template-columns: 1fr;
   }

@@ -98,7 +98,7 @@ export default function ArtToolbar({
         actions={
           <div className={styles.filterActions}>
             <DSButton onClick={clearAndClose} label="Clear" disabled={disabled} variant="ghost" />
-            <DSButton onClick={applyAndClose} label="Apply" disabled={disabled} variant="primary" />
+            <DSButton onClick={applyAndClose} label="Apply" disabled={disabled} submitOnEnter variant="primary" />
           </div>
         }
       />

@@ -1,10 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useAuthUser } from '@/lib/client/useAuthUser';
+import { useUser } from '@/lib/client/useUser';
 import HeaderClient from './HeaderClient';
 
 vi.mock('@/lib/client/useAuthUser', () => ({
   useAuthUser: vi.fn(),
+}));
+
+vi.mock('@/lib/client/useUser', () => ({
+  useUser: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
@@ -19,6 +24,7 @@ vi.mock('./ProfileMenu', () => ({
 describe('HeaderClient', () => {
   beforeEach(() => {
     vi.mocked(useAuthUser).mockReset();
+    vi.mocked(useUser).mockReturnValue({ ready: true, user: null });
   });
 
   test('opens login dialog instead of navigating away', async () => {

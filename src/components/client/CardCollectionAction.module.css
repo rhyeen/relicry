@@ -1,0 +1,40 @@
+.quickSave {
+  --ds-field-max-width: 100%;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.quickTitle {
+  font-weight: 700;
+}
+
+.dialogStack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.detailsForm {
+  --ds-field-max-width: 100%;
+  display: grid;
+  gap: 1.25rem;
+  color: var(--parchment-white);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.switchGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+@media (max-width: 760px) {
+  .formGrid,
+  .switchGrid {
+    grid-template-columns: 1fr;
+  }
+}
