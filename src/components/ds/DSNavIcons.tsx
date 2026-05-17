@@ -129,3 +129,79 @@ export function HomeIcon(props: IconProps) {
     </IconRoot>
   );
 }
+
+export function CollectionIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M6.2 5.2 12 3.5l5.8 1.7v6.4c0 3.8-2.1 6.4-5.8 8.4-3.7-2-5.8-4.6-5.8-8.4V5.2Z" />
+      <path d="M9 9h6" />
+      <path d="M9 12.2h6" />
+      <path d="M10.2 15.4h3.6" />
+    </IconRoot>
+  );
+}
+
+export function WishlistIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M12 19.4s-6.8-4-8.1-8.4c-.8-2.8.8-5.3 3.6-5.3 1.7 0 3.1.9 4.5 2.6 1.4-1.7 2.8-2.6 4.5-2.6 2.8 0 4.4 2.5 3.6 5.3-1.3 4.4-8.1 8.4-8.1 8.4Z" />
+      <path d="M12 8.3v5.4" />
+      <path d="M9.3 11h5.4" />
+    </IconRoot>
+  );
+}
+
+export function PhysicalCopyIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M8.1 5.2 16.8 4l1.6 11.5-8.7 1.2L8.1 5.2Z" />
+      <path d="M5.6 8.4h8.7v11.4H5.6V8.4Z" />
+      <path d="M8.2 12h3.5" />
+      <path d="M10 10.3v3.4" />
+    </IconRoot>
+  );
+}
+
+export function EditDetailsIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M5.5 18.7h3.8l9-9a2.1 2.1 0 0 0-3-3l-9 9-.8 3Z" />
+      <path d="m13.7 8.3 3 3" />
+      <path d="M5.2 21h13.6" />
+    </IconRoot>
+  );
+}
+
+export function RemoveIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M6.8 8.2h10.4" />
+      <path d="M9 8.2V6.1h6v2.1" />
+      <path d="M8.1 8.2 9 19.4h6l.9-11.2" />
+      <path d="M10.4 11.3v5" />
+      <path d="M13.6 11.3v5" />
+    </IconRoot>
+  );
+}
+
+export function WarningIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="m12 4.4 8.2 14.2H3.8L12 4.4Z" />
+      <path d="M12 9.2v4.4" />
+      <path d="M12 16.8h.1" />
+    </IconRoot>
+  );
+}
+
+export function DeckTbdIcon(props: IconProps) {
+  return (
+    <IconRoot {...props}>
+      <path d="M7.2 4.4h7.1l3.5 3.5v11.7H7.2V4.4Z" />
+      <path d="M14 4.7v3.5h3.5" />
+      <path d="M10 11.4h4" />
+      <path d="M10 14.4h2.4" />
+      <path d="M16.5 15.1h.1" />
+    </IconRoot>
+  );
+}

@@ -145,7 +145,7 @@ The current plan is to get the scaffolding in place so that the developer can fo
 - [x] Build out /join page which prompts you to login *before* picking up your deck.
 - [x] SAMPLE does not appear on focus or gambit cards.
 - [ ] Update the other pages to have the latest styling:
-    * /r
+    * /e/[i]/r
     * /q
     * /quests
     * /ur

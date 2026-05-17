@@ -1,5 +1,5 @@
 import 'server-only';
-import { getHeraldId, Herald } from '@/entities/Herald';
+import { generateHeraldId, getHeraldId, Herald } from '@/entities/Herald';
 import { RootDB } from './root.db';
 
 export class HeraldDB extends RootDB<Herald> {
@@ -19,5 +19,9 @@ export class HeraldDB extends RootDB<Herald> {
 
   protected getUnsafeDocId(item: Herald): string {
     return getHeraldId(item.id);
+  }
+
+  public async generateId(): Promise<string> {
+    return this.getUniqueId(generateHeraldId);
   }
 }

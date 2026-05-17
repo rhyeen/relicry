@@ -2,13 +2,14 @@ import 'server-only';
 
 import { ImageSize, ImageStorage } from '@/entities/Image';
 import { User } from '@/entities/User';
+import { getDisplayNameValidationError, normalizeDisplayName } from '@/lib/displayName';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { isActiveEventCurrent, normalizeActiveEvent, normalizeStarterObtainedMap } from '@/lib/starterDecks';
 import { invalidateUserSoon } from '@/server/cache/user.cache';
 import { EventDB } from '@/server/db/event.db';
 import { UserDB } from '@/server/db/user.db';
 import { getStarterObtainedViews } from '@/server/starterDecks';
-import { authenticateUser, BadRequest, handleJsonResponse, handleRouteError } from '@/server/routeHelpers';
+import { authenticateUser, BadRequest, handleJsonResponse, handleRouteError, NextResponseError } from '@/server/routeHelpers';
 
 function validateImageStorage(value: unknown): ImageStorage | undefined {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
@@ -61,11 +62,12 @@ export async function PATCH(req: Request) {
   try {
     const { user } = await authenticateUser(req);
     const body = await req.json().catch(() => ({}));
-    const displayName = typeof body.displayName === 'string' ? body.displayName.trim() : user.displayName;
+    const displayName = typeof body.displayName === 'string' ? normalizeDisplayName(body.displayName) : user.displayName;
     const email = typeof body.email === 'string' ? body.email.trim() : user.email;
+    const displayNameError = getDisplayNameValidationError(displayName);
 
-    if (displayName.length > 80) {
-      throw new BadRequest('Display name must be 80 characters or fewer.');
+    if (displayNameError) {
+      throw new NextResponseError(displayNameError, 400);
     }
     if (email.length > 160) {
       throw new BadRequest('Email must be 160 characters or fewer.');

@@ -8,6 +8,7 @@ import { ArtistDB } from '@/server/db/artist.db';
 
 export const artistTags = {
   data: (id: string) => `d/artist/${id}`,
+  list: 'd/artists/list',
 };
 
 export const ARTIST_LIFE = 'expectedChangeLowConsequenceIfStale';
@@ -22,10 +23,27 @@ export async function getArtist(id: string): Promise<Artist | null> {
   return new ArtistDB(getFirestoreAdmin()).getFromParts(id);
 }
 
+export async function getArtists(): Promise<Artist[]> {
+  'use cache';
+
+  cacheLife(ARTIST_LIFE);
+  cacheTag(LOCAL_CACHE_TAG);
+  cacheTag(artistTags.list);
+
+  const artists = await new ArtistDB(getFirestoreAdmin()).getBy({
+    where: [],
+    sortBy: { field: 'name', direction: 'asc' },
+  });
+
+  return artists.filter((artist) => artist.archivedAt === null);
+}
+
 export async function invalidateArtistNow(id: string): Promise<void> {
   updateTag(artistTags.data(id));
+  updateTag(artistTags.list);
 }
 
 export async function invalidateArtistSoon(id: string): Promise<void> {
   revalidateTag(artistTags.data(id), 'max');
+  revalidateTag(artistTags.list, 'max');
 }

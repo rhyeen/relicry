@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Codex Browser Smoke Test</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #f7f3ea;
+      color: #1b1b1f;
+    }
+
+    main {
+      width: min(720px, calc(100vw - 48px));
+      border: 1px solid #d8d0c2;
+      border-radius: 8px;
+      background: #fffaf2;
+      padding: 32px;
+      box-shadow: 0 12px 40px rgba(35, 31, 24, 0.12);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 32px;
+      line-height: 1.1;
+    }
+
+    p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #eaf7ee;
+      color: #17572b;
+      font-weight: 650;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #248a43;
+    }
+  </style>
+</head>
+<body>
+  <main aria-label="Browser smoke test result">
+    <h1>Local browser is reachable</h1>
+    <p>Screenshot capture is working in the in-app browser.</p>
+    <div class="status"><span class="dot"></span><span>Smoke test passed</span></div>
+  </main>
+</body>
+</html>

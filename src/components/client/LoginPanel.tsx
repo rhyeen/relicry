@@ -12,6 +12,7 @@ import {
   signInWithEmailPassword,
   signInWithGoogle,
 } from '@/lib/client/signInClient';
+import { getDisplayNameValidationError, normalizeDisplayName } from '@/lib/displayName';
 import styles from './LoginPanel.module.css';
 
 type AuthMode = 'login' | 'signup';
@@ -44,7 +45,7 @@ export default function LoginPanel({
 
   const loading = emailLoading || googleLoading || resetLoading;
   const emailReady = mode === 'signup'
-    ? !!displayName.trim() && !!email.trim() && !!password && !!confirmPassword
+    ? !getDisplayNameValidationError(displayName) && !!email.trim() && !!password && !!confirmPassword
     : !!email.trim() && !!password;
   const googleLabel = mode === 'signup' ? 'Sign up with Google' : 'Log in with Google';
 
@@ -110,7 +111,7 @@ export default function LoginPanel({
     try {
       const trimmedEmail = email.trim();
       if (mode === 'signup') {
-        const trimmedDisplayName = displayName.trim();
+        const trimmedDisplayName = normalizeDisplayName(displayName);
         await createAccountWithEmailPassword({
           displayName: trimmedDisplayName,
           email: trimmedEmail,
@@ -245,6 +246,7 @@ export default function LoginPanel({
           label={mode === 'signup' ? 'Create account' : 'Log in'}
           loading={emailLoading}
           disabled={loading || !emailReady}
+          submitOnEnter
           type="submit"
           variant="primary"
         />
@@ -267,8 +269,9 @@ function validateEmailForm({
   password: string;
 }): FieldErrors {
   const errors: FieldErrors = {};
-  if (mode === 'signup' && !displayName.trim()) {
-    errors.displayName = 'Enter a display name.';
+  const displayNameError = getDisplayNameValidationError(displayName);
+  if (mode === 'signup' && displayNameError) {
+    errors.displayName = displayNameError;
   }
   if (!email.trim()) {
     errors.email = 'Enter your email address.';

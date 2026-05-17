@@ -1,0 +1,25 @@
+.content {
+  display: grid;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.625rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-red-700);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+@media (max-width: 480px) {
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

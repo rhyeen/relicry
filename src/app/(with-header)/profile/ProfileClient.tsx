@@ -11,6 +11,7 @@ import ImageUploader from '@/components/client/ImageUploader/ImageUploader';
 import { ImageStorageDraft } from '@/components/client/ImageUploader/ImageUploadDragDrop';
 import { AdminRole, hasRole } from '@/entities/AdminRole';
 import { ImageSize, ImageStorage } from '@/entities/Image';
+import { getDisplayNameValidationError, normalizeDisplayName } from '@/lib/displayName';
 import { getStarterDeckHeading } from '@/lib/starterDecks';
 import { useAuthUser } from '@/lib/client/useAuthUser';
 import styles from './page.module.css';
@@ -53,11 +54,13 @@ export default function ProfileClient() {
   const [profileImage, setProfileImage] = useState<ProfileImage>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [displayNameError, setDisplayNameError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
   const applyProfile = useCallback((data: ProfileData) => {
     setProfile(data);
     setDisplayName(data.user.displayName ?? '');
+    setDisplayNameError(null);
     setEmail(data.user.email ?? '');
     setProfileImage(data.user.profileImage ?? {});
   }, []);
@@ -138,8 +141,15 @@ export default function ProfileClient() {
 
   const saveProfile = async () => {
     if (!auth.user) return;
+    const nextDisplayName = normalizeDisplayName(displayName);
+    const nextDisplayNameError = getDisplayNameValidationError(nextDisplayName);
+    if (nextDisplayNameError) {
+      setDisplayNameError(nextDisplayNameError);
+      return;
+    }
     setLoading(true);
     setError(null);
+    setDisplayNameError(null);
     setSaved(false);
     try {
       const token = await auth.user.getIdToken();
@@ -151,7 +161,7 @@ export default function ProfileClient() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          displayName,
+          displayName: nextDisplayName,
           email,
           profileImage: savedProfileImage,
         }),
@@ -212,22 +222,34 @@ export default function ProfileClient() {
         <DSSpinner label="Loading profile" />
       ) : (
         <div className={styles.content}>
-          <DSForm>
+          <DSForm width="full">
             <DSForm.Title>Your Relicry profile</DSForm.Title>
             <DSForm.Description>
               Update the details Relicry uses for event check-ins, quests, and collection records.
             </DSForm.Description>
-            <DSField label="Display Name" value={displayName} onChange={setDisplayName} />
+            <DSField
+              error={displayNameError ?? undefined}
+              label="Display Name"
+              value={displayName}
+              onChange={(value) => {
+                setDisplayName(value);
+                if (displayNameError) setDisplayNameError(null);
+              }}
+            />
             <DSField label="Email" type="email" value={email} onChange={setEmail} />
             <ImageUploader
+              avatarUser={{
+                displayName,
+                profileImage,
+              }}
               label="Profile Image"
-              description="Upload a banner and square thumbnail for your Relicry profile."
+              description="Upload a square profile image. It will be cropped and saved as a 200×200 avatar."
               images={profileImage}
               onChange={(images) => setProfileImage(images as ProfileImage)}
               type="profile"
             />
             <DSForm.ButtonGroup>
-              <DSButton onClick={saveProfile} label="Save Profile" variant="primary" loading={loading} />
+              <DSButton onClick={saveProfile} label="Save Profile" submitOnEnter variant="primary" loading={loading} />
               {saved && <span className={styles.saved}>Saved</span>}
             </DSForm.ButtonGroup>
           </DSForm>

@@ -8,6 +8,7 @@ type DSFormErrors = Record<string, string[] | string | undefined>;
 type DSFormRootProps = Readonly<{
   children: React.ReactNode;
   action?: FormHTMLAttributes<HTMLFormElement>['action'];
+  onSubmit?: FormHTMLAttributes<HTMLFormElement>['onSubmit'];
   className?: string;
   errors?: DSFormErrors;
   width?: 'default' | 'full';
@@ -26,12 +27,13 @@ function ButtonGroup({ children }: DSFormButtonGroupProps) {
   return <div className={styles.buttonGroup}>{children}</div>;
 }
 
-function DSFormRoot({ action, children, className, errors, width = 'default' }: DSFormRootProps) {
+function DSFormRoot({ action, children, className, errors, onSubmit, width = 'default' }: DSFormRootProps) {
   const formErrors = normalizeErrors(errors);
 
   return (
     <Form
       action={action}
+      onSubmit={onSubmit}
       className={[
         styles.root,
         width === 'full' ? styles.widthFull : undefined,

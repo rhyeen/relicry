@@ -10,6 +10,7 @@ import DSButton from '@/components/ds/DSButton';
 import DSDialog from '@/components/ds/DSDialog';
 import DSSlider from '@/components/ds/DSSlider';
 import DSLoadingOverlay from '@/components/ds/DSLoadingOverlay';
+import DSText from '@/components/ds/DSText';
 
 const ACCEPTED_IMAGE_FORMATS = {
   "image/jpeg": [".jpg", ".jpeg"],
@@ -119,14 +120,54 @@ function toBlobWebp(
 
 export type ImageStorageDraft = ImageStorage & { file?: File };
 
-type ImageUploaderProps = {
-  onChange: (images: { [key: string]: ImageStorageDraft | undefined; }) => void;
-  sizes: { [key: string]: { width: number; height: number, quality: number } };
-  disabled?: boolean;
-  onError: (error: string) => void;
+export type ImageUploadSizeSpec = {
+  width: number;
+  height: number;
+  quality: number;
+  label?: string;
+  cropShape?: 'rect' | 'round';
 };
 
-export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError }: ImageUploaderProps) {
+type ImageUploadCopy = {
+  title?: string;
+  description?: string;
+  buttonLabel?: string;
+  activeTitle?: string;
+  activeDescription?: string;
+  cropTitle?: string;
+  cropDescription?: string;
+  confirmLabel?: string;
+};
+
+type ImageUploaderProps = {
+  onChange: (images: { [key: string]: ImageStorageDraft | undefined; }) => void;
+  sizes: { [key: string]: ImageUploadSizeSpec };
+  disabled?: boolean;
+  onError: (error: string) => void;
+  copy?: ImageUploadCopy;
+  variant?: 'default' | 'profile';
+};
+
+const DEFAULT_COPY: Required<ImageUploadCopy> = {
+  title: 'Drop an image here',
+  description: 'JPG, PNG, or WebP. You will crop it before saving.',
+  buttonLabel: 'Choose Image',
+  activeTitle: 'Release to upload',
+  activeDescription: 'The crop dialog will open next.',
+  cropTitle: 'Crop Image',
+  cropDescription: 'Crop the uploaded image for each required size.',
+  confirmLabel: 'Confirm Crop',
+};
+
+export default function ImageUploadDragDrop({
+  copy,
+  disabled,
+  onChange,
+  onError,
+  sizes,
+  variant = 'default',
+}: ImageUploaderProps) {
+  const resolvedCopy = { ...DEFAULT_COPY, ...copy };
   const [source, setSource] = useState<{
     file: File;
     width: number;
@@ -141,6 +182,11 @@ export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError
   const tempCropPixelsRef = useRef<Area | null>(null);
 
   const currentSize = Object.keys(sizes).find(key => !previews[key]);
+  const currentSizeSpec = currentSize ? sizes[currentSize] : null;
+  const currentSizeLabel = currentSizeSpec?.label ?? currentSize;
+  const cropDescription = currentSizeSpec
+    ? `${resolvedCopy.cropDescription} ${currentSizeLabel ? `${currentSizeLabel}: ` : ''}${currentSizeSpec.width}×${currentSizeSpec.height}px.`
+    : resolvedCopy.cropDescription;
 
   const clearPreviews = useCallback(() => {
       for (const preview of Object.values(previews)) {
@@ -236,10 +282,10 @@ export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError
   }, [currentSize, previews, onChange, source]);
 
   const confirmCrop = async () => {
-    if (!source || !currentSize) return;
+    if (!source || !currentSize || !currentSizeSpec) return;
     const cropArea = tempCropPixelsRef.current;
     if (!cropArea) return;
-    const minErr = validateCropMeetsMinimum(cropArea, sizes[currentSize]);
+    const minErr = validateCropMeetsMinimum(cropArea, currentSizeSpec);
     if (minErr) {
       onError(minErr);
       console.error('Crop validation error:', minErr);
@@ -253,9 +299,9 @@ export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError
       const blob = await cropAndResizeToWebpBlob({
         img,
         cropPixels: cropArea,
-        width: sizes[currentSize].width,
-        height: sizes[currentSize].height,
-        quality: sizes[currentSize].quality,
+        width: currentSizeSpec.width,
+        height: currentSizeSpec.height,
+        quality: currentSizeSpec.quality,
         backgroundColor: "#ffffff",
       });
       const file = new File([blob], `${currentSize}.webp`, { type: "image/webp" });
@@ -282,28 +328,51 @@ export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError
   });
 
   return (
-    <div className={styles.dragDropContainer}>
+    <div className={styles.dragDropContainer} data-variant={variant}>
       <DSLoadingOverlay loading={cropping} error={null} />
       <div
         {...getRootProps()}
         className={`${styles.dropzone} ${isDragActive ? styles.active : ''} ${disabled ? styles.disabled : ''}`}
       >
         <input {...getInputProps()} />
-        <DSButton onClick={open} label={disabled ? "Upload Disabled" : "Click to Upload or Drag and Drop"} disabled={disabled} />
+        <div className={styles.dropzoneCopy}>
+          <span className={styles.uploadIcon} aria-hidden="true">
+            <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24">
+              <path d="M12 16V4" />
+              <path d="m7 9 5-5 5 5" />
+              <path d="M20 16.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.5" />
+            </svg>
+          </span>
+          <DSText.Body as="span" size="md" weight="semibold" className={styles.dropzoneTitle}>
+            {isDragActive ? resolvedCopy.activeTitle : resolvedCopy.title}
+          </DSText.Body>
+          <DSText.Caption as="span" className={styles.dropzoneDescription}>
+            {isDragActive ? resolvedCopy.activeDescription : resolvedCopy.description}
+          </DSText.Caption>
+        </div>
+        <DSButton
+          onClick={open}
+          label={disabled ? "Upload Disabled" : resolvedCopy.buttonLabel}
+          disabled={disabled}
+          variant={variant === 'profile' ? 'primary' : 'secondary'}
+        />
       </div>
       <DSDialog
         open={source !== null && !!currentSize}
-        title="Crop Image"
-        description="Crop the uploaded image for each required size."
+        title={resolvedCopy.cropTitle}
+        description={cropDescription}
+        size="wide"
         content={
           <div className={styles.cropContainer}>
-            { !!currentSize &&
+            { !!currentSize && currentSizeSpec &&
               <div className={styles.cropper}>
                 <Cropper
                   image={source?.url || ''}
                   crop={crop}
                   zoom={zoom}
-                  aspect={aspect(sizes[currentSize])}
+                  aspect={aspect(currentSizeSpec)}
+                  cropShape={currentSizeSpec.cropShape ?? 'rect'}
+                  showGrid={currentSizeSpec.cropShape !== 'round'}
                   onCropChange={setCrop}
                   onZoomChange={setZoom}
                   onCropComplete={(_croppedArea, croppedAreaPixels) => {
@@ -326,8 +395,8 @@ export default function ImageUploadDragDrop({ onChange, sizes, disabled, onError
         disablePointerDismissal
         actions={
           <>
-            <DSDialog.Close onClick={closeCrop} />
-            <DSDialog.Close text="Confirm Crop" onClick={confirmCrop} />
+            <DSButton onClick={closeCrop} label="Cancel" variant="ghost" />
+            <DSButton onClick={confirmCrop} label={resolvedCopy.confirmLabel} submitOnEnter variant="primary" loading={cropping} />
           </>
         }
       />

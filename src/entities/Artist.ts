@@ -1,4 +1,5 @@
 import { generateId } from '@/lib/idGenerator';
+import { ImageSize, ImageStorage } from './Image';
 import { prefixId, StoredRoot } from './Root';
 
 export type Artist = StoredRoot & {
@@ -10,6 +11,9 @@ export type Artist = StoredRoot & {
   name: string;
   profileImageUrl?: string;
   bannerImageUrl?: string;
+  bannerImage?: {
+    [ImageSize.Banner]?: ImageStorage;
+  };
   summary?: string;
   promotedArtIds: string[];
   promotedItemIds: string[];

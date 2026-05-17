@@ -1,0 +1,4 @@
+interface:
+  display_name: "Browser Smoke Check"
+  short_description: "Check local browser reachability"
+  default_prompt: "Use this skill when unsure whether the Codex in-app browser can reach localhost or capture screenshots. Serve the bundled smoke page over 127.0.0.1, open it with the Browser plugin, verify the expected DOM text, and capture a screenshot."

@@ -1,6 +1,7 @@
 // Heralds are vendors or others who handle quest threads or are
 // otherwise associated with events in some way, like card artists.
 
+import { generateId } from '@/lib/idGenerator';
 import { prefixId, StoredRoot } from './Root';
 
 export type Herald = StoredRoot & {
@@ -10,12 +11,15 @@ export type Herald = StoredRoot & {
   artistId: string | null;
   eventId: string;
   override: {
-    // Order: override.name || artist[artistId]?.name || user[userId].displayName
+    // Order: override.name || user[userId].displayName
     name?: string;
-    // Same order as name
+    // Order: override.profileImageUrl || user[userId].profileImage
     profileImageUrl?: string;
+    // Order: override.bannerImageUrl || artist[artistId]?.bannerImageUrl
     bannerImageUrl?: string;
+    // Order: override.summary || artist[artistId]?.summary
     summary?: string;
+    // Order: override.promotedItemIds || artist[artistId]?.promotedItemIds
     promotedItemIds?: string[];
   };
   mapPin: {
@@ -35,4 +39,8 @@ export type Herald = StoredRoot & {
 
 export function getHeraldId(id: string): string {
   return prefixId('hrd', id);
+}
+
+export function generateHeraldId(): string {
+  return getHeraldId(generateId(10));
 }

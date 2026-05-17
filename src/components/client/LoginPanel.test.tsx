@@ -100,4 +100,17 @@ describe('LoginPanel', () => {
     });
     expect(onSignedIn).toHaveBeenCalledTimes(1);
   });
+
+  test('requires two letters in the signup display name', () => {
+    const { container } = render(<LoginPanel />);
+    const panel = within(container);
+
+    fireEvent.click(panel.getByRole('tab', { name: 'Sign up' }));
+    fireEvent.change(panel.getByLabelText('Display name *'), { target: { value: '  C.  ' } });
+    fireEvent.change(panel.getByLabelText('Email address *'), { target: { value: 'new@example.com' } });
+    fireEvent.change(panel.getByLabelText('Password *'), { target: { value: 'password123' } });
+    fireEvent.change(panel.getByLabelText('Confirm password *'), { target: { value: 'password123' } });
+
+    expect(panel.getByRole('button', { name: 'Create account' }).hasAttribute('disabled')).toBe(true);
+  });
 });
