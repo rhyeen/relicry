@@ -1,10 +1,9 @@
 'use client';
 
+import { Menu } from '@base-ui/react';
 import { NavigationMenu } from '@base-ui/react/navigation-menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import type { KeyboardEvent } from 'react';
 import { ArtIcon, CardsIcon, EventsIcon } from '@/components/ds/DSNavIcons';
 import styles from './HeaderNavigation.module.css';
 
@@ -50,78 +49,57 @@ const navItems: MenuKey[] = ['cards', 'events', 'art'];
 
 export default function HeaderNavigation() {
   const pathname = usePathname();
-  const [openMenu, setOpenMenu] = useState<MenuKey | null>(null);
-  const rootRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpenMenu(null);
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    return () => document.removeEventListener('pointerdown', handlePointerDown);
-  }, []);
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape') {
-      setOpenMenu(null);
-    }
-  };
 
   return (
     <NavigationMenu.Root
       className={styles.root}
       aria-label="Primary"
-      ref={rootRef}
-      onKeyDown={handleKeyDown}
     >
       <NavigationMenu.List className={styles.list}>
         {navItems.map((item) => {
           const menu = menuItems[item];
           const Icon = menu.icon;
           const active = menu.activeHrefs.some((href) => pathname === href || pathname.startsWith(`${href}/`));
-          const open = openMenu === item;
 
           return (
-            <NavigationMenu.Item
-              className={styles.item}
-              key={item}
-              onPointerEnter={(event) => {
-                if (event.pointerType === 'mouse') setOpenMenu(item);
-              }}
-              onPointerLeave={(event) => {
-                if (event.pointerType === 'mouse') setOpenMenu(null);
-              }}
-            >
-              <button
-                aria-expanded={open}
-                aria-haspopup="menu"
-                aria-label={`${menu.label} menu`}
-                className={styles.link}
-                data-active={active ? '' : undefined}
-                onClick={() => setOpenMenu(item)}
-                type="button"
-              >
-                <Icon className={styles.icon} />
-              </button>
-              {open && (
-                <div className={styles.menu} role="menu">
-                  {menu.options.map((option) => (
-                    <Link
-                      className={styles.menuLink}
-                      href={option.href}
-                      key={option.href}
-                      onClick={() => setOpenMenu(null)}
-                      role="menuitem"
-                    >
-                      {option.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </NavigationMenu.Item>
+            <Menu.Root key={item} modal={false}>
+              <NavigationMenu.Item className={styles.item}>
+                <Menu.Trigger
+                  aria-label={`${menu.label} menu`}
+                  className={styles.link}
+                  closeDelay={80}
+                  data-active={active ? '' : undefined}
+                  delay={50}
+                  openOnHover
+                  type="button"
+                >
+                  <Icon className={styles.icon} />
+                </Menu.Trigger>
+                <Menu.Portal>
+                  <Menu.Positioner
+                    align="center"
+                    className={styles.positioner}
+                    collisionAvoidance={{ side: 'flip', align: 'shift', fallbackAxisSide: 'none' }}
+                    collisionPadding={8}
+                    side="bottom"
+                    sideOffset={7}
+                  >
+                    <Menu.Popup className={styles.menu} aria-label={`${menu.label} menu`}>
+                      {menu.options.map((option) => (
+                        <Menu.Item
+                          className={styles.menuLink}
+                          closeOnClick
+                          key={option.href}
+                          render={<Link href={option.href} />}
+                        >
+                          {option.label}
+                        </Menu.Item>
+                      ))}
+                    </Menu.Popup>
+                  </Menu.Positioner>
+                </Menu.Portal>
+              </NavigationMenu.Item>
+            </Menu.Root>
           );
         })}
       </NavigationMenu.List>

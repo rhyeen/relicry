@@ -1,5 +1,6 @@
 .root {
   position: relative;
+  overflow-x: clip;
   min-height: 100svh;
   background:
     radial-gradient(circle 2000px at top center, rgba(245, 158, 11, 0.18), transparent 34%),
@@ -129,7 +130,6 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  overflow-x: clip;
   padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(3rem, 12svh, 4.5rem);
   min-height: 65svh;
 }
