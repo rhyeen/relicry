@@ -13,7 +13,7 @@ import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
 import { buildCardPreviewItems } from '@/server/cardsPreview';
 import { CardDB } from '@/server/db/card.db';
 import { PlayerCardDB } from '@/server/db/playerCard.db';
-import { invalidatePlayerCardsNow } from '@/server/cache/playerCard.cache';
+import { invalidatePlayerCardsSoon } from '@/server/cache/playerCard.cache';
 import { authenticateUser, handleJsonResponse, handleRouteError, InvalidArgument } from '@/server/routeHelpers';
 
 export async function GET(req: Request) {
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     const { userId } = await authenticateUser(req);
     const playerCard = parsePlayerCard(await req.json(), userId);
     const saved = await new PlayerCardDB(getFirestoreAdmin()).set(playerCard);
-    await invalidatePlayerCardsNow(userId);
+    await invalidatePlayerCardsSoon(userId);
     return handleJsonResponse({ playerCard: saved });
   } catch (e) {
     return handleRouteError(e);
@@ -60,7 +60,7 @@ export async function PATCH(req: Request) {
     const { userId } = await authenticateUser(req);
     const playerCard = parsePlayerCard(await req.json(), userId);
     const saved = await new PlayerCardDB(getFirestoreAdmin()).set(playerCard);
-    await invalidatePlayerCardsNow(userId);
+    await invalidatePlayerCardsSoon(userId);
     return handleJsonResponse({ playerCard: saved });
   } catch (e) {
     return handleRouteError(e);
@@ -78,7 +78,7 @@ export async function DELETE(req: Request) {
     const cardVersion = parseCardVersion(searchParams.get('cardVersion'));
 
     await new PlayerCardDB(getFirestoreAdmin()).delete(getPlayerCardId(userId, cardId, cardVersion));
-    await invalidatePlayerCardsNow(userId);
+    await invalidatePlayerCardsSoon(userId);
     return handleJsonResponse({ ok: true });
   } catch (e) {
     return handleRouteError(e);

@@ -8,6 +8,25 @@
   font-weight: 700;
 }
 
+.savedSummary {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.1rem 0.05rem;
+}
+
+.savedCount {
+  color: var(--parchment-white);
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.savedMeta {
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
 .dialogStack {
   display: grid;
   gap: 0.75rem;

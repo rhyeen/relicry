@@ -136,6 +136,7 @@ describe('CardCollectionAction', () => {
 
     render(<CardCollectionAction cardId="0001" cardVersionId={1} />);
 
+    expect(await screen.findByText('2 copies saved')).toBeDefined();
     expect((await screen.findByRole('link', { name: /view collection/i })).getAttribute('href')).toBe('/collection');
 
     fireEvent.click(screen.getByRole('button', { name: /edit details/i }));
@@ -154,6 +155,9 @@ describe('CardCollectionAction', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /review collection error/i }));
     expect(screen.getByText(/log out and log back in/i)).toBeDefined();
+
+    fireEvent.click(screen.getByRole('button', { name: /dismiss error/i }));
+    expect(screen.getByRole('button', { name: /save physical copy/i })).toBeDefined();
   });
 });
 

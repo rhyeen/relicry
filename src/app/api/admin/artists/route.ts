@@ -3,7 +3,7 @@ import { Artist, ArtistTag, getArtistId } from '@/entities/Artist';
 import { ImageSize, ImageStorage } from '@/entities/Image';
 import { getUserId } from '@/entities/User';
 import { getFirestoreAdmin } from '@/lib/firebaseAdmin';
-import { invalidateArtistSoon } from '@/server/cache/artist.cache';
+import { invalidateArtistNow } from '@/server/cache/artist.cache';
 import { ArtistDB } from '@/server/db/artist.db';
 import { UserDB } from '@/server/db/user.db';
 import { authenticateUser, BadRequest, handleJsonResponse, handleRouteError, NotFound } from '@/server/routeHelpers';
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
     };
 
     const updatedArtist = await db.set(artist);
-    await invalidateArtistSoon(updatedArtist.id);
+    await invalidateArtistNow(updatedArtist.id);
     return handleJsonResponse({ artist: updatedArtist });
   } catch (e) {
     return handleRouteError(e);
