@@ -27,7 +27,7 @@
     "@zxing/browser": "^0.2.0",
     "firebase": "^12.7.0",
     "firebase-admin": "^13.6.0",
-    "next": "^16.2.3",
+    "next": "^16.2.11",
     "pica": "^9.0.1",
     "qrcode": "^1.5.4",
     "react": "^19.2.3",
